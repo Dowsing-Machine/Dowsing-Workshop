@@ -5,13 +5,14 @@
                 Dowsing Workshop
             </n-layout-header>
             <n-layout has-sider class="main-middle">
-                <n-layout-sider bordered>数据控制面板
+                <n-layout-sider bordered collapse-mode="width"
+        :collapsed-width="20" show-trigger="arrow-circle" style="z-index:10" :show-collapsed-content="false">
                     <data-control></data-control>
                 </n-layout-sider>
                 <n-layout-content>
                     <n-layout has-sider class="main-middle">
                         <n-layout-sider bordered>
-                            单视图控制面板
+                            <single-chart-edit></single-chart-edit>
                         </n-layout-sider>
                         <n-layout-content>
                             多视图界面
@@ -33,6 +34,7 @@
 import { NLayout, NLayoutHeader, NLayoutFooter, NLayoutSider, NLayoutContent, NSpace } from 'naive-ui';
 
 import DataControl from "@/components/DataControl.vue";
+import SingleChartEdit from "@/components/SingleChartEdit.vue";
 
 const style = {
     header: {
