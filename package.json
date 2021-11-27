@@ -7,10 +7,16 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.2.16"
+    "lodash": "^4.17.21",
+    "pinia": "^2.0.4",
+    "vue": "^3.2.16",
+    "vue-router": "^4.0.12"
   },
   "devDependencies": {
+    "@vicons/fluent": "^0.11.0",
     "@vitejs/plugin-vue": "^1.9.3",
+    "naive-ui": "^2.21.1",
+    "vfonts": "^0.1.0",
     "vite": "^2.6.4"
   }
 }
