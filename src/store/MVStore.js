@@ -35,7 +35,7 @@ export const MVStore = defineStore({
             if (view == null) { view = this.tempView }
             this.views.push(view);
             this.mode = "添加";
-            this.selectView(this.views.length - 1);
+            this.selectView(view.id);
             this.tempView = new View();
         },
         removeView(id) {

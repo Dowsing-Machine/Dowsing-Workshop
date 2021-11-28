@@ -1,6 +1,6 @@
 <template>
     <n-grid x-gap="12" y-gap="8" cols="4">
-        <n-grid-item v-for="view,i in views" :key="i" style="max-height: 300px;overflow: auto;">
+        <n-grid-item v-for="view,i in views" :key="i">
             <single-view :view="view"></single-view>
         </n-grid-item>
     </n-grid>

@@ -19,8 +19,8 @@
                             <single-chart-edit></single-chart-edit>
                         </n-layout-sider>
                         <n-layout-content>
-                            <n-layout>
-                                <n-layout-header>
+                            <n-layout @click="onClick">
+                                <n-layout-header bordered>
                                     <multi-view-ctrl></multi-view-ctrl>
                                 </n-layout-header>
                                 <n-layout-content>
@@ -48,6 +48,9 @@ import DataControl from "@/components/DataControl.vue";
 import SingleChartEdit from "@/components/SingleChartEdit.vue";
 import MultiView from '../components/MultiView.vue';
 import MultiViewCtrl from '../components/MultiViewCtrl.vue';
+import { MVStore } from '../store/MVStore';
+
+const mvStore = MVStore();
 
 const style = {
     header: {
@@ -61,6 +64,10 @@ const style = {
         padding_y: "2px"
     },
 };
+
+function onClick(){
+    mvStore.selectView();
+}
 </script>
 
 <style scoped>
