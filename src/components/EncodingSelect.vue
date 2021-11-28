@@ -1,5 +1,5 @@
 <template>
-    <n-select :placeholder="label" :options="columns" clearable @update:value="handleUpdateValue"></n-select>
+    <n-select :placeholder="label" :options="columns" clearable @update:value="handleUpdateValue" :value="value"></n-select>
 </template>
 
 <script setup>
@@ -11,6 +11,7 @@ defineProps({
     label:String,
     field:String,
     columns:Array,
+    value:String,
 });
 
 const emit=defineEmits({

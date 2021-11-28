@@ -1,11 +1,12 @@
 <template>
     <div style="padding:12px 24px;">
+    id: {{viewId}}
         <n-h3>视图绘制控制</n-h3>
         视图类型
         <encoding-select-vue :options="ChartTypeOpt" @update:value="updateEncoding('chart_type',$event)"></encoding-select-vue>
         <n-divider></n-divider>
         x轴编码
-        <encoding-select-vue field="x" label="x" :columns="encodingColumns" @update="updateEncoding('x_encoding',$event)" :value="view.x_encoding"></encoding-select-vue>
+        <encoding-select-vue field="x" label="x" :columns="encodingColumns" @update="updateEncoding('x_encoding',$event)" :value="view.x_encoding" style="margin-bottom: 1em;"></encoding-select-vue>
         y轴编码
         <encoding-select-vue field="y" label="y" :columns="encodingColumns" @update="updateEncoding('y_encoding',$event)" :value="view.y_encoding"></encoding-select-vue>
         <n-divider></n-divider>
@@ -15,7 +16,7 @@
         <n-divider></n-divider>
         分组列
         <encoding-select-vue field="group" label="group" :columns="encodingColumns" @update="updateEncoding('group_by',$event)" :value="view.group_by"></encoding-select-vue>
-        <n-button type="primary" style="margin: 1em 0;width:100%">{{mvStore.mode}}</n-button>
+        <n-button type="primary" style="margin: 1em 0;width:100%"  @click="mvStore.addView(view)">{{mvStore.mode}}</n-button>
     </div>
 </template>
 

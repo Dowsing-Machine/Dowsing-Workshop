@@ -2,50 +2,48 @@ import _ from "lodash"
 
 import { defineStore } from 'pinia'
 
-const DEFAULT_VIEW = {
-    chart_type: "bar",
-    x_encoding: null,
-    x_aggregate: null,
-    y_encoding: null,
-    y_aggregate: null,
-    category_encoding: null,
-    category_mark: null,
-    group_by: null,
-    task_mark:null,
-};
+import View from "@/models/View"
 
-export const MVStore=defineStore({
-    id:"MVStore",
-    state:()=>({
-        currentViewId:null,
-        views:[],
-        mode:"添加"
+export const MVStore = defineStore({
+    id: "MVStore",
+    state: () => ({
+        currentViewId: null,
+        views: [],
+        mode: "添加",
+        tempView: new View(),
     }),
-    getters:{
-        currentView:state=>{
-            if(state.currentViewId==null){
-                state.addView();
-                state.currentViewId=state.views.length-1;
+    getters: {
+        currentView: state => {
+            if (state.currentViewId == null) {
+                // state.addView();
+                // state.currentViewId = state.views.length - 1;
+                return state.tempView;
             }
-            return state.views[state.currentViewId];
+            else return state.views[state.currentViewId];
         },
-        
+        nextViewId: state => {
+            return state.views.length;
+        },
+
     },
-    actions:{
-        selectView(id=null){
-            this.currentViewId=id;
-            this.mode = "修改";
+    actions: {
+        selectView(id = null) {
+            this.currentViewId = id;
+            this.mode = id ? "修改" : "添加";
         },
-        addView(view=DEFAULT_VIEW){
-            this.views.push(_.clone(view));
+        addView(view = null) {
+            if (view == null) { view = this.tempView }
+            this.views.push(view);
             this.mode = "添加";
+            this.selectView(this.views.length - 1);
+            this.tempView = new View();
         },
-        removeView(id){
-            this.views.splice(id,1);
+        removeView(id) {
+            this.views.splice(id, 1);
             this.selectView(null);
         },
-        editView(id,view){
-            this.views[id]=view;
+        editView(id, view) {
+            this.views[id] = view;
         },
     },
 })

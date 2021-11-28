@@ -1,12 +1,16 @@
 <template>
     <n-space vertical size="large">
         <n-layout>
-            <n-layout-header bordered class="main-header" style="font-size: 2em">
-                Dowsing Workshop
-            </n-layout-header>
+            <n-layout-header bordered class="main-header" style="font-size: 2em">Dowsing Workshop</n-layout-header>
             <n-layout has-sider class="main-middle">
-                <n-layout-sider bordered collapse-mode="width"
-        :collapsed-width="20" show-trigger="arrow-circle" style="z-index:10" :show-collapsed-content="false">
+                <n-layout-sider
+                    bordered
+                    collapse-mode="width"
+                    :collapsed-width="20"
+                    show-trigger="arrow-circle"
+                    style="z-index:10"
+                    :show-collapsed-content="false"
+                >
                     <data-control></data-control>
                 </n-layout-sider>
                 <n-layout-content>
@@ -15,7 +19,14 @@
                             <single-chart-edit></single-chart-edit>
                         </n-layout-sider>
                         <n-layout-content>
-                            多视图界面
+                            <n-layout>
+                                <n-layout-header>
+                                    <multi-view-ctrl></multi-view-ctrl>
+                                </n-layout-header>
+                                <n-layout-content>
+                                    <multi-view></multi-view>
+                                </n-layout-content>
+                            </n-layout>
                         </n-layout-content>
                     </n-layout>
                 </n-layout-content>
@@ -35,6 +46,8 @@ import { NLayout, NLayoutHeader, NLayoutFooter, NLayoutSider, NLayoutContent, NS
 
 import DataControl from "@/components/DataControl.vue";
 import SingleChartEdit from "@/components/SingleChartEdit.vue";
+import MultiView from '../components/MultiView.vue';
+import MultiViewCtrl from '../components/MultiViewCtrl.vue';
 
 const style = {
     header: {
