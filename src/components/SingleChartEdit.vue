@@ -15,7 +15,7 @@
         <n-divider></n-divider>
         分类列
         <encoding-select-vue field="category" label="category" :columns="encodingColumns" @update="updateEncoding('category_encoding',$event)" :value="mvStore.currentView.category_encoding"></encoding-select-vue>
-        
+
         <n-divider></n-divider>
         分组列
         <encoding-select-vue field="group" label="group" :columns="encodingColumns" @update="updateEncoding('group_by',$event)" :value="mvStore.currentView.group_by"></encoding-select-vue>
