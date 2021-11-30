@@ -10,6 +10,7 @@
     "highlight.js": "^11.3.1",
     "lodash": "^4.17.21",
     "pinia": "^2.0.4",
+    "undo-stacker": "0.0.6",
     "vega": "^5.21.0",
     "vega-embed": "^6.20.4",
     "vega-lite": "^5.2.0",

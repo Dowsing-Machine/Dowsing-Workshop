@@ -18,8 +18,8 @@
                         <n-layout-sider bordered>
                             <single-chart-edit></single-chart-edit>
                         </n-layout-sider>
-                        <n-layout-content>
-                            <n-layout @click="onClick">
+                        <n-layout-content @click="onClick">
+                            <n-layout>
                                 <n-layout-header bordered>
                                     <multi-view-ctrl></multi-view-ctrl>
                                 </n-layout-header>
@@ -50,7 +50,10 @@ import MultiView from '../components/MultiView.vue';
 import MultiViewCtrl from '../components/MultiViewCtrl.vue';
 import { MVStore } from '../store/MVStore';
 
+import {ControlStore} from '../store/ControlStore';
+
 const mvStore = MVStore();
+const controlStore = ControlStore();
 
 const style = {
     header: {
@@ -66,7 +69,8 @@ const style = {
 };
 
 function onClick(){
-    mvStore.selectView();
+    // mvStore.selectView();
+    controlStore.currentViewId=null;
 }
 </script>
 

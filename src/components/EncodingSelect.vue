@@ -9,13 +9,12 @@ import { NSelect } from 'naive-ui';
 // import { MVStore } from '@/store/MVStore';
 defineProps({
     label:String,
-    field:String,
     columns:Array,
     value:String,
 });
 
 const emit=defineEmits({
-    update:null,
+    "update":null,
 });
 
 function handleUpdateValue(value){

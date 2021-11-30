@@ -6,7 +6,10 @@ import { NMenu, NIcon } from 'naive-ui';
 import { Add20Filled, ArrowUndo20Filled, ArrowRedo20Filled, Delete20Filled } from "@vicons/fluent";
 import { computed, h } from 'vue-demi';
 import { MVStore } from '@/store/MVStore';
+import { ControlStore } from '../store/ControlStore';
 const mvStore = MVStore();
+const controlStore = ControlStore();
+
 
 const options = computed(() => ([
     {
@@ -26,7 +29,7 @@ const options = computed(() => ([
             null,
             { default: () => h(Delete20Filled) }
         ),
-        disabled: mvStore.currentViewId == null,
+        disabled: controlStore.currentViewId == null,
     },
     {
         label: "撤销",
@@ -55,8 +58,13 @@ const handleUpdate = (key) => {
             mvStore.addView();
             break;
         case "undo":
+            mvStore.undo();
             break;
         case "redo":
+            mvStore.redo();
+            break;
+        case "delete":
+            mvStore.removeView(controlStore.currentViewId);
             break;
     }
 }

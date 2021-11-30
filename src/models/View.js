@@ -14,10 +14,6 @@ const DEFAULT_VIEW = {
 }
 
 import { reactive } from "vue"
-import { DatasetStore } from "@/store/DatasetStore"
-
-const datasetStore = DatasetStore();
-
 let idCount = 0;
 
 class View {
@@ -28,13 +24,15 @@ class View {
         reactive(this);
     }
 
-    compileToVegaLite() {
-        const data_value = datasetStore.dataset.filter(this.x_filter).filter(this.y_filter).filter(this.category_filter);
+    static clone(view){
+        return new View(view);
+    }
 
+    compileToVegaLite(dataset) {
         let vl = {
             "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
             "data": {
-                "values": data_value
+                "values": dataset
             },
             "mark": this.chart_type,
             "width": "container",
