@@ -1,5 +1,6 @@
 const DEFAULT_Mention = {
     text: "please enter your mention here",
+    time: null
 }
 
 import {reactive} from "vue"
