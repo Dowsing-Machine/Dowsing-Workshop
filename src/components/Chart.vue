@@ -11,6 +11,7 @@ const datasetStore = DatasetStore();
 
 const props = defineProps({
     view: Object,
+    renderOption: Object,
 });
 
 const chartDiv = ref(null);
@@ -23,10 +24,15 @@ onMounted(() => {
     refreshChart();
 });
 
-const vega_lite = computed(() => {
-    if (props.view == null || props.view.compileToVegaLite == null) return "";
-    return props.view.compileToVegaLite(datasetStore.dataset);
+const dataset=computed(()=>{
+    return datasetStore.dataset;
 });
+
+const columns=computed(()=>{
+    return datasetStore.columns;
+});
+
+const vega_lite = props.view.compileToVegaLite(dataset,columns,props.renderOption);
 
 watch(vega_lite, () => {
     refreshChart();
