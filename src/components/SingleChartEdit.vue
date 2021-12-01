@@ -88,6 +88,9 @@
                 :value="currentView.group_by"
             ></encoding-select-vue>
         </div>
+        <div v-else>
+            请选中一个视图以编辑
+        </div>
     </div>
 </template>
 
@@ -96,9 +99,9 @@ import {ref} from "vue";
 
 const columnEnabled = (columns, view) => {
     return columns.map(c => ({
-        label: c,
-        value: c,
-        disabled: [view.x_encoding, view.y_encoding, view.category_encoding, view.group_by].includes(c),
+        label: c.name,
+        value: c.name,
+        disabled: [view.x_encoding, view.y_encoding, view.category_encoding, view.group_by].includes(c.name),
     }));
 }
 const aggregateFunctions = ["count", "sum", "mean", "median", "min", "max"].map(f => ({

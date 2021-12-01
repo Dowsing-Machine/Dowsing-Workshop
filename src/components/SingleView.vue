@@ -22,11 +22,10 @@
             </n-dropdown>
             <n-button text class="header_button" @click="onFullScreen">
                 <n-icon>
-                    <full-screen-maximize24-filled />
+                    <zoom-in24-regular />
                 </n-icon>
             </n-button>
         </template>
-        <!-- <div ref="chartDiv" style="overflow:auto;width: 100%;"></div> -->
         <chart :view="view"></chart>
     </n-card>
 </template>
@@ -38,7 +37,7 @@ import { ref, h } from 'vue-demi';
 import { defineProps, defineEmits, computed } from 'vue-demi';
 import { NCard, NTag, NButton, NIcon, NDropdown } from 'naive-ui';
 import { MVStore } from '@/store/MVStore';
-import { Tag24Filled, Square20Filled, FullScreenMaximize24Filled } from "@vicons/fluent"
+import { Tag24Filled, Square20Filled, FullScreenMaximize24Filled,ZoomIn24Regular } from "@vicons/fluent"
 import { DatasetStore } from '../store/DatasetStore';
 import { ControlStore } from '../store/ControlStore';
 
