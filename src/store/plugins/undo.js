@@ -1,6 +1,5 @@
 import _ from "lodash"
-import createStack from '../../utils/undo_stacker';
-import View from "@/models/view";
+import createStack from './utils/undo_stacker';
 import { isProxy, toRaw, watch, effectScope } from "vue-demi";
 
 const scope = effectScope();
