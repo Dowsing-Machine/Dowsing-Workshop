@@ -75,7 +75,7 @@ const isSelected = computed(() => {
 });
 
 function onSelectColor(key) {
-    mvStore.views[controlStore.currentViewId].task_mark = key;
+    props.view.task_mark = key;
 }
 
 function renderIcon(opt) {

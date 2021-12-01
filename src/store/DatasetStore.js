@@ -50,6 +50,9 @@ export const DatasetStore=defineStore({
     actions:{
         defineColType(col,type){
             this.userDefinedColType[col]=type;
+        },
+        clearDefinedColType(){
+            this.userDefinedColType={};
         }
     }
 })

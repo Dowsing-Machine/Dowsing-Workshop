@@ -88,9 +88,9 @@
                 :value="currentView.group_by"
             ></encoding-select-vue>
         </div>
-        <div v-else>
-            请选中一个视图以编辑
-        </div>
+        <n-empty size="huge" v-else description="请选中一个视图以编辑">
+            
+        </n-empty>
     </div>
 </template>
 
@@ -119,7 +119,7 @@ function updateEncoding(channel, value) {
     // mvStore.editView(mvStore.currentViewId,view);
 }
 
-import { NButton, NCard, NSpace, NInputNumber, NModal, NSelect, NH3, NDivider } from 'naive-ui';
+import { NButton, NCard, NSpace, NInputNumber, NModal, NSelect, NH3, NDivider,NSlider,NEmpty } from 'naive-ui';
 import EncodingSelectVue from './EncodingSelect.vue';
 import { DatasetStore } from '../store/DatasetStore';
 import { MVStore } from '../store/MVStore';
@@ -127,6 +127,7 @@ import _ from 'lodash';
 import { computed } from 'vue-demi';
 import { ControlStore } from '../store/ControlStore';
 import Filter from '../components/Filter.vue'
+
 
 const xshow = ref(false)
 const yshow = ref(false)

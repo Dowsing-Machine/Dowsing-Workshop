@@ -31,11 +31,11 @@ class View {
 
     compileToVegaLite(dataset, columns, render_options = {}) {
         return computed(() => {
-            let x_type = this.x_encoding?_.find(columns.value, { name: this.x_encoding }).type:null;
-            let y_type = this.y_encoding?_.find(columns.value, { name: this.y_encoding }).type:null;
+            let x_type = this.x_encoding ? _.find(columns.value, { name: this.x_encoding }).type : null;
+            let y_type = this.y_encoding ? _.find(columns.value, { name: this.y_encoding }).type : null;
             // let category_type = _.find(columns, { name: this.category_encoding }).type;
             let vl = {
-                "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
                 "data": {
                     "values": dataset.value
                 },
@@ -76,6 +76,35 @@ class View {
             return _.assign(vl, render_options);
         })
 
+    }
+
+    isReady(){
+        return computed(() => this.x_encoding || this.y_encoding);
+    }
+}
+
+class Pie extends View {
+    constructor(options) {
+        this.encoding_channel = options.encoding_channel;
+        super(options);
+        this.chart_type = "pie";
+    }
+
+    compileToVegaLite(dataset, columns, render_options = {}) {
+        return computed(() => {
+            return {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "data": {
+                    "values": dataset.value
+                },
+                "mark": "arc",
+                "encoding": {
+                    "theta": { "field": this.encoding_channel, "type": "nominal","aggregate": "count" },
+                    "color": { "field": this.encoding_channel, "type": "nominal" }
+                }
+            }.assign(render_options);
+
+        })
     }
 }
 
