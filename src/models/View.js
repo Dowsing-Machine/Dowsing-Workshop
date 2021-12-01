@@ -2,10 +2,10 @@ const DEFAULT_VIEW = {
     chart_type: "bar",
     x_encoding: null,
     x_aggregate: null,
-    x_filter: d => true,
+    x_filter: [, ],
     y_encoding: null,
     y_aggregate: null,
-    y_filter: d => true,
+    y_filter: [0, 100],
     category_encoding: null,
     category_mark: null,
     category_filter: d => true,
@@ -40,6 +40,7 @@ class View {
             "encoding": {
                 "x": {
                     "field": this.x_encoding,
+                    "range": this.x_filter,
                     // "type": "nominal",
                     "aggregate": this.x_aggregate,
                     "axis": {
@@ -48,6 +49,7 @@ class View {
                 },
                 "y": {
                     "field": this.y_encoding,
+                    "range": this.y_filter,
                     // "type": "quantitative",
                     "aggregate": this.y_aggregate,
                     "axis": {
@@ -61,7 +63,12 @@ class View {
                         "title": this.category_encoding
                     }
                 }
-            }
+            },
+            "transform": [
+                {
+                    "filter": {"and": [{"field": this.x_encoding, "range": this.x_filter}, {"field": this.y_encoding, "range": this.y_filter}]}
+                }
+            ]
         }
         return vl;
     }

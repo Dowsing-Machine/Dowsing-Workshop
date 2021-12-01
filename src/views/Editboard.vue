@@ -14,7 +14,6 @@
                 >
                     <data-control></data-control>
                     <mention></mention>
-                  <Filter></Filter>
                 </n-layout-sider>
                 <n-layout-content>
                     <n-layout has-sider class="main-middle">
@@ -53,7 +52,7 @@ import SingleChartEdit from "@/components/SingleChartEdit.vue";
 import MultiView from '../components/MultiView.vue';
 import MultiViewCtrl from '../components/MultiViewCtrl.vue';
 import Mention from '../components/Mention.vue'
-import Filter from '../components/Filter.vue'
+
 import { MVStore } from '../store/MVStore';
 
 import {ControlStore} from '../store/ControlStore';

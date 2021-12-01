@@ -1,18 +1,16 @@
 <template>
-  <div style="padding:12px 24px">
-    <n-button @click="showFilter = !showFilter">Filter</n-button>
-    <n-button @click="showAggregation = !showAggregation">Filter</n-button>
-    <n-card v-if="showFilter" style="position: absolute">
-      <n-space vertical>
-        <n-slider v-model:value="value" range :step="1" />
-        <n-input-number size="small" v-model:value="value[0]" />
-        <n-input-number size="small" v-model:value="value[1]" />
-      </n-space>
-    </n-card>
-    <n-card v-if="showAggregation" style="position: absolute">
-      <n-select v-model:value="aggValue" :options="aggOptions" />
-    </n-card>
-  </div>
+  <n-button size="tiny" @click="showFilter = !showFilter">Filter</n-button>
+  <n-button size="tiny" @click="showAggregation = !showAggregation">Aggregation</n-button>
+  <n-card v-if="showFilter" embedded style="position: absolute; z-index: 1">
+    <n-space vertical>
+      <n-slider v-model:value="value" range :step="1" />
+      <n-input-number size="small" v-model:value="value[0]" />
+      <n-input-number size="small" v-model:value="value[1]" />
+    </n-space>
+  </n-card>
+  <n-card v-if="showAggregation" embedded style="position: absolute; z-index: 1">
+    <n-select v-model:value="aggValue" :options="aggOptions" />
+  </n-card>
 </template>
 
 <script setup>
