@@ -57,11 +57,6 @@
                 @update="updateEncoding('group_by', $event)"
                 :value="currentView.group_by"
             ></encoding-select-vue>
-            <n-button
-                type="primary"
-                style="margin: 1em 0;width:100%"
-                @click="mvStore.addview(mvStore.views[controlStore.currentViewId])"
-            >{{ mvStore.mode }}</n-button>
         </div>
     </div>
 </template>

@@ -5,14 +5,14 @@ import { isProxy, toRaw, watch, effectScope } from "vue-demi";
 
 const scope = effectScope();
 
+export function Undo({ store, options }) {
+    if (!options.undoOption) return;
+    const { undoOption } = options;
+    if(!undoOption.enabled) return;
 
-function cloneState(state) {
-    const res = _.cloneDeep(state);
-    return res
-}
+    const cloneState=undoOption.clone||_.cloneDeep;
+    const diff=undoOption.diff||_.constant(true);
 
-export function ViewUndo({ store, options }) {
-    if (!options.isView) return;
     const stack = createStack(cloneState(store));
     let preventUpdateOnSubscribe = false;
     store.undo = () => {
@@ -25,12 +25,14 @@ export function ViewUndo({ store, options }) {
         store.$patch(stack.redo());
     }
     scope.run(() => {
-        watch(store, (state) => {
+        watch(store, (state,prevState) => {
             if (preventUpdateOnSubscribe) {
                 preventUpdateOnSubscribe = false;
                 return;
             }
-
+            if(!diff(state,prevState)){
+                return;
+            }
             state = cloneState(state);
             stack.push(state);
         })

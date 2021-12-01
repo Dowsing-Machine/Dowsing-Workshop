@@ -44,8 +44,8 @@ function clearText(){
 
 function getViewOptions(views) {
   return views.map( c => ({
-    label: '图表#' + views.indexOf(c),
-    value: '图表#' + views.indexOf(c) //在这里改成c.id
+    label: '图表#' + c.id,
+    value: '图表#' + c.id //在这里改成c.id
   }));
 }
 

@@ -1,20 +1,33 @@
 <template>
-    <n-card style="margin:1em" @click="onClick" :class="{
-        selected: isSelected,
-    }">
+    <n-card
+        style="margin:1em"
+        @click="onClick"
+        :class="{
+            selected: isSelected,
+        }"
+    >
         <template #header>{{ '图表#' + view.id }}</template>
         <template #header-extra>
-            <n-dropdown trigger="hover" :options="colorOptions" :render-icon="renderIcon"
-            @select="onSelectColor"
+            <n-dropdown
+                trigger="hover"
+                :options="colorOptions"
+                :render-icon="renderIcon"
+                @select="onSelectColor"
             >
-                <n-button text style="font-size: 24px;">
+                <n-button text class="header_button">
                     <n-icon :color="mark2color[view.task_mark]">
                         <tag24-filled />
                     </n-icon>
                 </n-button>
             </n-dropdown>
+            <n-button text class="header_button" @click="onFullScreen">
+                <n-icon>
+                    <full-screen-maximize24-filled />
+                </n-icon>
+            </n-button>
         </template>
-        <div ref="chartDiv" style="overflow:auto;width: 100%;"></div>
+        <!-- <div ref="chartDiv" style="overflow:auto;width: 100%;"></div> -->
+        <chart :view="view"></chart>
     </n-card>
 </template>
 
@@ -22,68 +35,53 @@
 import { onMounted, watch } from 'vue-demi';
 import embed from 'vega-embed';
 import { ref, h } from 'vue-demi';
-import { defineProps, computed } from 'vue-demi';
+import { defineProps, defineEmits, computed } from 'vue-demi';
 import { NCard, NTag, NButton, NIcon, NDropdown } from 'naive-ui';
 import { MVStore } from '@/store/MVStore';
-import { Tag24Filled, Square20Filled } from "@vicons/fluent"
+import { Tag24Filled, Square20Filled, FullScreenMaximize24Filled } from "@vicons/fluent"
 import { DatasetStore } from '../store/DatasetStore';
 import { ControlStore } from '../store/ControlStore';
+
+import Chart from "./Chart.vue"
 
 const datasetStore = DatasetStore();
 const controlStore = ControlStore();
 
 const props = defineProps({
     view: Object,
-    viewId: Number,
 })
 
-const mark2color={
-    0:"#4c78a8",
-    1:"#f58518",
-    2:"#e45756",
-    3:"#72b7b2",
-    4:"#54a24b",
-    5:"#eeca3b",
+const emit = defineEmits([
+    "fullscreen"
+])
+
+const mark2color = {
+    0: "#4c78a8",
+    1: "#f58518",
+    2: "#e45756",
+    3: "#72b7b2",
+    4: "#54a24b",
+    5: "#eeca3b",
 }
 
 const mvStore = MVStore();
 
-const chartDiv = ref(null);
-
-function refreshChart() {
-    embed(chartDiv.value, vega_lite.value, { actions: false });
-}
-
-onMounted(() => {
-    refreshChart();
-});
-
-
-const vega_lite= computed(() => {
-    if(props.view==null||props.view.compileToVegaLite==null) return "";
-    return props.view.compileToVegaLite(datasetStore.dataset);
-});
-
-watch(vega_lite, () => {
-    refreshChart();
-}, { deep: true });
-
 function onClick(e) {
-    controlStore.currentViewId=props.viewId;
+    controlStore.currentViewId = props.view.id;
     e.stopPropagation();
 }
 
 const isSelected = computed(() => {
-    return controlStore.currentViewId == props.viewId;
+    return controlStore.currentViewId == props.view.id;
 });
 
-function onSelectColor(key){
-    mvStore.views[controlStore.currentViewId].task_mark=key;
+function onSelectColor(key) {
+    mvStore.views[controlStore.currentViewId].task_mark = key;
 }
 
-function renderIcon(opt){
-    if(opt.key==null) return null;
-    return h(NIcon,{color:mark2color[opt.key]},{default:()=>h(Tag24Filled)})
+function renderIcon(opt) {
+    if (opt.key == null) return null;
+    return h(NIcon, { color: mark2color[opt.key] }, { default: () => h(Tag24Filled) })
 }
 
 
@@ -118,10 +116,20 @@ const colorOptions = [
     },
 ]
 
+function onFullScreen(e) {
+    emit("fullscreen");
+    e.stopPropagation();
+}
+
 </script>
 
 <style scoped>
 .selected {
     box-shadow: 0px 0px 10px steelblue;
+}
+
+.header_button {
+    margin: 0 5px;
+    font-size: 24px;
 }
 </style>

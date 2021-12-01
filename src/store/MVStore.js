@@ -10,7 +10,12 @@ import { ControlStore } from "./ControlStore"
 
 export const MVStore = defineStore({
     id: "MVStore",
-    isView:true,
+    undoOption:{
+        enabled: true,
+        clone:(state)=>{
+            return _.cloneDeep(state);
+        },
+    },
     state: () => ({
         views: [],
     }),

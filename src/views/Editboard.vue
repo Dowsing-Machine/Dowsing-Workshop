@@ -2,6 +2,7 @@
     <n-space vertical size="large">
         <n-layout>
             <n-layout-header bordered class="main-header" style="font-size: 2em">Dowsing Workshop</n-layout-header>
+            <n-layout-content>
             <n-layout has-sider class="main-middle">
                 <n-layout-sider
                     bordered
@@ -33,6 +34,7 @@
                     </n-layout>
                 </n-layout-content>
             </n-layout>
+            </n-layout-content>
             <n-layout-footer class="main-footer">
                 <n-space justify="space-between">
                     <div>Dowsing</div>
