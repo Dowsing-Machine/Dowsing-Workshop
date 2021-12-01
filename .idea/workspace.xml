@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4f159c49-d6b8-4124-a246-49f85b130b93" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Filter.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Filter.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/SingleChartEdit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/SingleChartEdit.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/View.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/View.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/Editboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Editboard.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +52,8 @@
       <workItem from="1638114667007" duration="302000" />
       <workItem from="1638251751273" duration="11269000" />
       <workItem from="1638264238005" duration="11726000" />
-      <workItem from="1638343186113" duration="10110000" />
+      <workItem from="1638343186113" duration="10401000" />
+      <workItem from="1638362681014" duration="424000" />
     </task>
     <servers />
   </component>

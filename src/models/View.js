@@ -2,7 +2,7 @@ const DEFAULT_VIEW = {
     chart_type: "bar",
     x_encoding: null,
     x_aggregate: null,
-    x_filter: [, ],
+    x_filter: [0, 100],
     y_encoding: null,
     y_aggregate: null,
     y_filter: [0, 100],
@@ -67,12 +67,12 @@ class View {
                         }
                     }
                 },
-                "transform": [
-                    {
-                        "filter": {"and": [{"field": this.x_encoding, "range": this.x_filter}, {"field": this.y_encoding, "range": this.y_filter}]}
-                    }
-                ]
-            },
+                // "transform": [
+                //     {
+                //         "filter": {"and": [{"field": this.x_encoding, "range": this.x_filter}, {"field": this.y_encoding, "range": this.y_filter}]}
+                //     }
+                // ]
+            }
             return _.assign(vl, render_options);
         })
 
