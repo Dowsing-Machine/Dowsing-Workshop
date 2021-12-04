@@ -1,10 +1,23 @@
 import { defineStore } from 'pinia'
 
+import * as cql from "compassql";
+
 import CarJSON from '@/assets/carjson.json'
 import _ from 'lodash'
 
 export const DatasetStore=defineStore({
     id:"DatasetStore",
+    recordOption:{
+        enabled:true,
+        clone:(state)=>({
+            userDefinedColType:_.cloneDeep(state.userDefinedColType)
+        }),
+        diff: (newState, state)=>{
+            const res = !_.isEqual(state.userDefinedColType, newState.userDefinedColType)
+            console.log("diff", res, state.userDefinedColType, newState.userDefinedColType);
+            return res;
+        }
+    },
     state:()=>({
         dataset:CarJSON,
         userDefinedColType:{}
@@ -45,6 +58,9 @@ export const DatasetStore=defineStore({
             else{
                 return []
             }
+        },
+        schema:state=>{
+            return cql.schema.build(state.columns);
         }
     },
     actions:{

@@ -15,6 +15,9 @@ export const MVStore = defineStore({
             return _.cloneDeep(state);
         },
     },
+    recordOption:{
+        enabled: true,
+    },
     state: () => ({
         views: [],
     }),

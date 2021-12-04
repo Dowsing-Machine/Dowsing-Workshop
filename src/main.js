@@ -4,7 +4,8 @@ import { createRouter, createWebHistory  } from 'vue-router'
 import routes from "./router"
 
 import { createPinia } from 'pinia'
-import { Undo } from '@/store/plugins/undo'      
+import { Undo } from '@/store/plugins/undo'
+import { StateRecord } from '@/store/plugins/stateRecord'      
 import App from './App.vue'
 
 const router = createRouter({
@@ -17,7 +18,7 @@ const app=createApp(App);
 app.use(router);
 const pinia = createPinia();
 pinia.use(Undo);
-
+// pinia.use(StateRecord);
 
 app.use(pinia);
 

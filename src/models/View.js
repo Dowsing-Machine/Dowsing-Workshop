@@ -2,9 +2,11 @@ const DEFAULT_VIEW = {
     chart_type: "bar",
     x_encoding: null,
     x_aggregate: null,
+    x_bin: false,
     x_filter: [0, 100],
     y_encoding: null,
     y_aggregate: null,
+    y_bin: false,
     y_filter: [0, 100],
     category_encoding: null,
     category_mark: null,
@@ -14,7 +16,7 @@ const DEFAULT_VIEW = {
 }
 
 import _ from "lodash";
-import { reactive, computed } from "vue"
+import { reactive, computed,unref } from "vue"
 let idCount = 0;
 
 class View {
@@ -31,13 +33,16 @@ class View {
 
     compileToVegaLite(dataset, columns, render_options = {}) {
         return computed(() => {
-            let x_type = this.x_encoding ? _.find(columns.value, { name: this.x_encoding }).type : null;
-            let y_type = this.y_encoding ? _.find(columns.value, { name: this.y_encoding }).type : null;
+            columns=unref(columns);
+            dataset=unref(dataset);
+
+            let x_type = this.x_encoding ? _.find(columns, { name: this.x_encoding }).type : null;
+            let y_type = this.y_encoding ? _.find(columns, { name: this.y_encoding }).type : null;
             // let category_type = _.find(columns, { name: this.category_encoding }).type;
             let vl = {
                 "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
                 "data": {
-                    "values": dataset.value
+                    "values": dataset
                 },
                 "mark": this.chart_type,
                 "width": "container",
@@ -47,6 +52,7 @@ class View {
                         "field": this.x_encoding,
                         "type": x_type,
                         "aggregate": this.x_aggregate,
+                        "bin": this.x_bin,
                         "axis": {
                             "title": this.x_aggregate ? `${this.x_aggregate}(${this.x_encoding})` : this.x_encoding
                         }
@@ -55,6 +61,7 @@ class View {
                         "field": this.y_encoding,
                         "type": y_type,
                         "aggregate": this.y_aggregate,
+                        "bin": this.y_bin,
                         "axis": {
                             "title": this.y_aggregate ? `${this.y_aggregate}(${this.y_encoding})` : this.y_encoding
                         }
@@ -78,7 +85,7 @@ class View {
 
     }
 
-    isReady(){
+    isReady() {
         return computed(() => this.x_encoding || this.y_encoding);
     }
 }
@@ -99,7 +106,7 @@ class Pie extends View {
                 },
                 "mark": "arc",
                 "encoding": {
-                    "theta": { "field": this.encoding_channel, "type": "nominal","aggregate": "count" },
+                    "theta": { "field": this.encoding_channel, "type": "nominal", "aggregate": "count" },
                     "color": { "field": this.encoding_channel, "type": "nominal" }
                 }
             }.assign(render_options);
@@ -107,5 +114,12 @@ class Pie extends View {
         })
     }
 }
+
+export function compileQueryToSepcVegaLite(query, dataset, columns, render_options = {}) {
+    var res = (new View(query)).compileToVegaLite(dataset, columns, render_options).value;
+    console.log(res);
+    return res;
+}
+
 
 export default View;
