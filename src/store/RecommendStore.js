@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
 
-import { compileQueryToSepcVegaLite } from "../Models/View";
+// import { compileQueryToSepcVegaLite } from "../models/View";
 
 import * as cql from "compassql"
+// const cql=require("compassql")
 
 
 export const RecommendStore = defineStore({
