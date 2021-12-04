@@ -15,6 +15,10 @@ export default defineConfig({
         find: '@',
         replacement: pathResolve('src') + '/',
       },
+      {
+        find:"compassql",
+        replacement: resolve("node_modules/compassql/build/compassql.min.js")
+      }
     ]
-  }
+  },
 })
