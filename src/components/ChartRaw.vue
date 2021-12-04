@@ -1,5 +1,5 @@
 <template>
-    <div ref="chartDiv" style="overflow:auto;width: 100%;"></div>
+    <div ref="chartDiv" style="overflow:auto; width: 100%; height: 32vh"></div>
 </template>
 <script setup>
 import { defineProps,onMounted,watch,ref } from 'vue-demi';
