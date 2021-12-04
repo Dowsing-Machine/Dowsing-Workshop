@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f159c49-d6b8-4124-a246-49f85b130b93" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/views/greeting.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/ChartRaw.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ChartRaw.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ExplorePanel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ExplorePanel.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +57,7 @@
       <workItem from="1638343186113" duration="10401000" />
       <workItem from="1638362681014" duration="424000" />
       <workItem from="1638583973887" duration="1583000" />
-      <workItem from="1638589259618" duration="21469000" />
+      <workItem from="1638589259618" duration="29349000" />
     </task>
     <servers />
   </component>

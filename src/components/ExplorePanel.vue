@@ -14,7 +14,7 @@
         <!-- {{group.views}} -->
       <n-grid x-gap="12" y-gap="8" cols="3" :collapsed-rows="gridCollapsedRows" :collapsed="!gridCollapsed[group.name]">
         <n-grid-item v-for="(node,i) in group.views.items" :key="i">
-          <chart-raw-vue v-for="(leaf,j) in node.items" :key="j" :vegalite="leaf.toSpec()" :renderOption="{ width: 'container'}"></chart-raw-vue>
+          <chart-raw-vue v-for="(leaf,j) in node.items" :key="j" :vegalite="leaf.toSpec()" :renderOption="{ width: 'container' }"></chart-raw-vue>
         </n-grid-item>
       </n-grid>
     </n-card>
