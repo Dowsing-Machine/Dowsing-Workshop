@@ -12,7 +12,10 @@ const props=defineProps({
 const chartDiv = ref(null);
 
 function refreshChart() {
-    embed(chartDiv.value, props.vegalite, { actions: false });
+    embed(chartDiv.value, {
+        ...props.vegalite,
+        ...props.renderOption,
+    }, { actions: false });
 }
 
 onMounted(() => {
