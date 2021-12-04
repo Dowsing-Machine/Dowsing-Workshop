@@ -7,7 +7,7 @@ import * as MARK from 'vega-lite/build/src/mark';
 import { COLOR, COLUMN, ROW, SIZE, X, Y } from 'vega-lite/build/src/channel';
 import _ from "lodash";
 
-export const COUNT=Symbol();
+export const COUNT="COUNT";
 
 const DEFAULT_CQL_CONFIG = cql.config.extendConfig({
     enum: {
@@ -25,12 +25,12 @@ const encoding2channel = {
 
 function formEachEncoding(encoding,aggregate,columns) {
     const binEnabled=aggregate=="bin";
-    const countEnabled=encoding==COUNT;
+    const countEnabled=encoding===COUNT;
     if(countEnabled){
         return {
             field:"*",
             aggregate:"count",
-            type:encoding?columns.find(c=>c.name==encoding).type:"?"
+            type:"quantitative",
         }
     }
     else if(binEnabled){
@@ -74,7 +74,7 @@ function specEncodings(query,columns,filter) {
 export function runQuery(fn, query, data) {
     const cql_query = fn(query, data);
     const schema = cql.schema.build(data.dataset);
-    console.log(cql_query);
+    // console.log(cql_query);
     const output = cql.recommend(cql_query, schema, DEFAULT_CQL_CONFIG);
     return output.result;
 }
@@ -107,7 +107,6 @@ export function alternative_encodings(query, data) {
             encodings: encodings.map(encoding => ({
                 ...encoding,
                 channel: "?",
-                type: "?",
             })),
             data: { values: dataset }
         },
@@ -121,6 +120,92 @@ export function alternative_encodings(query, data) {
 }
 
 export function summaries(query, data) {
-    const encodings = specEncodings(query, item => item.field !== null);
+    const { dataset, columns } = data;
+    const encodings = specEncodings(query, columns, item => item.field !== null);
+    let edit_encodings=_(encodings).filter(
+        e=>!(e.type=="quantitative"&&e.aggregate=="count")
+    ).map(encoding=>{
+        if (encoding.type =="quantitative"&&encoding.aggregate!="count"){
+            return {
+                ...encoding,
+                aggregate:"?",
+                bin:"?"
+            }
+        }
+        else{
+            return encoding;
+        }
+    }).value();
+    return {
+        spec: {
+            mark: "?",
+            encodings: edit_encodings,
+            data: { values: dataset },
+        },
+        groupBy: 'fieldTransform',
+        // fieldOrder should be the same, since we have similar fields
+        orderBy: ['fieldOrder', 'aggregationQuality', 'effectiveness'],
+        // aggregationQuality should be the same with group with similar transform
+        chooseBy: ['aggregationQuality', 'effectiveness'],
+        config: {
+            autoAddCount: true,
+            omitRaw: true
+        }
+    };
+}
 
+export function addQuantitativeField(query,data) {
+    const {dataset,columns}=data;
+    const encodings=specEncodings(query,columns,item=>item.field!==null);
+    return {
+        spec: {
+            filterSpecifiedView: undefined,
+            mark: query.chart_type || "?",
+            encodings: [
+                ...encodings,
+                {
+                    channel: "?",
+                    bin: "?",
+                    aggregate: "?",
+                    field: "?",
+                    type: 'quantitative',
+                    // description: 'Quantitative Fields'
+                }
+            ],
+            data: { values: dataset },
+        },
+        groupBy: 'field',
+        // FieldOrder should dominates everything else
+        orderBy: ['fieldOrder', 'aggregationQuality', 'effectiveness'],
+        // aggregationQuality should be the same
+        chooseBy: ['aggregationQuality', 'effectiveness'],
+        config: { autoAddCount: true }
+    }
+}
+
+export function addCategoricalField(query,data) {
+    const {dataset,columns}=data;
+    const encodings=specEncodings(query,columns,item=>item.field!==null);
+    return {
+        spec: {
+            filterSpecifiedView: undefined,
+            mark: query.chart_type||"?",
+            encodings: [
+                ...encodings,
+                {
+                    channel: "?",
+                    field: "?",
+                    type: 'nominal',
+                    // description: 'Categorical Fields'
+                }
+            ],
+            data: { values: dataset },
+        },
+        groupBy: 'field',
+        // FieldOrder should dominates everything else
+        orderBy: ['fieldOrder', 'aggregationQuality', 'effectiveness'],
+        // aggregationQuality should be the same
+        chooseBy: ['aggregationQuality', 'effectiveness'],
+        config: { autoAddCount: true }
+    }
 }

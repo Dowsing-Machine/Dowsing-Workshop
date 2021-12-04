@@ -27,7 +27,7 @@ import { DatasetStore } from '../store/DatasetStore';
 import { QueryStore } from '../store/QueryStore';
 import { RecommendStore } from '../store/RecommendStore';
 
-import { specific, runQuery, alternative_encodings } from '../query';
+import { specific, runQuery, alternative_encodings, summaries, addQuantitativeField, addCategoricalField } from '../query';
 
 import EncodingEmbedCtrl from "./EncodingEmbedCtrl.vue";
 
@@ -82,16 +82,81 @@ watch(queryStore, (query) => {
 
     // console.log(query, output.result)
 
-    recommendStore.relatedViews = [
-        {
+    const res = [];
+    if (!queryStore.isSpecAggregate) {
+        res.push({
+            name: "summaries",
+            views: runQuery(
+                summaries,
+                query,
+                datasetStore,
+            )
+        });
+    }
+    if(queryStore.hasOpenPosition||queryStore.hasStyleChannel){
+        res.push({
+            name: "addQuantitativeField",
+            views: runQuery(
+                addQuantitativeField,
+                query,
+                datasetStore,
+            )
+        });
+        res.push({
+            name: "addCategoricalField",
+            views: runQuery(
+                addCategoricalField,
+                query,
+                datasetStore,
+            )
+        });
+    }
+
+    res.push({
             name: "alternative-encodings",
             views: runQuery(
                 alternative_encodings,
                 query,
                 datasetStore,
             )
-        }
-    ]
+        });
+
+    recommendStore.relatedViews=res;
+
+    // recommendStore.relatedViews = [
+    //     {
+    //         name: "alternative-encodings",
+    //         views: runQuery(
+    //             alternative_encodings,
+    //             query,
+    //             datasetStore,
+    //         )
+    //     },
+    //     {
+    //         name: "summaries",
+    //         views: runQuery(
+    //             summaries,
+    //             query,
+    //             datasetStore,
+    //         )
+    //     },
+    //     {
+    //         name: "addQuantitativeField",
+    //         views: runQuery(
+    //             addQuantitativeField,
+    //             query,
+    //             datasetStore,
+    //         )
+    //     },
+    //     {
+    //         name: "addCategoricalField",
+    //         views: runQuery(
+    //             addCategoricalField,
+    //             query,
+    //             datasetStore,
+    //         )
+    //     }
+    // ]
 })
 
 </script>

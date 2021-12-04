@@ -127,6 +127,7 @@ const encodingOptions = computed(() => {
 
 const type = computed(() => {
     if (!props.encoding) return "unknown";
+    if(props.encoding==COUNT) return "quantitative";
     return _.find(props.columns, column => column.name === props.encoding).type;
 })
 
