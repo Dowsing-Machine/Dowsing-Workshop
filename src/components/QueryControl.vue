@@ -14,7 +14,6 @@
         ></encoding-embed-ctrl>颜色编码
         <encoding-embed-ctrl
             v-model:encoding="queryStore.category_encoding"
-            v-model:aggregate="queryStore.x_aggregate"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>
     </div>
@@ -30,7 +29,6 @@ import { RecommendStore } from '../store/RecommendStore';
 
 import { specific, runQuery, alternative_encodings } from '../query';
 
-import * as cql from "compassql"
 import EncodingEmbedCtrl from "./EncodingEmbedCtrl.vue";
 
 const datasetStore = DatasetStore();
@@ -73,7 +71,7 @@ watch(queryStore, (query) => {
             runQuery(
                 specific,
                 query,
-                datasetStore.dataset,
+                datasetStore,
             )
         );
     }
@@ -90,7 +88,7 @@ watch(queryStore, (query) => {
             views: runQuery(
                 alternative_encodings,
                 query,
-                datasetStore.dataset,
+                datasetStore,
             )
         }
     ]

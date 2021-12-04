@@ -5,6 +5,9 @@ import * as cql from "compassql";
 
 import * as MARK from 'vega-lite/build/src/mark';
 import { COLOR, COLUMN, ROW, SIZE, X, Y } from 'vega-lite/build/src/channel';
+import _ from "lodash";
+
+export const COUNT=Symbol();
 
 const DEFAULT_CQL_CONFIG = cql.config.extendConfig({
     enum: {
@@ -20,30 +23,73 @@ const encoding2channel = {
     "category_encoding": "color"
 }
 
-function specEncodings(query){
-    return ["x_encoding", "y_encoding", "category_encoding"].filter(e => query[e] !== null)
+function formEachEncoding(encoding,aggregate,columns) {
+    const binEnabled=aggregate=="bin";
+    const countEnabled=encoding==COUNT;
+    if(countEnabled){
+        return {
+            field:"*",
+            aggregate:"count",
+            type:encoding?columns.find(c=>c.name==encoding).type:"?"
+        }
+    }
+    else if(binEnabled){
+        return {
+            field:encoding,
+            bin:true,
+            type: encoding ? columns.find(c => c.name == encoding).type : "?"
+
+        }
+    }
+    else{
+        return {
+            field:encoding,
+            aggregate,
+            type: encoding ? columns.find(c => c.name == encoding).type : "?"
+        }
+    }
+
+}
+
+function specEncodings(query,columns,filter) {
+    return _([
+        {   ...formEachEncoding(query["x_encoding"],query["x_aggregate"],columns),
+            channel: "x"
+        },
+        {
+            ...formEachEncoding(query["y_encoding"], query["y_aggregate"], columns),
+            channel: "y",
+        },
+        {
+            ...formEachEncoding(query["category_encoding"], query["category_aggregate"], columns),
+            channel: "color",
+        }
+    ]).filter(filter).value();
+
+
+    // return ["x_encoding", "y_encoding", "category_encoding"].filter(e => query[e] !== null)
 }
 
 
-export function runQuery(fn,query,data){
-    const cql_query=fn(query,data);
-    const schema=cql.schema.build(data);
-    const output=cql.recommend(cql_query,schema,DEFAULT_CQL_CONFIG);
+export function runQuery(fn, query, data) {
+    const cql_query = fn(query, data);
+    const schema = cql.schema.build(data.dataset);
+    console.log(cql_query);
+    const output = cql.recommend(cql_query, schema, DEFAULT_CQL_CONFIG);
     return output.result;
 }
 
 
-export function specific(query,data){
-    const encodings = specEncodings(query);
+export function specific(query, data) {
+    const {dataset, columns} = data;
+    const encodings = specEncodings(query, columns, item => item.field !== null);
     return {
         spec: {
             mark: query.chart_type ? query.chart_type : "?",
-            encodings: encodings.map(field => ({
-                field: query[field],
-                channel: encoding2channel[field],
-                type: "?"
+            encodings: encodings.map(encoding => ({
+                ...encoding,
             })),
-            data: { values: data }
+            data: { values: dataset }
         },
         config: {
             "autoAddCount": false
@@ -51,17 +97,19 @@ export function specific(query,data){
     }
 }
 
-export function alternative_encodings(query,data){
-    const encodings = specEncodings(query);
+export function alternative_encodings(query, data) {
+    const { dataset, columns } = data;
+
+    const encodings = specEncodings(query, columns, item => item.field !== null);
     return {
         spec: {
             mark: "?",
-            encodings: encodings.map(field => ({
-                field: query[field],
+            encodings: encodings.map(encoding => ({
+                ...encoding,
                 channel: "?",
-                type: "?"
+                type: "?",
             })),
-            data: { values: data }
+            data: { values: dataset }
         },
         groupBy: 'encoding',
         orderBy: ['fieldOrder', 'aggregationQuality', 'effectiveness'],
@@ -72,6 +120,7 @@ export function alternative_encodings(query,data){
     }
 }
 
-export function summaries(query,data){
+export function summaries(query, data) {
+    const encodings = specEncodings(query, item => item.field !== null);
 
 }

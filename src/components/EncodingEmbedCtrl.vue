@@ -32,6 +32,7 @@
                 :value="aggregate"
                 :options="SUPPORTED_AGGREGATE"
                 @update:value="onAggregateUpdate"
+
             >
                 <n-button round>
                     <n-icon :color="aggregate == null ? null : themeVars.primaryColor">
@@ -49,6 +50,8 @@ import { NumberSymbol24Filled, BookLetter24Regular, Settings24Regular, MathFormu
 import _ from "lodash"
 
 import { defineProps, defineEmits, computed, ref } from "vue-demi";
+
+import {COUNT} from "@/query";
 
 const props = defineProps({
     encoding: String,
@@ -117,7 +120,7 @@ const encodingOptions = computed(() => {
         })),
         {
             label: "COUNT",
-            value: "COUNT"
+            value: COUNT
         }
     ]
 })
@@ -145,4 +148,5 @@ function onAggregateUpdate(value) {
         emits('update:aggregate', value);
     }
 }
+
 </script>
