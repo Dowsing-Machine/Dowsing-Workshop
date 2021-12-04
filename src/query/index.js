@@ -7,7 +7,7 @@ import * as MARK from 'vega-lite/build/src/mark';
 import { COLOR, COLUMN, ROW, SIZE, X, Y } from 'vega-lite/build/src/channel';
 import _ from "lodash";
 
-export const COUNT="COUNT";
+export const COUNT = "COUNT";
 
 const DEFAULT_CQL_CONFIG = cql.config.extendConfig({
     enum: {
@@ -23,27 +23,27 @@ const encoding2channel = {
     "category_encoding": "color"
 }
 
-function formEachEncoding(encoding,aggregate,columns) {
-    const binEnabled=aggregate=="bin";
-    const countEnabled=encoding===COUNT;
-    if(countEnabled){
+function formEachEncoding(encoding, aggregate, columns) {
+    const binEnabled = aggregate == "bin";
+    const countEnabled = encoding === COUNT;
+    if (countEnabled) {
         return {
-            field:"*",
-            aggregate:"count",
-            type:"quantitative",
+            field: "*",
+            aggregate: "count",
+            type: "quantitative",
         }
     }
-    else if(binEnabled){
+    else if (binEnabled) {
         return {
-            field:encoding,
-            bin:true,
+            field: encoding,
+            bin: true,
             type: encoding ? columns.find(c => c.name == encoding).type : "?"
 
         }
     }
-    else{
+    else {
         return {
-            field:encoding,
+            field: encoding,
             aggregate,
             type: encoding ? columns.find(c => c.name == encoding).type : "?"
         }
@@ -51,9 +51,10 @@ function formEachEncoding(encoding,aggregate,columns) {
 
 }
 
-function specEncodings(query,columns,filter) {
+function specEncodings(query, columns, filter) {
     return _([
-        {   ...formEachEncoding(query["x_encoding"],query["x_aggregate"],columns),
+        {
+            ...formEachEncoding(query["x_encoding"], query["x_aggregate"], columns),
             channel: "x"
         },
         {
@@ -81,7 +82,7 @@ export function runQuery(fn, query, data) {
 
 
 export function specific(query, data) {
-    const {dataset, columns} = data;
+    const { dataset, columns } = data;
     const encodings = specEncodings(query, columns, item => item.field !== null);
     return {
         spec: {
@@ -122,17 +123,17 @@ export function alternative_encodings(query, data) {
 export function summaries(query, data) {
     const { dataset, columns } = data;
     const encodings = specEncodings(query, columns, item => item.field !== null);
-    let edit_encodings=_(encodings).filter(
-        e=>!(e.type=="quantitative"&&e.aggregate=="count")
-    ).map(encoding=>{
-        if (encoding.type =="quantitative"&&encoding.aggregate!="count"){
+    let edit_encodings = _(encodings).filter(
+        e => !(e.type == "quantitative" && e.aggregate == "count")
+    ).map(encoding => {
+        if (encoding.type == "quantitative" && encoding.aggregate != "count") {
             return {
                 ...encoding,
-                aggregate:"?",
-                bin:"?"
+                aggregate: "?",
+                bin: "?"
             }
         }
-        else{
+        else {
             return encoding;
         }
     }).value();
@@ -154,9 +155,9 @@ export function summaries(query, data) {
     };
 }
 
-export function addQuantitativeField(query,data) {
-    const {dataset,columns}=data;
-    const encodings=specEncodings(query,columns,item=>item.field!==null);
+export function addQuantitativeField(query, data) {
+    const { dataset, columns } = data;
+    const encodings = specEncodings(query, columns, item => item.field !== null);
     return {
         spec: {
             filterSpecifiedView: undefined,
@@ -183,13 +184,13 @@ export function addQuantitativeField(query,data) {
     }
 }
 
-export function addCategoricalField(query,data) {
-    const {dataset,columns}=data;
-    const encodings=specEncodings(query,columns,item=>item.field!==null);
+export function addCategoricalField(query, data) {
+    const { dataset, columns } = data;
+    const encodings = specEncodings(query, columns, item => item.field !== null);
     return {
         spec: {
             filterSpecifiedView: undefined,
-            mark: query.chart_type||"?",
+            mark: query.chart_type || "?",
             encodings: [
                 ...encodings,
                 {
@@ -207,5 +208,37 @@ export function addCategoricalField(query,data) {
         // aggregationQuality should be the same
         chooseBy: ['aggregationQuality', 'effectiveness'],
         config: { autoAddCount: true }
+    }
+}
+
+export function univariteSummaries(query,data) {
+    const { dataset, columns } = data;
+    return {
+        spec: {
+            filterSpecifiedView: undefined,
+            mark: "?",
+            encodings: [
+                {
+                    channel: "?",
+                    field: "?",
+                    type: '?',
+                    bin: "?",
+                    // aggregate: "?"
+                },
+                {
+                    channel: "?",
+                    aggregate: "count",
+                    type: "quantitative",
+                    field: "*",
+                }
+            ],
+            data: { values: dataset },
+        },
+        groupBy: 'fieldTransform',
+        // FieldOrder should dominates everything else
+        orderBy: ['fieldOrder', 'aggregationQuality', 'effectiveness'],
+        // aggregationQuality should be the same
+        chooseBy: ['aggregationQuality', 'effectiveness'],
+        config: { autoAddCount: false }
     }
 }

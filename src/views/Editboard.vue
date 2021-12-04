@@ -37,7 +37,8 @@
                                         <multi-view-ctrl></multi-view-ctrl>
                                     </n-layout-header>
                                     <n-layout-content>
-                                        <multi-view></multi-view>
+                                        <explore-panel-vue></explore-panel-vue>
+                                        <!-- <multi-view></multi-view> -->
                                     </n-layout-content>
                                 </n-layout>
                             </n-layout-content>
@@ -68,6 +69,8 @@ import Mention from '../components/Mention.vue'
 import { MVStore } from '../store/MVStore';
 
 import { ControlStore } from '../store/ControlStore';
+import ExplorePanelVue from '@/components/ExplorePanel.vue';
+
 
 const mvStore = MVStore();
 const controlStore = ControlStore();

@@ -11,8 +11,6 @@
         </n-grid-item>
     </n-grid>
 
-    <explore-panel-vue></explore-panel-vue>
-
 </template>
 
 <script setup>
@@ -22,7 +20,6 @@ import Chart from '@/components/Chart.vue';
 import hljs from 'highlight.js/lib/core'
 import { computed, watch, ref, h } from 'vue-demi';
 import { NGrid, NGridItem, useDialog, NModal, NCard } from "naive-ui"
-import ExplorePanelVue from './ExplorePanel.vue';
 
 const mvStore = new MVStore();
 

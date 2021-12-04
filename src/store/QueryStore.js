@@ -2,6 +2,9 @@ import { defineStore } from "pinia";
 
 export  const QueryStore = defineStore({
     id:"QueryStore",
+    undoOption:{
+        enabled:true,
+    },
     state:()=>({
         x_encoding:null,
         x_aggregate:null,
@@ -23,7 +26,7 @@ export  const QueryStore = defineStore({
             return !state.color_encoding;
         },
         hasSpecView:state=>{
-            return !!(state.x_encoding||state.y_encoding||state.color_encoding);
+            return !(state.x_encoding==null&&state.y_encoding==null&&state.category_encoding==null);
         }
     }
 });

@@ -12,12 +12,13 @@ import { Add20Filled, ArrowUndo20Filled, ArrowRedo20Filled, Delete20Filled } fro
 import { computed, h } from 'vue-demi';
 import { MVStore } from '@/store/MVStore';
 import { ControlStore } from '../store/ControlStore';
+import { QueryStore } from '../store/QueryStore';
 
 import { stepBack, stepForward, debug } from "@/store/plugins/stateRecord";
 
 const mvStore = MVStore();
 const controlStore = ControlStore();
-
+const queryStore = QueryStore();
 
 const options = computed(() => ([
     {
@@ -66,10 +67,10 @@ const handleUpdate = (key) => {
             mvStore.addView();
             break;
         case "undo":
-            mvStore.undo();
+            queryStore.undo();
             break;
         case "redo":
-            mvStore.redo();
+            queryStore.redo();
             break;
         case "delete":
             mvStore.removeView(controlStore.currentViewId);

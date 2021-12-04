@@ -27,7 +27,7 @@ import { DatasetStore } from '../store/DatasetStore';
 import { QueryStore } from '../store/QueryStore';
 import { RecommendStore } from '../store/RecommendStore';
 
-import { specific, runQuery, alternative_encodings, summaries, addQuantitativeField, addCategoricalField } from '../query';
+import { specific, runQuery, alternative_encodings, summaries, addQuantitativeField, addCategoricalField,univariteSummaries } from '../query';
 
 import EncodingEmbedCtrl from "./EncodingEmbedCtrl.vue";
 
@@ -65,7 +65,7 @@ const typeOption = [
     }
 ]
 
-watch(queryStore, (query) => {
+function refreshRecommend(query){
     if (queryStore.hasSpecView) {
         recommendStore.changeSpecView(
             runQuery(
@@ -77,10 +77,18 @@ watch(queryStore, (query) => {
     }
     else {
         recommendStore.changeSpecView(null);
+        recommendStore.relatedViews=[
+            {
+                name:"Univariate Summaries",
+                views:runQuery(
+                    univariteSummaries,
+                    query,
+                    datasetStore,
+                )
+            }
+        ]
+        return;
     }
-
-
-    // console.log(query, output.result)
 
     const res = [];
     if (!queryStore.isSpecAggregate) {
@@ -122,41 +130,12 @@ watch(queryStore, (query) => {
         });
 
     recommendStore.relatedViews=res;
+}
 
-    // recommendStore.relatedViews = [
-    //     {
-    //         name: "alternative-encodings",
-    //         views: runQuery(
-    //             alternative_encodings,
-    //             query,
-    //             datasetStore,
-    //         )
-    //     },
-    //     {
-    //         name: "summaries",
-    //         views: runQuery(
-    //             summaries,
-    //             query,
-    //             datasetStore,
-    //         )
-    //     },
-    //     {
-    //         name: "addQuantitativeField",
-    //         views: runQuery(
-    //             addQuantitativeField,
-    //             query,
-    //             datasetStore,
-    //         )
-    //     },
-    //     {
-    //         name: "addCategoricalField",
-    //         views: runQuery(
-    //             addCategoricalField,
-    //             query,
-    //             datasetStore,
-    //         )
-    //     }
-    // ]
+refreshRecommend(queryStore);
+
+watch(queryStore, (query) => {
+    refreshRecommend(query);
 })
 
 </script>
