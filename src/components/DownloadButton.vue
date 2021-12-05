@@ -14,29 +14,67 @@ import { ArrowDownload16Filled } from "@vicons/fluent"
 import { NButton, NIcon, NBadge, NModal, NCard } from "naive-ui";
 import { CollectionStore } from "../store/CollectionStore";
 import CollectionChartsVue from "./CollectionCharts.vue";
-import { isProxy, toRaw, watch, effectScope, ref } from "vue";
+import { QueryStore } from "../store/QueryStore"
+import { watch, ref } from "vue";
 import _ from "lodash"
 import { saveAs } from 'file-saver';
 
 const collectionStore = CollectionStore();
-const scope = effectScope();
+const queryStore = QueryStore();
 
 const actionList = []
 
-const actionColumns = {
-  time: "time",
-  type: "type",
-  content: "content"
-}
-
 watch(collectionStore.notes, _.debounce(()=> {
   actionList.push({
-    time: new Date().toLocaleTimeString(),
+    time: new Date().toLocaleString(),
     type: 'note',
     content: _.cloneDeep(collectionStore.notes)
   })
   // console.log(new Date().toLocaleTimeString(), collectionStore.notes)
 }, 1000))
+
+watch(collectionStore.layouts, _.debounce(()=> {
+  actionList.push({
+    time: new Date().toLocaleString(),
+    type: 'layout',
+    content: _.cloneDeep(collectionStore.layouts)
+  })
+  // console.log(new Date().toLocaleTimeString(), collectionStore.notes)
+}, 1000))
+
+watch(collectionStore.collections, _.debounce(()=> {
+  actionList.push({
+    time: new Date().toLocaleString(),
+    type: 'collection',
+    content: _.cloneDeep({
+      ...collectionStore.collections,
+      data:null
+    })
+  })
+  // console.log(new Date().toLocaleTimeString(), collectionStore.notes)
+}, 1000))
+
+// watch(queryStore, _.debounce(()=> {
+//   actionList.push({
+//     time: new Date().toLocaleString(),
+//     type: 'query',
+//     content: _.cloneDeep(queryStore.$state)
+//   })
+// }, 1000))
+
+let queryTemp = {}
+
+queryStore.$subscribe((mutation, state) => {
+  if(! _.isEqual(state, queryTemp)){
+    actionList.push({
+      time: new Date().toLocaleString(),
+      type: 'query',
+      entrance: mutation.type,
+      content: _.cloneDeep(state)
+    })
+  }
+  queryTemp = _.cloneDeep(state)
+})
 
 function saveActionList(){
   saveAs(new Blob([JSON.stringify(actionList)], { type: 'text/plain; charset=utf-8' }), 'actionList.json');
