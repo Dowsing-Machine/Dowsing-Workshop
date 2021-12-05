@@ -14,37 +14,39 @@
             </n-space>
         </template>
         <template #header-extra>
-            <n-popover trigger="click">
-                <template #trigger>
-                    <n-button text class="header_button" >
-                        <n-icon>
-                            <comment-note24-regular />
-                        </n-icon>
-                    </n-button>
-                </template>
-                <n-input type="textarea" :value="noteValue" @update:value="addNote($event)"></n-input>
-            </n-popover>
+            <n-space style="margin-left: 10px;">
+                <n-popover trigger="click">
+                    <template #trigger>
+                        <n-button text class="header_button">
+                            <n-icon>
+                                <comment-note24-regular />
+                            </n-icon>
+                        </n-button>
+                    </template>
+                    <n-input type="textarea" :value="noteValue" @update:value="addNote($event)"></n-input>
+                </n-popover>
 
-            <n-button
-                v-if="!collectionStore.inCollection(vegalite)"
-                text
-                class="header_button"
-                @click="addCollection"
-            >
-                <n-icon>
-                    <star12-regular />
-                </n-icon>
-            </n-button>
-            <n-button v-else text class="header_button" @click="removeCollection">
-                <n-icon>
-                    <star12-filled />
-                </n-icon>
-            </n-button>
-            <n-button text class="header_button" @click="specify">
-                <n-icon>
-                    <arrow-up16-filled />
-                </n-icon>
-            </n-button>
+                <n-button
+                    v-if="!collectionStore.inCollection(vegalite)"
+                    text
+                    class="header_button"
+                    @click="addCollection"
+                >
+                    <n-icon>
+                        <star12-regular />
+                    </n-icon>
+                </n-button>
+                <n-button v-else text class="header_button" @click="removeCollection">
+                    <n-icon>
+                        <star12-filled />
+                    </n-icon>
+                </n-button>
+                <n-button text class="header_button" @click="specify">
+                    <n-icon>
+                        <arrow-up16-filled />
+                    </n-icon>
+                </n-button>
+            </n-space>
         </template>
         <div style="overflow: auto;">
             <chart-raw-vue :vegalite="vegalite" style="max-height: 500px;"></chart-raw-vue>
@@ -52,7 +54,7 @@
     </n-card>
 </template>
 <script setup>
-import { NCard, NButton, NIcon, NTag, NSpace, NPopover,NInput, NPopconfirm } from 'naive-ui';
+import { NCard, NButton, NIcon, NTag, NSpace, NPopover, NInput, NPopconfirm } from 'naive-ui';
 import ChartRawVue from './ChartRaw.vue';
 import { defineProps, computed, ref } from 'vue-demi';
 import { QueryStore } from '../store/QueryStore';
@@ -71,12 +73,12 @@ const props = defineProps({
 })
 
 const noteValue = computed(() => {
-  if(collectionStore.notes[JSON.stringify(props.vegalite)] != null){
-    return collectionStore.notes[JSON.stringify(props.vegalite)]
-  }
-  else{
-    return ''
-  }
+    if (collectionStore.notes[JSON.stringify(props.vegalite)] != null) {
+        return collectionStore.notes[JSON.stringify(props.vegalite)]
+    }
+    else {
+        return ''
+    }
 })
 
 function isWildCard(encoding) {
@@ -212,8 +214,8 @@ function removeCollection() {
     collectionStore.remove(props.vegalite);
 }
 
-function addNote(noteValue){
-  collectionStore.addNote(JSON.stringify(props.vegalite), noteValue)
+function addNote(noteValue) {
+    collectionStore.addNote(JSON.stringify(props.vegalite), noteValue)
 }
 
 </script>

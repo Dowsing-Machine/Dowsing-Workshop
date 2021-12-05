@@ -8,6 +8,8 @@ import { Undo } from '@/store/plugins/undo'
 import { StateRecord } from '@/store/plugins/stateRecord'      
 import App from './App.vue'
 
+import VueGridLayout from 'vue-grid-layout'
+
 const router = createRouter({
     routes,
     history: createWebHistory(),
@@ -21,5 +23,6 @@ pinia.use(Undo);
 // pinia.use(StateRecord);
 
 app.use(pinia);
+app.use(VueGridLayout);
 
 app.mount('#app');
