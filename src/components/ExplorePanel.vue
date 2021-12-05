@@ -3,9 +3,9 @@
         <n-card v-if="recommendStore.specifiedView !== null" style="margin:10px">
             <template #header>Specified View</template>
             <n-space justify="center">
-                <div style="overflow: auto;">
-                    <chart-raw-vue :vegalite="recommendStore.specifiedView"></chart-raw-vue>
-                </div>
+                <recommend-charts-vue :vegalite="recommendStore.specifiedView">
+                    
+                </recommend-charts-vue>
             </n-space>
         </n-card>
         <n-card v-for="group in groups" :key="group.name" style="margin:10px">
