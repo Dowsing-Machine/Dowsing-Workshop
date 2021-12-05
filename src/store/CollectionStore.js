@@ -32,7 +32,7 @@ export const CollectionStore = defineStore({
             }
         },
         addNote(spec, note){
-            console.log(this.notes)
+            // console.log(this.notes)
             this.notes[spec] = note
         }
     }

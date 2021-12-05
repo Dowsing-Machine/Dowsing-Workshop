@@ -10,6 +10,7 @@
                             <template #unchecked>面板</template>
                         </n-switch> -->
                         <collection-button></collection-button>
+                      <download-button></download-button>
                     </div>
                 </n-space>
             </n-layout-header>
@@ -73,6 +74,7 @@ import { ControlStore } from '../store/ControlStore';
 import ExplorePanelVue from '@/components/ExplorePanel.vue';
 
 import CollectionButton from '@/components/CollectionButton.vue';
+import DownloadButton from "@/components/DownloadButton.vue";
 
 const mvStore = MVStore();
 const controlStore = ControlStore();

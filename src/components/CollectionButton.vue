@@ -11,13 +11,13 @@
         <collection-charts-vue></collection-charts-vue>
 
     </n-card>
-        
+
     </n-modal>
 </template>
 
 <script setup>
 import { Board28Filled } from "@vicons/fluent"
-import { NButton, NIcon, NBadge, NModal,NCard } from "naive-ui";
+import { NButton, NIcon, NBadge, NModal, NCard } from "naive-ui";
 import { CollectionStore } from "../store/CollectionStore";
 import CollectionChartsVue from "./CollectionCharts.vue";
 import { ref } from "vue";
