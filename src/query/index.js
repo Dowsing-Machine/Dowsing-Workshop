@@ -109,7 +109,7 @@ export function alternative_encodings(query, data) {
                 ...encoding,
                 channel: "?",
             })),
-            data: { values: dataset }
+            // data: { values: dataset }
         },
         groupBy: 'encoding',
         orderBy: ['fieldOrder', 'aggregationQuality', 'effectiveness'],
@@ -141,7 +141,7 @@ export function summaries(query, data) {
         spec: {
             mark: "?",
             encodings: edit_encodings,
-            data: { values: dataset },
+            // data: { values: dataset },
         },
         groupBy: 'fieldTransform',
         // fieldOrder should be the same, since we have similar fields
@@ -173,7 +173,7 @@ export function addQuantitativeField(query, data) {
                     // description: 'Quantitative Fields'
                 }
             ],
-            data: { values: dataset },
+            // data: { values: dataset },
         },
         groupBy: 'field',
         // FieldOrder should dominates everything else
@@ -200,7 +200,7 @@ export function addCategoricalField(query, data) {
                     // description: 'Categorical Fields'
                 }
             ],
-            data: { values: dataset },
+            // data: { values: dataset },
         },
         groupBy: 'field',
         // FieldOrder should dominates everything else
@@ -232,7 +232,7 @@ export function univariteSummaries(query,data) {
                     field: "*",
                 }
             ],
-            data: { values: dataset },
+            // data: { values: dataset },
         },
         groupBy: 'fieldTransform',
         // FieldOrder should dominates everything else

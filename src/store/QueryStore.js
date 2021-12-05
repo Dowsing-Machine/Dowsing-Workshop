@@ -13,6 +13,7 @@ export  const QueryStore = defineStore({
         y_bin:false,
         y_aggregate:null,
         category_encoding:null,
+        category_aggregate:null,
         chart_type:null,
     }),
     getters:{

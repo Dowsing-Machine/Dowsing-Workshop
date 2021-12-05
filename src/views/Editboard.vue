@@ -5,10 +5,11 @@
                 <n-space justify="space-between">
                     <div style="font-size: 2em">Dowsing Workshop</div>
                     <div style="align-self: center;">
-                        <n-switch size="large">
+                        <!-- <n-switch size="large">
                             <template #checked>探索</template>
                             <template #unchecked>面板</template>
-                        </n-switch>
+                        </n-switch> -->
+                        <collection-button></collection-button>
                     </div>
                 </n-space>
             </n-layout-header>
@@ -71,6 +72,7 @@ import { MVStore } from '../store/MVStore';
 import { ControlStore } from '../store/ControlStore';
 import ExplorePanelVue from '@/components/ExplorePanel.vue';
 
+import CollectionButton from '@/components/CollectionButton.vue';
 
 const mvStore = MVStore();
 const controlStore = ControlStore();

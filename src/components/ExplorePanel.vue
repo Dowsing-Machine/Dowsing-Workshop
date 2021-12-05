@@ -2,9 +2,11 @@
     <div style="padding: 10px;">
         <n-card v-if="recommendStore.specifiedView !== null" style="margin:10px">
             <template #header>Specified View</template>
-            <div style="overflow: auto;">
-                <chart-raw-vue :vegalite="recommendStore.specifiedView"></chart-raw-vue>
-            </div>
+            <n-space justify="center">
+                <div style="overflow: auto;">
+                    <chart-raw-vue :vegalite="recommendStore.specifiedView"></chart-raw-vue>
+                </div>
+            </n-space>
         </n-card>
         <n-card v-for="group in groups" :key="group.name" style="margin:10px">
             <template #header>{{ group.name }}</template>
@@ -18,14 +20,14 @@
                 </n-switch>
             </template>
             <!-- {{group.views}} -->
-            
-                <div style="display: flex;flex-wrap: wrap;">
+
+            <div style="display: flex;flex-wrap: wrap;">
                 <recommend-charts-vue
                     v-for="(node,i) in group.views.items"
-                        :key="i"
-                        :vegalite="cql.result.getTopResultTreeItem(node).toSpec()"
+                    :key="i"
+                    :vegalite="cql.result.getTopResultTreeItem(node).toSpec()"
                 ></recommend-charts-vue>
-                    <!-- <n-card 
+                <!-- <n-card 
                         v-for="(node,i) in group.views.items"
                         :key="i"
                         style="width: fit-content;margin:5px"
@@ -36,8 +38,8 @@
                         
                         :vegalite="cql.result.getTopResultTreeItem(node).toSpec()"
                     ></chart-raw-vue>
-                    </n-card> -->
-                </div>
+                </n-card>-->
+            </div>
 
             <!-- <n-grid x-gap="12" y-gap="8" cols="3" :collapsed-rows="gridCollapsedRows" :collapsed="!gridCollapsed[group.name]">
         <n-grid-item v-for="(node,i) in group.views.items" :key="i">

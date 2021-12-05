@@ -5,17 +5,25 @@
 import { defineProps,onMounted,watch,ref } from 'vue-demi';
 import embed from 'vega-embed';
 
+import {DatasetStore} from '@/store/DatasetStore';
+
+const datasetStore=DatasetStore();
+
 const props=defineProps({
     vegalite:Object,
     renderOption: Object,
 });
 const chartDiv = ref(null);
 
-function refreshChart() {
-    embed(chartDiv.value, {
+async function refreshChart() {
+    let res=await embed(chartDiv.value, {
         ...props.vegalite,
         ...props.renderOption,
+        data:{
+            name:"data"
+        }
     }, { actions: false });
+    res.view.insert("data", datasetStore.dataset).run();
 }
 
 onMounted(() => {

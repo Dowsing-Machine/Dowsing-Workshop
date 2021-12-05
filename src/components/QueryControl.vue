@@ -14,6 +14,7 @@
         ></encoding-embed-ctrl>颜色编码
         <encoding-embed-ctrl
             v-model:encoding="queryStore.category_encoding"
+            v-model:aggregate="queryStore.category_aggregate"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>
     </div>
