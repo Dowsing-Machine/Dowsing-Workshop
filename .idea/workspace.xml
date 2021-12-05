@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f159c49-d6b8-4124-a246-49f85b130b93" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/views/greeting.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/views/DataSpecification.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/ExplorePanel.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ExplorePanel.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/RecommendCharts.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/RecommendCharts.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/store/CollectionStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/CollectionStore.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/views/greeting.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Greeting.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +60,8 @@
       <workItem from="1638343186113" duration="10401000" />
       <workItem from="1638362681014" duration="424000" />
       <workItem from="1638583973887" duration="1583000" />
-      <workItem from="1638589259618" duration="29349000" />
+      <workItem from="1638589259618" duration="29529000" />
+      <workItem from="1638683497206" duration="8332000" />
     </task>
     <servers />
   </component>
@@ -81,6 +85,10 @@
       <screen x="0" y="0" width="1707" height="920" />
     </state>
     <state width="1685" height="242" key="GridCell.Tab.0.right/-1920.0.1536.816/0.0.1707.920@0.0.1707.920" timestamp="1638589233317" />
+    <state x="510" y="211" key="run.anything.popup" timestamp="1638689087895">
+      <screen x="0" y="0" width="1707" height="920" />
+    </state>
+    <state x="510" y="211" key="run.anything.popup/-1920.0.1536.816/0.0.1707.920@0.0.1707.920" timestamp="1638689087895" />
     <state x="516" y="195" width="672" height="678" key="search.everywhere.popup" timestamp="1638610277568">
       <screen x="0" y="0" width="1707" height="920" />
     </state>

@@ -17,7 +17,8 @@ export const CollectionStore = defineStore({
     state: () => ({
         collections: [],
         layouts: [],
-        specIds:{}
+        specIds:{},
+        notes: {}
     }),
     getters: {
         inCollection: state => {
@@ -53,6 +54,10 @@ export const CollectionStore = defineStore({
                     return l.i!==this.specIds[strSpec];
                 });
             }
+        },
+        addNote(spec, note){
+            console.log(this.notes)
+            this.notes[spec] = note
         }
     }
 });

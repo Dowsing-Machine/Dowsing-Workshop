@@ -4,7 +4,7 @@
             <template #header>Specified View</template>
             <n-space justify="center">
                 <recommend-charts-vue :vegalite="recommendStore.specifiedView">
-                    
+
                 </recommend-charts-vue>
             </n-space>
         </n-card>
@@ -27,7 +27,7 @@
                     :key="i"
                     :vegalite="cql.result.getTopResultTreeItem(node).toSpec()"
                 ></recommend-charts-vue>
-                <!-- <n-card 
+                <!-- <n-card
                         v-for="(node,i) in group.views.items"
                         :key="i"
                         style="width: fit-content;margin:5px"
@@ -35,7 +35,7 @@
                     >
                     <chart-raw-vue
                         style="max-height: 500px;"
-                        
+
                         :vegalite="cql.result.getTopResultTreeItem(node).toSpec()"
                     ></chart-raw-vue>
                 </n-card>-->
