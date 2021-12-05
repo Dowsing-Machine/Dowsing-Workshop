@@ -17,31 +17,51 @@
             :i="layout.i"
             @resized="onResize(idx)"
         >
-        <n-card style="height: 100%;width: 100%;">
-            <chart-raw
-                :vegalite="layout.spec"
-                :render-option="{
-                    width: 'container', height: 'container',
-                    autosize: {
-                        type: 'fit',
-                        contains: 'padding'
-                    },
-                    resize:true
-                    // contains:'padding',
-                    // config:{
-                    //     padding:20
-                    // }
-                }"
-                :ref="el => { if (el) charts[idx] = el }"
-                style="width:100%;height:100%"
-            ></chart-raw>
-        </n-card>
+            <n-card style="height: 100%;width: 100%;">
+                <template #header>图表#{{ layout.i }}</template>
+                <template #header-extra>
+                    <n-space>
+                        <n-popover trigger="click">
+                            <template #trigger>
+                                <n-button text class="header_button">
+                                    <n-icon>
+                                        <comment-note24-regular />
+                                    </n-icon>
+                                </n-button>
+                            </template>
+                            <n-input
+                                type="textarea"
+                                :value="layout.note"
+                                @update:value="addNote(layout.spec, $event)"
+                            ></n-input>
+                        </n-popover>
+                        <n-button text class="header_button" @click="removeCollection(layout.spec)">
+                            <n-icon>
+                                <star12-filled />
+                            </n-icon>
+                        </n-button>
+                    </n-space>
+                </template>
+                <chart-raw
+                    :vegalite="layout.spec"
+                    :render-option="{
+                        width: 'container', height: 'container',
+                        autosize: {
+                            type: 'fit',
+                            contains: 'padding'
+                        },
+                        resize: true
+                    }"
+                    :ref="el => { if (el) charts[idx] = el }"
+                    style="width:100%;height:100%"
+                ></chart-raw>
+            </n-card>
         </grid-item>
     </grid-layout>
 </template>
 
 <script setup>
-import { NSpace, NCard,NScrollbar } from 'naive-ui';
+import { NSpace, NCard, NScrollbar, NButton, NIcon, NPopover, NInput } from 'naive-ui';
 import ChartRaw from './ChartRaw.vue';
 import { CollectionStore } from '../store/CollectionStore';
 
@@ -49,13 +69,17 @@ import { computed, toRaw, ref } from "vue-demi";
 import { onBeforeUpdate } from "vue";
 import _ from "lodash";
 
+import { Star12Filled, CommentNote24Regular } from '@vicons/fluent';
+
 const collectionStore = CollectionStore();
 
 const SpecWithChart = computed(() => {
     return collectionStore.collections.map(collection => {
-        const id = collectionStore.specIds[JSON.stringify(collection)];
+        const strSpec = JSON.stringify(collection)
+        const id = collectionStore.specIds[strSpec];
         return {
             spec: collection,
+            note: collectionStore.notes[strSpec],
             ...collectionStore.layouts.find(i => i.i === id),
         }
     })
@@ -72,13 +96,13 @@ function onResize(idx) {
     charts.value[idx].resize();
 }
 
-function onReady(){
-    for(let chart of charts.value){
+function onReady() {
+    for (let chart of charts.value) {
         chart.refreshChart();
     }
 }
 
-function updateLayout(value){
+function updateLayout(value) {
     collectionStore.layouts = value.map(i => ({
         i: i.i,
         x: i.x,
@@ -88,5 +112,23 @@ function updateLayout(value){
     }));
 }
 
-const onLayoutChange=_.debounce(updateLayout,500);
+const onLayoutChange = _.debounce(updateLayout, 500);
+
+// const noteValue = computed(() => {
+//   if(collectionStore.notes[JSON.stringify(props.vegalite)] != null){
+//     return collectionStore.notes[JSON.stringify(props.vegalite)]
+//   }
+//   else{
+//     return ''
+//   }
+// })
+
+function addNote(spec, noteValue) {
+    const strSpec = JSON.stringify(spec);
+    collectionStore.addNote(strSpec, noteValue);
+}
+
+function removeCollection(spec) {
+    collectionStore.remove(spec);
+}
 </script>

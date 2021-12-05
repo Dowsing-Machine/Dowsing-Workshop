@@ -58,7 +58,7 @@ defineExpose({
 
 <style scoped>
 ::-webkit-scrollbar{ 
-      width:0;
+      /* width:0; */
       /* position:absolute; */
   }
 </style>
