@@ -1,5 +1,6 @@
 <template>
   <n-card>
+    <template #header>Welcome to VCL318!</template>
     <n-form
         :label-width="80"
         :model="formValue"
@@ -22,7 +23,7 @@
 
 <script setup>
 
-import {computed, ref} from "vue-demi";
+import { computed, ref } from "vue-demi";
 import { NCard, NInput, NForm, NFormItem, NButton, NSpace, NCheckbox } from "naive-ui";
 import { useRouter } from "vue-router"
 

@@ -6,6 +6,7 @@ export const CollectionStore = defineStore({
     id: "CollectionStore",
     state: () => ({
         collections: [],
+        notes: {}
     }),
     getters: {
         inCollection: state => {
@@ -29,6 +30,10 @@ export const CollectionStore = defineStore({
                     return !_.isEqual(c, spec);
                 });
             }
+        },
+        addNote(spec, note){
+            console.log(this.notes)
+            this.notes[spec] = note
         }
     }
 });

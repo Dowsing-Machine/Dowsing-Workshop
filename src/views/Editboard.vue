@@ -24,7 +24,7 @@
                         :show-collapsed-content="false"
                     >
                         <data-control></data-control>
-                        <mention></mention>
+<!--                        <mention></mention>-->
                     </n-layout-sider>
                     <n-layout-content>
                         <n-layout has-sider class="main-middle">
@@ -65,7 +65,7 @@ import SingleChartEdit from "@/components/SingleChartEdit.vue";
 import QueryControlVue from '../components/QueryControl.vue';
 import MultiView from '../components/MultiView.vue';
 import MultiViewCtrl from '../components/MultiViewCtrl.vue';
-import Mention from '../components/Mention.vue'
+// import Mention from '../components/Mention.vue'
 
 import { MVStore } from '../store/MVStore';
 

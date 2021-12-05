@@ -16,13 +16,13 @@
         <template #header-extra>
             <n-popover trigger="click">
                 <template #trigger>
-                    <n-button text class="header_button" @click="addCollection">
+                    <n-button text class="header_button" >
                         <n-icon>
                             <comment-note24-regular />
                         </n-icon>
                     </n-button>
                 </template>
-                <n-input type="textarea"></n-input>
+                <n-input type="textarea" :value="noteValue" @update:value="addNote($event)"></n-input>
             </n-popover>
 
             <n-button
@@ -52,9 +52,9 @@
     </n-card>
 </template>
 <script setup>
-import { NCard, NButton, NIcon, NTag, NSpace, NPopover,NInput } from 'naive-ui';
+import { NCard, NButton, NIcon, NTag, NSpace, NPopover,NInput, NPopconfirm } from 'naive-ui';
 import ChartRawVue from './ChartRaw.vue';
-import { defineProps, computed } from 'vue-demi';
+import { defineProps, computed, ref } from 'vue-demi';
 import { QueryStore } from '../store/QueryStore';
 import { CollectionStore } from '../store/CollectionStore';
 
@@ -68,6 +68,15 @@ const collectionStore = CollectionStore();
 
 const props = defineProps({
     vegalite: Object,
+})
+
+const noteValue = computed(() => {
+  if(collectionStore.notes[JSON.stringify(props.vegalite)] != null){
+    return collectionStore.notes[JSON.stringify(props.vegalite)]
+  }
+  else{
+    return ''
+  }
 })
 
 function isWildCard(encoding) {
@@ -89,7 +98,7 @@ function isWildCard(encoding) {
             }
         ]
         , (item) => {
-            console.log(item, encoding, item.field == encoding.field && item.aggregate == encoding.aggregate);
+            // console.log(item, encoding, item.field == encoding.field && item.aggregate == encoding.aggregate);
             return item.field == encoding.field && item.aggregate == encoding.aggregate
         })) {
         return false;
@@ -201,6 +210,10 @@ function addCollection() {
 
 function removeCollection() {
     collectionStore.remove(props.vegalite);
+}
+
+function addNote(noteValue){
+  collectionStore.addNote(JSON.stringify(props.vegalite), noteValue)
 }
 
 </script>
