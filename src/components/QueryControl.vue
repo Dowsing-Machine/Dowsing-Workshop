@@ -3,23 +3,26 @@
         视图类型
         <n-select :options="typeOption" v-model:value="queryStore.chart_type" clearable></n-select>X轴编码
         <encoding-embed-ctrl
-            v-model:encoding="queryStore.x_encoding"
+            :encoding="queryStore.x_encoding"
             v-model:aggregate="queryStore.x_aggregate"
             :filter="x_filter"
+            @update:encoding="updateEncoding('x_encoding',$event)"
             @update:filter="updateFilter(queryStore.x_encoding,$event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>Y轴编码
         <encoding-embed-ctrl
-            v-model:encoding="queryStore.y_encoding"
+            :encoding="queryStore.y_encoding"
             v-model:aggregate="queryStore.y_aggregate"
             :filter="y_filter"
+            @update:encoding="updateEncoding('y_encoding',$event)"
             @update:filter="updateFilter(queryStore.y_encoding,$event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>颜色编码
         <encoding-embed-ctrl
-            v-model:encoding="queryStore.category_encoding"
+            :encoding="queryStore.category_encoding"
             v-model:aggregate="queryStore.category_aggregate"
             :filter="category_filter"
+            @update:encoding="updateEncoding('category_encoding',$event)"
             @update:filter="updateFilter(queryStore.category_encoding,$event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>
@@ -161,23 +164,27 @@ const category_filter=computed(()=>{
     return queryStore.getFilterByColumn(queryStore.category_encoding);
 })
 
+function updateEncoding(channel,encoding){
+    queryStore.editEncoding(channel,encoding);
+}
+
 function updateFilter(column,filter){
     queryStore.setFilterByColumn(column,filter);
 }
 
-watch(queryStore,(state,prevState)=>{
-    if(state.x_encoding==prevState.x_encoding&&state.y_encoding==prevState.y_encoding&&state.category_encoding==prevState.category_encoding){
-        return;
-    }
-    if(state.x_encoding!==prevState.x_encoding){
-        queryStore.refreshFilter();
-    }
-    else if(state.y_encoding!==prevState.y_encoding){
-        queryStore.refreshFilter();
-    }
-    else if(state.category_encoding!==prevState.category_encoding){
-        queryStore.refreshFilter();
-    }
-})
+// watch(queryStore,(state,prevState)=>{
+//     if(state.x_encoding==prevState.x_encoding&&state.y_encoding==prevState.y_encoding&&state.category_encoding==prevState.category_encoding){
+//         return;
+//     }
+//     if(state.x_encoding!==prevState.x_encoding){
+//         queryStore.refreshFilter();
+//     }
+//     else if(state.y_encoding!==prevState.y_encoding){
+//         queryStore.refreshFilter();
+//     }
+//     else if(state.category_encoding!==prevState.category_encoding){
+//         queryStore.refreshFilter();
+//     }
+// })
 
 </script>
