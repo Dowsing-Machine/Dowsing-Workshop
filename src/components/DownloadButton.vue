@@ -77,7 +77,19 @@ queryStore.$subscribe((mutation, state) => {
 })
 
 function saveActionList(){
+
+  let finalState = {}
+
+  finalState['notes'] = _.cloneDeep(collectionStore.notes)
+  finalState['collections'] = _.cloneDeep({
+    ...collectionStore.collections,
+    data:null
+  })
+  finalState['layout'] = _.cloneDeep(collectionStore.layouts)
+
   saveAs(new Blob([JSON.stringify(actionList)], { type: 'text/plain; charset=utf-8' }), 'actionList.json');
+
+  saveAs(new Blob([JSON.stringify(finalState)], { type: 'text/plain; charset=utf-8' }), 'finalState.json');
 }
 
 </script>
