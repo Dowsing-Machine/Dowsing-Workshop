@@ -4,6 +4,7 @@
     <list default="true" id="4f159c49-d6b8-4124-a246-49f85b130b93" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/DownloadButton.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DownloadButton.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/RecommendCharts.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/RecommendCharts.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +59,7 @@
       <workItem from="1638589259618" duration="29529000" />
       <workItem from="1638683497206" duration="19453000" />
       <workItem from="1638709498903" duration="7630000" />
-      <workItem from="1638765350663" duration="1858000" />
+      <workItem from="1638765350663" duration="7308000" />
     </task>
     <servers />
   </component>
@@ -86,10 +87,10 @@
       <screen x="0" y="0" width="1707" height="920" />
     </state>
     <state x="510" y="211" key="run.anything.popup/-1920.0.1536.816/0.0.1707.920@0.0.1707.920" timestamp="1638689087895" />
-    <state x="516" y="195" width="672" height="678" key="search.everywhere.popup" timestamp="1638610277568">
+    <state x="516" y="195" width="672" height="678" key="search.everywhere.popup" timestamp="1638773650613">
       <screen x="0" y="0" width="1707" height="920" />
     </state>
     <state x="516" y="195" width="672" height="678" key="search.everywhere.popup/-1920.0.1536.816/0.0.1707.920@0.0.1707.920" timestamp="1638610277568" />
-    <state x="516" y="195" width="672" height="678" key="search.everywhere.popup/0.0.1707.920@0.0.1707.920" timestamp="1638359531478" />
+    <state x="516" y="195" width="672" height="678" key="search.everywhere.popup/0.0.1707.920@0.0.1707.920" timestamp="1638773650613" />
   </component>
 </project>
