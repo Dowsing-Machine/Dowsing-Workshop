@@ -8,9 +8,11 @@
                         <!-- <n-switch size="large">
                             <template #checked>探索</template>
                             <template #unchecked>面板</template>
-                        </n-switch> -->
-                        <collection-button></collection-button>
-                      <download-button></download-button>
+                        </n-switch>-->
+                        <n-space>
+                            <collection-button></collection-button>
+                            <download-button></download-button>
+                        </n-space>
                     </div>
                 </n-space>
             </n-layout-header>
@@ -25,11 +27,11 @@
                         :show-collapsed-content="false"
                     >
                         <data-control></data-control>
-<!--                        <mention></mention>-->
+                        <!--                        <mention></mention>-->
                     </n-layout-sider>
                     <n-layout-content>
                         <n-layout has-sider class="main-middle">
-                            <n-layout-sider bordered>
+                            <n-layout-sider bordered width="350">
                                 <!-- <single-chart-edit></single-chart-edit> -->
                                 <query-control-vue></query-control-vue>
                             </n-layout-sider>

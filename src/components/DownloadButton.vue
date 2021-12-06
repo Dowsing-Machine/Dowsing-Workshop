@@ -15,12 +15,14 @@ import { NButton, NIcon, NBadge, NModal, NCard } from "naive-ui";
 import { CollectionStore } from "../store/CollectionStore";
 import CollectionChartsVue from "./CollectionCharts.vue";
 import { QueryStore } from "../store/QueryStore"
-import { watch, ref } from "vue";
+import { watch, ref, getCurrentInstance } from "vue";
 import _ from "lodash"
 import { saveAs } from 'file-saver';
 
 const collectionStore = CollectionStore();
 const queryStore = QueryStore();
+
+const {proxy}=getCurrentInstance();
 
 const actionList = []
 
@@ -84,6 +86,10 @@ function saveActionList(){
 
   saveAs(new Blob([JSON.stringify(finalState)], { type: 'text/plain; charset=utf-8' }), 'finalState.json');
 }
+
+proxy.$EventBus.on("*",function(type,e){
+    console.log(type,e);
+})
 
 </script>
 

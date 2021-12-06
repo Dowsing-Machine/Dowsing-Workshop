@@ -15,7 +15,7 @@
             :w="layout.w"
             :h="layout.h"
             :i="layout.i"
-            @resized="onResize(idx)"
+            @resized="onResize(idx,$event)"
         >
             <n-card style="height: 100%;width: 100%;">
                 <template #header>图表#{{ layout.i }}</template>
@@ -65,13 +65,16 @@ import { NSpace, NCard, NScrollbar, NButton, NIcon, NPopover, NInput } from 'nai
 import ChartRaw from './ChartRaw.vue';
 import { CollectionStore } from '../store/CollectionStore';
 
-import { computed, toRaw, ref } from "vue-demi";
+import { computed, toRaw, ref,getCurrentInstance } from "vue-demi";
 import { onBeforeUpdate } from "vue";
 import _ from "lodash";
 
 import { Star12Filled, CommentNote24Regular } from '@vicons/fluent';
+import { rowProps } from 'naive-ui/lib/legacy-grid/src/Row';
 
 const collectionStore = CollectionStore();
+const { proxy } = getCurrentInstance();
+
 
 const SpecWithChart = computed(() => {
     return collectionStore.collections.map(collection => {
@@ -91,8 +94,17 @@ onBeforeUpdate(function () {
     charts.value = [];
 })
 
-function onResize(idx) {
-
+function onResize(idx,event) {
+    const {newH,newW,i} = event;
+    const layout=collectionStore.layouts.find(i => i.i === i);
+    rowProps.$EventBus.emit(`user:layout:resize:${idx}`,{
+        block_val:event
+    })
+    if(layout){
+        layout.h = newH;
+        layout.w = newW;
+    }
+    // updateLayout();
     charts.value[idx].resize();
 }
 
@@ -103,6 +115,9 @@ function onReady() {
 }
 
 function updateLayout(value) {
+    proxy.$EventBus.emit("user:layout:update",{
+        layout:value
+    });
     collectionStore.layouts = value.map(i => ({
         i: i.i,
         x: i.x,

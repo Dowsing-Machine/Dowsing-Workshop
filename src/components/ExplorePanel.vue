@@ -10,7 +10,7 @@
         </n-card>
         <n-card v-for="group in groups" :key="group.name" style="margin:10px">
             <template #header>{{ group.name }}</template>
-            <template #header-extra>
+            <!-- <template #header-extra>
                 <n-switch
                     v-if="group.views.items.length > 3"
                     v-model:value="gridCollapsed[group.name]"
@@ -18,7 +18,7 @@
                     <template #checked>Hide Details</template>
                     <template #unchecked>Load More...</template>
                 </n-switch>
-            </template>
+            </template> -->
             <!-- {{group.views}} -->
 
             <div style="display: flex;flex-wrap: wrap;">

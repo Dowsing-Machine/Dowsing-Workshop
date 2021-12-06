@@ -7,8 +7,10 @@ import embed from 'vega-embed';
 
 import {DatasetStore} from '@/store/DatasetStore';
 import { NScrollbar } from 'naive-ui';
+import { QueryStore } from '../store/QueryStore';
 
 const datasetStore=DatasetStore();
+const queryStore=QueryStore();
 
 const props=defineProps({
     vegalite:Object,
@@ -29,6 +31,12 @@ async function refreshChart() {
             // name:"data"
             values:datasetStore.dataset
         },
+        transform:queryStore.filter.filter(f=>f!=null).map(f=>({
+            filter:{
+                field:f.column,
+                [f.predicate]:f.filter
+            }
+        })),
     }, { actions: false });
     // res.view.insert("data", datasetStore.dataset).run();
     view.value=res.view;

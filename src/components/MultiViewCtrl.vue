@@ -1,10 +1,5 @@
 <template>
     <n-menu :options="options" mode="horizontal" @update:value="handleUpdate" :value="null"></n-menu>
-    <div v-if="false">
-        <n-button @click="stepBack">回滚</n-button>
-        <n-button @click="stepForward">前进</n-button>
-        <n-button @click="debug">调试</n-button>
-    </div>
 </template>
 <script setup>
 import { NMenu, NIcon, NSpace, NButton } from 'naive-ui';
@@ -16,30 +11,34 @@ import { QueryStore } from '../store/QueryStore';
 
 import { stepBack, stepForward, debug } from "@/store/plugins/stateRecord";
 
+import { getCurrentInstance } from 'vue-demi';
+
 const mvStore = MVStore();
 const controlStore = ControlStore();
 const queryStore = QueryStore();
 
+const {proxy} = getCurrentInstance();
+
 const options = computed(() => ([
-    {
-        label: "添加",
-        key: "add",
-        icon: () => h(
-            NIcon,
-            null,
-            { default: () => h(Add20Filled) }
-        )
-    },
-    {
-        label: "删除",
-        key: "delete",
-        icon: () => h(
-            NIcon,
-            null,
-            { default: () => h(Delete20Filled) }
-        ),
-        disabled: controlStore.currentViewId == null,
-    },
+    // {
+    //     label: "添加",
+    //     key: "add",
+    //     icon: () => h(
+    //         NIcon,
+    //         null,
+    //         { default: () => h(Add20Filled) }
+    //     )
+    // },
+    // {
+    //     label: "删除",
+    //     key: "delete",
+    //     icon: () => h(
+    //         NIcon,
+    //         null,
+    //         { default: () => h(Delete20Filled) }
+    //     ),
+    //     disabled: controlStore.currentViewId == null,
+    // },
     {
         label: "撤销",
         key: "undo",
@@ -67,9 +66,11 @@ const handleUpdate = (key) => {
             mvStore.addView();
             break;
         case "undo":
+            proxy.$EventBus.emit("user:control:undo")
             queryStore.undo();
             break;
         case "redo":
+            proxy.$EventBus.emit("user:control:redo")
             queryStore.redo();
             break;
         case "delete":

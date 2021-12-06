@@ -9,6 +9,7 @@ import { StateRecord } from '@/store/plugins/stateRecord'
 import App from './App.vue'
 
 import VueGridLayout from 'vue-grid-layout'
+import mitt from 'mitt'
 
 const router = createRouter({
     routes,
@@ -24,5 +25,7 @@ pinia.use(Undo);
 
 app.use(pinia);
 app.use(VueGridLayout);
+
+app.config.globalProperties.$EventBus = new mitt();
 
 app.mount('#app');
