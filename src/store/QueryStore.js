@@ -57,7 +57,12 @@ export const QueryStore = defineStore({
             }
         },
         refreshFilter(){
-            this.filter=this.filter.filter(f=>f&&_.find([this.x_encoding,this.y_encoding,this.category_encoding],c=>c.column==f.column));
+            this.filter=this.filter.filter(
+                f=>f&&_.find(
+                    [this.x_encoding,this.y_encoding,this.category_encoding],
+                    c=>c==f.column
+                )
+            );
         },
         editEncoding(channel, encoding) {
             this.$patch(()=>{
