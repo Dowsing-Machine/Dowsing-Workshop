@@ -1,10 +1,5 @@
 <template>
     <n-menu :options="options" mode="horizontal" @update:value="handleUpdate" :value="null"></n-menu>
-    <div v-if="false">
-        <n-button @click="stepBack">回滚</n-button>
-        <n-button @click="stepForward">前进</n-button>
-        <n-button @click="debug">调试</n-button>
-    </div>
 </template>
 <script setup>
 import { NMenu, NIcon, NSpace, NButton } from 'naive-ui';
@@ -21,25 +16,25 @@ const controlStore = ControlStore();
 const queryStore = QueryStore();
 
 const options = computed(() => ([
-    {
-        label: "添加",
-        key: "add",
-        icon: () => h(
-            NIcon,
-            null,
-            { default: () => h(Add20Filled) }
-        )
-    },
-    {
-        label: "删除",
-        key: "delete",
-        icon: () => h(
-            NIcon,
-            null,
-            { default: () => h(Delete20Filled) }
-        ),
-        disabled: controlStore.currentViewId == null,
-    },
+    // {
+    //     label: "添加",
+    //     key: "add",
+    //     icon: () => h(
+    //         NIcon,
+    //         null,
+    //         { default: () => h(Add20Filled) }
+    //     )
+    // },
+    // {
+    //     label: "删除",
+    //     key: "delete",
+    //     icon: () => h(
+    //         NIcon,
+    //         null,
+    //         { default: () => h(Delete20Filled) }
+    //     ),
+    //     disabled: controlStore.currentViewId == null,
+    // },
     {
         label: "撤销",
         key: "undo",
