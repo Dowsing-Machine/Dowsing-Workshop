@@ -119,7 +119,7 @@ function refreshRecommend(query) {
     }
 
     const res = [];    
-    if (isSpecAggregate) {
+    if (!isSpecAggregate) {
         res.push({
             name: "总结 | Summaries",
             views: runQuery(
