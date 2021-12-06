@@ -26,11 +26,12 @@
             @update:filter="updateFilter(queryStore.category_encoding,$event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>
+        <n-button type="error" style="width:100%" @click="queryStore.$reset()">清空查询</n-button>
     </n-space>
 </template>
 
 <script setup>
-import { NSelect,NSpace } from 'naive-ui';
+import { NSelect,NSpace,NButton } from 'naive-ui';
 import { computed, watch } from 'vue-demi';
 
 import { DatasetStore } from '../store/DatasetStore';

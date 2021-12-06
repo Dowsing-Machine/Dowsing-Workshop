@@ -15,7 +15,7 @@
             :w="layout.w"
             :h="layout.h"
             :i="layout.i"
-            @resized="onResize(idx)"
+            @resized="onResize(idx,$event)"
         >
             <n-card style="height: 100%;width: 100%;">
                 <template #header>图表#{{ layout.i }}</template>
@@ -91,8 +91,14 @@ onBeforeUpdate(function () {
     charts.value = [];
 })
 
-function onResize(idx) {
-
+function onResize(idx,event) {
+    const {newH,newW,i} = event;
+    const layout=collectionStore.layouts.find(i => i.i === i);
+    if(layout){
+        layout.h = newH;
+        layout.w = newW;
+    }
+    // updateLayout();
     charts.value[idx].resize();
 }
 
