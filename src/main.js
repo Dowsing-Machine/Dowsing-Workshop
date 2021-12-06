@@ -27,5 +27,6 @@ app.use(pinia);
 app.use(VueGridLayout);
 
 app.config.globalProperties.$EventBus = new mitt();
+app.config.performance=true;
 
 app.mount('#app');

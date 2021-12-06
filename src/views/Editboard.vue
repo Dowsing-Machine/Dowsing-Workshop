@@ -1,5 +1,4 @@
 <template>
-    <n-space vertical size="large">
         <n-layout>
             <n-layout-header bordered class="main-header">
                 <n-space justify="space-between">
@@ -18,33 +17,18 @@
             </n-layout-header>
             <n-layout-content>
                 <n-layout has-sider class="main-middle">
-                    <n-layout-sider
-                        bordered
-                        collapse-mode="width"
-                        :collapsed-width="20"
-                        show-trigger="arrow-circle"
-                        style="z-index:10"
-                        :show-collapsed-content="false"
-                    >
-                        <data-control></data-control>
-                        <!--                        <mention></mention>-->
+                    <n-layout-sider bordered width="350">
+                        <!-- <single-chart-edit></single-chart-edit> -->
+                        <query-control-vue></query-control-vue>
                     </n-layout-sider>
-                    <n-layout-content>
-                        <n-layout has-sider class="main-middle">
-                            <n-layout-sider bordered width="350">
-                                <!-- <single-chart-edit></single-chart-edit> -->
-                                <query-control-vue></query-control-vue>
-                            </n-layout-sider>
-                            <n-layout-content @click="onClick">
-                                <n-layout>
-                                    <n-layout-header bordered>
-                                        <multi-view-ctrl></multi-view-ctrl>
-                                    </n-layout-header>
-                                    <n-layout-content>
-                                        <explore-panel-vue></explore-panel-vue>
-                                        <!-- <multi-view></multi-view> -->
-                                    </n-layout-content>
-                                </n-layout>
+                    <n-layout-content @click="onClick">
+                        <n-layout>
+                            <n-layout-header bordered>
+                                <multi-view-ctrl></multi-view-ctrl>
+                            </n-layout-header>
+                            <n-layout-content>
+                                <explore-panel-vue></explore-panel-vue>
+                                <!-- <multi-view></multi-view> -->
                             </n-layout-content>
                         </n-layout>
                     </n-layout-content>
@@ -57,7 +41,6 @@
                 </n-space>
             </n-layout-footer>
         </n-layout>
-    </n-space>
 </template>
 
 <script setup>

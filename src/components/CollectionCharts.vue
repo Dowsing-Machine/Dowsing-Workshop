@@ -76,7 +76,7 @@ const { proxy } = getCurrentInstance();
 
 
 const SpecWithChart = computed(() => {
-    return collectionStore.collections.map(collection => {
+    let res= collectionStore.collections.map(collection => {
         const strSpec = JSON.stringify(collection)
         const id = collectionStore.specIds[strSpec];
         return {
@@ -85,6 +85,7 @@ const SpecWithChart = computed(() => {
             ...collectionStore.layouts.find(i => i.i === id),
         }
     })
+    return res;
 })
 
 const charts = ref([]);
