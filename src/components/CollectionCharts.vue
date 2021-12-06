@@ -115,8 +115,15 @@ function onReady() {
 }
 
 function updateLayout(value) {
+  console.log(value)
     proxy.$EventBus.emit("user:layout:update",{
-        layout:value
+        layout: value.map(i => ({
+          i: i.i,
+          x: i.x,
+          y: i.y,
+          w: i.w,
+          h: i.h
+        }))
     });
     collectionStore.layouts = value.map(i => ({
         i: i.i,

@@ -26,7 +26,7 @@
                     <n-input type="textarea" :value="noteValue" @update:value="addNote($event)"></n-input>
                 </n-popover>
 
-                <add-collection-btn-vue 
+                <add-collection-btn-vue
                     :in-collection="collectionStore.inCollection(vegalite)!=null"
                     @addCollection="addCollection"
                     @removeCollection="removeCollection"
@@ -228,7 +228,7 @@ function removeCollection() {
 
 function addNote(noteValue) {
     proxy.$EventBus.emit(`user:note:add`,{
-        target: {...props.vegalite, 'data': null},
+        target: JSON.stringify({...props.vegalite, 'data': null}),
         note: noteValue,
     });
     collectionStore.addNote(JSON.stringify({...props.vegalite, 'data': null}), noteValue)
