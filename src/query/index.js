@@ -75,7 +75,11 @@ function specEncodings(query, columns, filter) {
 export function runQuery(fn, query, data) {
     const cql_query = fn(query, data);
     const schema = cql.schema.build(data.dataset);
-    // console.log(cql_query);
+    // cql_query.spec={
+    //     ...cql_query.spec,
+        
+    // };
+    console.log(cql_query);
     const output = cql.recommend(cql_query, schema, DEFAULT_CQL_CONFIG);
     return output.result;
 }

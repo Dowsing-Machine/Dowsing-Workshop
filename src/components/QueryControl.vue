@@ -1,27 +1,33 @@
 <template>
-    <div style="padding:12px 24px;">
+    <n-space vertical style="padding:12px 24px;">
         视图类型
         <n-select :options="typeOption" v-model:value="queryStore.chart_type" clearable></n-select>X轴编码
         <encoding-embed-ctrl
             v-model:encoding="queryStore.x_encoding"
             v-model:aggregate="queryStore.x_aggregate"
+            :filter="x_filter"
+            @update:filter="updateFilter(queryStore.x_encoding,$event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>Y轴编码
         <encoding-embed-ctrl
             v-model:encoding="queryStore.y_encoding"
             v-model:aggregate="queryStore.y_aggregate"
+            :filter="y_filter"
+            @update:filter="updateFilter(queryStore.y_encoding,$event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>颜色编码
         <encoding-embed-ctrl
             v-model:encoding="queryStore.category_encoding"
             v-model:aggregate="queryStore.category_aggregate"
+            :filter="category_filter"
+            @update:filter="updateFilter(queryStore.category_encoding,$event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>
-    </div>
+    </n-space>
 </template>
 
 <script setup>
-import { NSelect } from 'naive-ui';
+import { NSelect,NSpace } from 'naive-ui';
 import { computed, watch } from 'vue-demi';
 
 import { DatasetStore } from '../store/DatasetStore';
@@ -31,6 +37,8 @@ import { RecommendStore } from '../store/RecommendStore';
 import { specific, runQuery, alternative_encodings, summaries, addQuantitativeField, addCategoricalField,univariteSummaries } from '../query';
 
 import EncodingEmbedCtrl from "./EncodingEmbedCtrl.vue";
+
+import _ from "lodash";
 
 const datasetStore = DatasetStore();
 const queryStore = QueryStore();
@@ -135,8 +143,41 @@ function refreshRecommend(query){
 
 refreshRecommend(queryStore);
 
-watch(queryStore, (query) => {
-    refreshRecommend(query);
+const debouncedRefreshRecommend = _.debounce(refreshRecommend, 500,{
+    // leading: true,
+});
+
+watch(queryStore, debouncedRefreshRecommend);
+
+const x_filter=computed(()=>{
+    return queryStore.getFilterByColumn(queryStore.x_encoding);
+})
+
+const y_filter=computed(()=>{
+    return queryStore.getFilterByColumn(queryStore.y_encoding);
+})
+
+const category_filter=computed(()=>{
+    return queryStore.getFilterByColumn(queryStore.category_encoding);
+})
+
+function updateFilter(column,filter){
+    queryStore.setFilterByColumn(column,filter);
+}
+
+watch(queryStore,(state,prevState)=>{
+    if(state.x_encoding==prevState.x_encoding&&state.y_encoding==prevState.y_encoding&&state.category_encoding==prevState.category_encoding){
+        return;
+    }
+    if(state.x_encoding!==prevState.x_encoding){
+        queryStore.refreshFilter();
+    }
+    else if(state.y_encoding!==prevState.y_encoding){
+        queryStore.refreshFilter();
+    }
+    else if(state.category_encoding!==prevState.category_encoding){
+        queryStore.refreshFilter();
+    }
 })
 
 </script>

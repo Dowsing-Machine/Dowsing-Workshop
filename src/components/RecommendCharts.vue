@@ -100,8 +100,7 @@ function isWildCard(encoding) {
             }
         ]
         , (item) => {
-            // console.log(item, encoding, item.field == encoding.field && item.aggregate == encoding.aggregate);
-            return item.field == encoding.field && item.aggregate == encoding.aggregate
+            return item.field == encoding.field && item.aggregate == encoding.aggregate||item.field==COUNT&&encoding.aggregate=="count"&&encoding.field=="*";
         })) {
         return false;
     }
@@ -109,18 +108,6 @@ function isWildCard(encoding) {
 }
 
 const channels = computed(() => {
-    console.log(_(props.vegalite.encoding).toPairs().map(([k, v]) => {
-        return {
-            channel: k,
-            type: v.type,
-            field: v.field,
-            aggregate: v.aggregate || (v.bin && "bin"),
-            // bin: ,
-        }
-    }).map(e => ({
-        ...e,
-        isWildCard: isWildCard(e),
-    })).value())
     return _(props.vegalite.encoding).toPairs().map(([k, v]) => {
         return {
             channel: k,
@@ -194,16 +181,20 @@ function specifyChannel(encoding, field) {
     }
 }
 
+function spec2query(vegalite){
+    return {
+        x_encoding: specifyChannel(vegalite.encoding, "x").field,
+        y_encoding: specifyChannel(vegalite.encoding, "y").field,
+        category_encoding: specifyChannel(vegalite.encoding, "color").field,
+        x_aggregate: specifyChannel(vegalite.encoding, "x").aggregate,
+        y_aggregate: specifyChannel(vegalite.encoding, "y").aggregate,
+        category_aggregate: specifyChannel(vegalite.encoding, "color").aggregate,
+        chart_type: vegalite.mark,
+    }
+}
+
 function specify() {
-    queryStore.$patch({
-        x_encoding: specifyChannel(props.vegalite.encoding, "x").field,
-        y_encoding: specifyChannel(props.vegalite.encoding, "y").field,
-        category_encoding: specifyChannel(props.vegalite.encoding, "color").field,
-        x_aggregate: specifyChannel(props.vegalite.encoding, "x").aggregate,
-        y_aggregate: specifyChannel(props.vegalite.encoding, "y").aggregate,
-        category_aggregate: specifyChannel(props.vegalite.encoding, "color").aggregate,
-        chart_type: props.vegalite.mark,
-    })
+    queryStore.$patch(spec2query(props.vegalite));
 }
 
 function addCollection() {

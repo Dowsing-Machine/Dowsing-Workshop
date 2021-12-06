@@ -23,16 +23,67 @@
                 :options="encodingOptions"
                 @update:value="onEncodingUpdate"
             >
-                <n-button round :type="encoding ? 'primary' : 'default'" style="flex: auto;">
-                    {{ columnPlacehold }}
-                </n-button>
+                <n-button
+                    round
+                    :type="encoding ? 'primary' : 'default'"
+                    style="flex: auto;"
+                >{{ columnPlacehold }}</n-button>
             </n-popselect>
+
+            <n-popover 
+                trigger="click" 
+                :show="showFilter"
+                @update:show="onFilterOpen"
+                @clickoutside="showFilter=false"
+                :disabled="!encoding"
+            >
+                <template #trigger>
+                    <n-button>
+                        <n-icon>
+                            <filter16-filled />
+                        </n-icon>
+                    </n-button>
+                </template>
+                <div v-if="type == 'quantitative'">
+                    <n-slider 
+                        :value="filter.filter" 
+                        range 
+                        :step="1" 
+                        :max="column.max"
+                        :min="column.min"
+                        style="margin:10px 0"
+                        @update:value="onFilterUpdate"
+                    />
+                    <n-space vertical>
+                        <n-input-number size="small" v-model:value="filter.filter[0]" />
+                        <n-input-number size="small" v-model:value="filter.filter[1]" />
+                    </n-space>
+                </div>
+                <div v-else-if="type=='nominal'">
+                <n-checkbox-group
+                    :value="filter.filter"
+                    @update:value="onFilterUpdate"
+                >
+                    <n-space warp style="max-width: 240px;max-height: 400px;overflow: auto;">
+                        <n-checkbox 
+                            v-for="item in column.unique" 
+                            :key="item"
+                            :value="item"
+                            :label="item"
+
+                        ></n-checkbox>
+                    </n-space>
+
+                </n-checkbox-group>
+                
+                </div>
+            </n-popover>
 
             <n-popselect
                 :value="aggregate"
                 :options="SUPPORTED_AGGREGATE"
                 @update:value="onAggregateUpdate"
-
+                :disabled="!encoding"
             >
                 <n-button round>
                     <n-icon :color="aggregate == null ? null : themeVars.primaryColor">
@@ -44,26 +95,35 @@
     </div>
 </template>
 <script setup>
-import { NButton, NButtonGroup, NIcon, NPopselect, NTooltip, NSlider, useThemeVars } from 'naive-ui';
-import { NumberSymbol24Filled, BookLetter24Regular, Settings24Regular, MathFormula24Filled, Autosum24Filled, Question24Filled } from "@vicons/fluent";
+import { NButton, NButtonGroup, NIcon, NPopselect, NTooltip, NSlider, useThemeVars, NPopover, NSpace, NInputNumber,NCheckbox,NCheckboxGroup } from 'naive-ui';
+import { NumberSymbol24Filled, BookLetter24Regular, Settings24Regular, MathFormula24Filled, Autosum24Filled, Question24Filled, Filter16Filled } from "@vicons/fluent";
 
 import _ from "lodash"
 
 import { defineProps, defineEmits, computed, ref } from "vue-demi";
 
-import {COUNT} from "@/query";
+import { nextTick } from 'vue-demi';
+
+import { COUNT } from "@/query";
 
 const props = defineProps({
     encoding: String,
     aggregate: String,
+    filter: [Object, null],
     columns: Array
 });
+
+const column = computed(() => {
+    console.log(props.columns, props.encoding,_.find(props.columns, { name: props.encoding }))
+    return _.find(props.columns, { name: props.encoding });
+})
 
 const themeVars = useThemeVars();
 
 const emits = defineEmits([
     "update:encoding",
-    "update:aggregate"
+    "update:aggregate",
+    "update:filter"
 ]);
 
 const NULL = Symbol();
@@ -127,11 +187,12 @@ const encodingOptions = computed(() => {
 
 const type = computed(() => {
     if (!props.encoding) return "unknown";
-    if(props.encoding==COUNT) return "quantitative";
+    if (props.encoding == COUNT) return "quantitative";
     return _.find(props.columns, column => column.name === props.encoding).type;
 })
 
 function onEncodingUpdate(value) {
+    // emits("update:filter", null);
     if (value === NULL) {
         emits('update:encoding', null);
     }
@@ -142,12 +203,44 @@ function onEncodingUpdate(value) {
 }
 
 function onAggregateUpdate(value) {
+    // emits("update:filter", null);
+
     if (value === NULL) {
         emits('update:aggregate', null);
     }
     else {
         emits('update:aggregate', value);
     }
+}
+
+const showFilter=ref(false);
+
+async function onFilterOpen() {
+    // 当Filter打开的时候，如果没有配置filter就需要配置filter
+    if (props.filter == null) {
+        if (type.value == "quantitative") {
+            emits('update:filter', {
+                filter:[column.value.min, column.value.max],
+                column: column.value.name,
+                predicate:"range"
+            });
+        }
+        else {
+            emits('update:filter', {
+                filter:column.value.unique,
+                column: column.value.name,
+                predicate:"oneOf"
+            });
+        }
+    }
+    showFilter.value = true;
+}
+
+
+function onFilterUpdate(value) {
+    emits('update:filter', {
+        filter:value
+    });
 }
 
 </script>
