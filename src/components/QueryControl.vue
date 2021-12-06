@@ -50,6 +50,8 @@ import { specific, runQuery, alternative_encodings, summaries, addQuantitativeFi
 
 import EncodingEmbedCtrl from "./EncodingEmbedCtrl.vue";
 
+import * as cql from "compassql"
+
 import _ from "lodash";
 
 const datasetStore = DatasetStore();
@@ -89,6 +91,7 @@ const typeOption = [
 ]
 
 function refreshRecommend(query) {
+    let isSpecAggregate = false;
     if (queryStore.hasSpecView) {
         recommendStore.changeSpecView(
             runQuery(
@@ -97,12 +100,14 @@ function refreshRecommend(query) {
                 datasetStore,
             )
         );
+        const specQuery=specific(query, datasetStore);
+        isSpecAggregate = cql.query.spec.isAggregate(specQuery);
     }
     else {
         recommendStore.changeSpecView(null);
         recommendStore.relatedViews = [
             {
-                name: "Univariate Summaries",
+                name: "单变量摘要 | Univariate Summaries",
                 views: runQuery(
                     univariteSummaries,
                     query,
@@ -113,10 +118,10 @@ function refreshRecommend(query) {
         return;
     }
 
-    const res = [];
-    if (!queryStore.isSpecAggregate) {
+    const res = [];    
+    if (isSpecAggregate) {
         res.push({
-            name: "summaries",
+            name: "总结 | Summaries",
             views: runQuery(
                 summaries,
                 query,
@@ -126,7 +131,7 @@ function refreshRecommend(query) {
     }
     if (queryStore.hasOpenPosition || queryStore.hasStyleChannel) {
         res.push({
-            name: "addQuantitativeField",
+            name: "添加定量字段 | Add Quantitative Field",
             views: runQuery(
                 addQuantitativeField,
                 query,
@@ -134,7 +139,7 @@ function refreshRecommend(query) {
             )
         });
         res.push({
-            name: "addCategoricalField",
+            name: "添加分类字段 | Add Categorical Field",
             views: runQuery(
                 addCategoricalField,
                 query,
@@ -144,7 +149,7 @@ function refreshRecommend(query) {
     }
 
     res.push({
-        name: "alternative-encodings",
+        name: "可替换的视觉编码 | Alternative Encodings",
         views: runQuery(
             alternative_encodings,
             query,
