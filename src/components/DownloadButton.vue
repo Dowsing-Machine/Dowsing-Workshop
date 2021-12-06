@@ -48,12 +48,8 @@ watch(collectionStore.collections, _.debounce(()=> {
   actionList.push({
     time: new Date().toLocaleString(),
     type: 'collection',
-    content: _.cloneDeep({
-      ...collectionStore.collections,
-      data:null
-    })
+    content: _.cloneDeep(collectionStore.collections)
   })
-  // console.log(new Date().toLocaleTimeString(), collectionStore.notes)
 }, 1000))
 
 // watch(queryStore, _.debounce(()=> {
@@ -83,10 +79,7 @@ function saveActionList(){
   let finalState = {}
 
   finalState['notes'] = _.cloneDeep(collectionStore.notes)
-  finalState['collections'] = _.cloneDeep({
-    ...collectionStore.collections,
-    data:null
-  })
+  finalState['collections'] = _.cloneDeep(collectionStore.collections)
   finalState['layout'] = _.cloneDeep(collectionStore.layouts)
 
   saveAs(new Blob([JSON.stringify(actionList)], { type: 'text/plain; charset=utf-8' }), 'actionList.json');

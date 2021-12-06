@@ -85,8 +85,8 @@ const props = defineProps({
 })
 
 const noteValue = computed(() => {
-    if (collectionStore.notes[JSON.stringify(props.vegalite)] != null) {
-        return collectionStore.notes[JSON.stringify(props.vegalite)]
+    if (collectionStore.notes[JSON.stringify({...props.vegalite, 'data': null})] != null) {
+        return collectionStore.notes[JSON.stringify({...props.vegalite, 'data': null})]
     }
     else {
         return ''
@@ -214,24 +214,24 @@ function specify() {
 
 function addCollection() {
     proxy.$EventBus.emit(`user:collection:add`,{
-        vegalite: props.vegalite,
+        vegalite: {...props.vegalite, 'data': null},
     });
-    collectionStore.add(props.vegalite);
+    collectionStore.add({...props.vegalite, 'data': null});
 }
 
 function removeCollection() {
     proxy.$EventBus.emit(`user:collection:remove`,{
-        vegalite: props.vegalite,
+        vegalite: {...props.vegalite, 'data': null},
     });
-    collectionStore.remove(props.vegalite);
+    collectionStore.remove({...props.vegalite, 'data': null});
 }
 
 function addNote(noteValue) {
     proxy.$EventBus.emit(`user:note:add`,{
-        target: props.vegalite,
+        target: {...props.vegalite, 'data': null},
         note: noteValue,
     });
-    collectionStore.addNote(JSON.stringify(props.vegalite), noteValue)
+    collectionStore.addNote(JSON.stringify({...props.vegalite, 'data': null}), noteValue)
 }
 
 </script>
