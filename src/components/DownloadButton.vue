@@ -25,6 +25,7 @@ const queryStore = QueryStore();
 const {proxy}=getCurrentInstance();
 
 const actionList = []
+const actionSepts = []
 
 watch(collectionStore.notes, _.debounce(()=> {
   actionList.push({
@@ -74,6 +75,7 @@ queryStore.$subscribe((mutation, state) => {
   queryTemp = _.cloneDeep(state)
 })
 
+
 function saveActionList(){
 
   let finalState = {}
@@ -82,13 +84,17 @@ function saveActionList(){
   finalState['collections'] = _.cloneDeep(collectionStore.collections)
   finalState['layout'] = _.cloneDeep(collectionStore.layouts)
 
-  saveAs(new Blob([JSON.stringify(actionList)], { type: 'text/plain; charset=utf-8' }), 'actionList.json');
+  saveAs(new Blob([JSON.stringify({'finalState': finalState, 'actionSteps': actionSepts, 'actionList': actionList})], { type: 'text/plain; charset=utf-8' }), 'user_actions.json');
 
-  saveAs(new Blob([JSON.stringify(finalState)], { type: 'text/plain; charset=utf-8' }), 'finalState.json');
 }
 
 proxy.$EventBus.on("*",function(type,e){
-    console.log(type,e);
+    // console.log(type,e);
+  actionSepts.push({
+    time: new Date().toLocaleString(),
+    type: type,
+    content: e
+  })
 })
 
 </script>
