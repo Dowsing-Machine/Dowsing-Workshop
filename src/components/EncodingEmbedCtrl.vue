@@ -30,25 +30,25 @@
                 >{{ columnPlacehold }}</n-button>
             </n-popselect>
 
-            <n-popover 
-                trigger="click" 
+            <n-popover
+                trigger="click"
                 :show="showFilter"
                 @update:show="onFilterOpen"
-                @clickoutside="showFilter=false"
-                :disabled="!encoding"
+                @clickoutside="showFilter = false"
+                :disabled="disableFilterAndAggregate"
             >
                 <template #trigger>
-                    <n-button>
+                    <n-button :disabled="disableFilterAndAggregate">
                         <n-icon>
                             <filter16-filled />
                         </n-icon>
                     </n-button>
                 </template>
                 <div v-if="type == 'quantitative'">
-                    <n-slider 
-                        :value="filter.filter" 
-                        range 
-                        :step="1" 
+                    <n-slider
+                        :value="filter.filter"
+                        range
+                        :step="1"
                         :max="column.max"
                         :min="column.min"
                         style="margin:10px 0"
@@ -59,23 +59,21 @@
                         <n-input-number size="small" v-model:value="filter.filter[1]" />
                     </n-space>
                 </div>
-                <div v-else-if="type=='nominal'">
-                <n-checkbox-group
-                    :value="filter.filter"
-                    @update:value="onFilterUpdate"
-                >
-                    <n-space warp style="max-width: 240px;max-height: 400px;overflow: auto;">
-                        <n-checkbox 
-                            v-for="item in column.unique" 
-                            :key="item"
-                            :value="item"
-                            :label="item"
-
-                        ></n-checkbox>
-                    </n-space>
-
-                </n-checkbox-group>
-                
+                <div v-else-if="type == 'nominal'">
+                    <n-checkbox-group
+                        :value="filter.filter"
+                        @update:value="onFilterUpdate"
+                        :disabled="disableFilterAndAggregate"
+                    >
+                        <n-space warp style="max-width: 240px;max-height: 400px;overflow: auto;">
+                            <n-checkbox
+                                v-for="item in column.unique"
+                                :key="item"
+                                :value="item"
+                                :label="item"
+                            ></n-checkbox>
+                        </n-space>
+                    </n-checkbox-group>
                 </div>
             </n-popover>
 
@@ -85,7 +83,7 @@
                 @update:value="onAggregateUpdate"
                 :disabled="!encoding"
             >
-                <n-button round>
+                <n-button round :disabled="disableFilterAndAggregate">
                     <n-icon :color="aggregate == null ? null : themeVars.primaryColor">
                         <Autosum24Filled />
                     </n-icon>
@@ -95,7 +93,7 @@
     </div>
 </template>
 <script setup>
-import { NButton, NButtonGroup, NIcon, NPopselect, NTooltip, NSlider, useThemeVars, NPopover, NSpace, NInputNumber,NCheckbox,NCheckboxGroup } from 'naive-ui';
+import { NButton, NButtonGroup, NIcon, NPopselect, NTooltip, NSlider, useThemeVars, NPopover, NSpace, NInputNumber, NCheckbox, NCheckboxGroup } from 'naive-ui';
 import { NumberSymbol24Filled, BookLetter24Regular, Settings24Regular, MathFormula24Filled, Autosum24Filled, Question24Filled, Filter16Filled } from "@vicons/fluent";
 
 import _ from "lodash"
@@ -114,7 +112,7 @@ const props = defineProps({
 });
 
 const column = computed(() => {
-    console.log(props.columns, props.encoding,_.find(props.columns, { name: props.encoding }))
+    console.log(props.columns, props.encoding, _.find(props.columns, { name: props.encoding }))
     return _.find(props.columns, { name: props.encoding });
 })
 
@@ -213,23 +211,23 @@ function onAggregateUpdate(value) {
     }
 }
 
-const showFilter=ref(false);
+const showFilter = ref(false);
 
 async function onFilterOpen() {
     // 当Filter打开的时候，如果没有配置filter就需要配置filter
     if (props.filter == null) {
         if (type.value == "quantitative") {
             emits('update:filter', {
-                filter:[column.value.min, column.value.max],
+                filter: [column.value.min, column.value.max],
                 column: column.value.name,
-                predicate:"range"
+                predicate: "range"
             });
         }
         else {
             emits('update:filter', {
-                filter:column.value.unique,
+                filter: column.value.unique,
                 column: column.value.name,
-                predicate:"oneOf"
+                predicate: "oneOf"
             });
         }
     }
@@ -239,8 +237,12 @@ async function onFilterOpen() {
 
 function onFilterUpdate(value) {
     emits('update:filter', {
-        filter:value
+        filter: value
     });
 }
+
+const disableFilterAndAggregate = computed(() => {
+    return !props.encoding || props.encoding == COUNT;
+})
 
 </script>

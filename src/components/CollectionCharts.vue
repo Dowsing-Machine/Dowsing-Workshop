@@ -70,7 +70,6 @@ import { onBeforeUpdate } from "vue";
 import _ from "lodash";
 
 import { Star12Filled, CommentNote24Regular } from '@vicons/fluent';
-import { rowProps } from 'naive-ui/lib/legacy-grid/src/Row';
 
 const collectionStore = CollectionStore();
 const { proxy } = getCurrentInstance();
@@ -97,7 +96,7 @@ onBeforeUpdate(function () {
 function onResize(idx,event) {
     const {newH,newW,i} = event;
     const layout=collectionStore.layouts.find(i => i.i === i);
-    rowProps.$EventBus.emit(`user:layout:resize:${idx}`,{
+    proxy.$EventBus.emit(`user:layout:resize:${idx}`,{
         block_val:event
     })
     if(layout){

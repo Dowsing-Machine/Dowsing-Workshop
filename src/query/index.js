@@ -79,7 +79,7 @@ export function runQuery(fn, query, data) {
     //     ...cql_query.spec,
         
     // };
-    console.log(cql_query);
+    // console.log(cql_query);
     const output = cql.recommend(cql_query, schema, DEFAULT_CQL_CONFIG);
     return output.result;
 }
@@ -94,7 +94,7 @@ export function specific(query, data) {
             encodings: encodings.map(encoding => ({
                 ...encoding,
             })),
-            data: { values: dataset }
+            // data: { values: dataset }
         },
         config: {
             "autoAddCount": false
