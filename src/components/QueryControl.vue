@@ -1,38 +1,47 @@
 <template>
     <n-space vertical style="padding:12px 24px;">
         视图类型
-        <n-select :options="typeOption" v-model:value="queryStore.chart_type" clearable></n-select>X轴编码
+        <n-select 
+            :options="typeOption" 
+            :value="queryStore.chart_type" 
+            @update:value="updateChartType"
+            clearable>
+        </n-select>
+        X轴编码
         <encoding-embed-ctrl
             :encoding="queryStore.x_encoding"
-            v-model:aggregate="queryStore.x_aggregate"
+            :aggregate="queryStore.x_aggregate"
             :filter="x_filter"
             @update:encoding="updateEncoding('x_encoding',$event)"
             @update:filter="updateFilter(queryStore.x_encoding,$event)"
+            @update:aggregate="updateAggregate('x_aggregate',$event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>Y轴编码
         <encoding-embed-ctrl
             :encoding="queryStore.y_encoding"
-            v-model:aggregate="queryStore.y_aggregate"
+            :aggregate="queryStore.y_aggregate"
             :filter="y_filter"
             @update:encoding="updateEncoding('y_encoding',$event)"
             @update:filter="updateFilter(queryStore.y_encoding,$event)"
+            @update:aggregate="updateAggregate('y_aggregate',$event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>颜色编码
         <encoding-embed-ctrl
             :encoding="queryStore.category_encoding"
-            v-model:aggregate="queryStore.category_aggregate"
+            :aggregate="queryStore.category_aggregate"
             :filter="category_filter"
             @update:encoding="updateEncoding('category_encoding',$event)"
             @update:filter="updateFilter(queryStore.category_encoding,$event)"
+            @update:aggregate="updateAggregate('category_aggregate',$event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>
-        <n-button type="error" style="width:100%" @click="queryStore.$reset()">清空查询</n-button>
+        <n-button type="error" style="width:100%" @click="resetQuery()">清空查询</n-button>
     </n-space>
 </template>
 
 <script setup>
 import { NSelect,NSpace,NButton } from 'naive-ui';
-import { computed, watch } from 'vue-demi';
+import { computed, watch,getCurrentInstance } from 'vue-demi';
 
 import { DatasetStore } from '../store/DatasetStore';
 import { QueryStore } from '../store/QueryStore';
@@ -47,6 +56,8 @@ import _ from "lodash";
 const datasetStore = DatasetStore();
 const queryStore = QueryStore();
 const recommendStore = RecommendStore();
+
+const { proxy } = getCurrentInstance();
 
 const columnOptions = computed(() => {
     return datasetStore.columns.map(c => ({
@@ -166,11 +177,39 @@ const category_filter=computed(()=>{
 })
 
 function updateEncoding(channel,encoding){
+    proxy.$EventBus.emit(`user:update:encoding:${encoding}`,{
+        channel,
+        encoding
+    });
     queryStore.editEncoding(channel,encoding);
 }
 
 function updateFilter(column,filter){
+    proxy.$EventBus.emit(`user:update:filter:${column}`,{
+        column,
+        filter
+    });
     queryStore.setFilterByColumn(column,filter);
+}
+
+function updateChartType(chart_type){
+    proxy.$EventBus.emit(`user:update:chart_type`,{
+        chart_type
+    });
+    queryStore.chart_type=(chart_type);
+}
+
+function updateAggregate(channel,aggregate){
+    proxy.$EventBus.emit(`user:update:aggregate:${channel}`,{
+        channel,
+        aggregate
+    });
+    queryStore[channel]=aggregate;
+}
+
+function resetQuery(){
+    proxy.$EventBus.emit(`user:reset:query`);
+    queryStore.$reset();
 }
 
 // watch(queryStore,(state,prevState)=>{

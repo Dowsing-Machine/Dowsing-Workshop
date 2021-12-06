@@ -11,9 +11,13 @@ import { QueryStore } from '../store/QueryStore';
 
 import { stepBack, stepForward, debug } from "@/store/plugins/stateRecord";
 
+import { getCurrentInstance } from 'vue-demi';
+
 const mvStore = MVStore();
 const controlStore = ControlStore();
 const queryStore = QueryStore();
+
+const {proxy} = getCurrentInstance();
 
 const options = computed(() => ([
     // {
@@ -62,9 +66,11 @@ const handleUpdate = (key) => {
             mvStore.addView();
             break;
         case "undo":
+            proxy.$EventBus.emit("user:control:undo")
             queryStore.undo();
             break;
         case "redo":
+            proxy.$EventBus.emit("user:control:redo")
             queryStore.redo();
             break;
         case "delete":

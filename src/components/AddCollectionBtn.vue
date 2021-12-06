@@ -1,6 +1,6 @@
 <template>
     <n-button
-        v-if="inCollection"
+        v-if="!inCollection"
         text
         class="header_button"
         @click="addCollection"
@@ -25,7 +25,7 @@ const props=defineProps({
     inCollection:Boolean,
 });
 
-const emit=defineEmits([
+const emits=defineEmits([
     "addCollection",
     "removeCollection"
 ]);

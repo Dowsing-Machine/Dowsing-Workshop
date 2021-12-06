@@ -26,7 +26,14 @@
                     <n-input type="textarea" :value="noteValue" @update:value="addNote($event)"></n-input>
                 </n-popover>
 
-                <n-button
+                <add-collection-btn-vue 
+                    :in-collection="collectionStore.inCollection(vegalite)!=null"
+                    @addCollection="addCollection"
+                    @removeCollection="removeCollection"
+                >
+                </add-collection-btn-vue>
+
+                <!-- <n-button
                     v-if="!collectionStore.inCollection(vegalite)"
                     text
                     class="header_button"
@@ -36,11 +43,12 @@
                         <star12-regular />
                     </n-icon>
                 </n-button>
+
                 <n-button v-else text class="header_button" @click="removeCollection">
                     <n-icon>
                         <star12-filled />
                     </n-icon>
-                </n-button>
+                </n-button> -->
                 <n-button text class="header_button" @click="specify">
                     <n-icon>
                         <arrow-up16-filled />
@@ -56,7 +64,9 @@
 <script setup>
 import { NCard, NButton, NIcon, NTag, NSpace, NPopover, NInput, NPopconfirm } from 'naive-ui';
 import ChartRawVue from './ChartRaw.vue';
-import { defineProps, computed, ref } from 'vue-demi';
+import AddCollectionBtnVue from './AddCollectionBtn.vue';
+
+import { defineProps, computed, ref, getCurrentInstance } from 'vue-demi';
 import { QueryStore } from '../store/QueryStore';
 import { CollectionStore } from '../store/CollectionStore';
 
@@ -67,6 +77,8 @@ import { COUNT } from "../query";
 
 const queryStore = QueryStore();
 const collectionStore = CollectionStore();
+const { proxy } = getCurrentInstance();
+
 
 const props = defineProps({
     vegalite: Object,
@@ -100,7 +112,7 @@ function isWildCard(encoding) {
             }
         ]
         , (item) => {
-            return item.field == encoding.field && item.aggregate == encoding.aggregate||item.field==COUNT&&encoding.aggregate=="count"&&encoding.field=="*";
+            return item.field == encoding.field && item.aggregate == encoding.aggregate || item.field == COUNT && encoding.aggregate == "count" && encoding.field == "*";
         })) {
         return false;
     }
@@ -181,7 +193,7 @@ function specifyChannel(encoding, field) {
     }
 }
 
-function spec2query(vegalite){
+function spec2query(vegalite) {
     return {
         x_encoding: specifyChannel(vegalite.encoding, "x").field,
         y_encoding: specifyChannel(vegalite.encoding, "y").field,
@@ -194,18 +206,31 @@ function spec2query(vegalite){
 }
 
 function specify() {
+    proxy.$EventBus.emit("user:specify",{
+        vegalite: props.vegalite,
+    })
     queryStore.$patch(spec2query(props.vegalite));
 }
 
 function addCollection() {
+    proxy.$EventBus.emit(`user:collection:add`,{
+        vegalite: props.vegalite,
+    });
     collectionStore.add(props.vegalite);
 }
 
 function removeCollection() {
+    proxy.$EventBus.emit(`user:collection:remove`,{
+        vegalite: props.vegalite,
+    });
     collectionStore.remove(props.vegalite);
 }
 
 function addNote(noteValue) {
+    proxy.$EventBus.emit(`user:note:add`,{
+        target: props.vegalite,
+        note: noteValue,
+    });
     collectionStore.addNote(JSON.stringify(props.vegalite), noteValue)
 }
 
