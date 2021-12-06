@@ -2,13 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f159c49-d6b8-4124-a246-49f85b130b93" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/DownloadButton.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CollectionButton.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CollectionButton.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/store/CollectionStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/store/CollectionStore.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/Editboard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Editboard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/DownloadButton.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/DownloadButton.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +56,9 @@
       <workItem from="1638362681014" duration="424000" />
       <workItem from="1638583973887" duration="1583000" />
       <workItem from="1638589259618" duration="29529000" />
-      <workItem from="1638683497206" duration="19254000" />
+      <workItem from="1638683497206" duration="19453000" />
+      <workItem from="1638709498903" duration="7630000" />
+      <workItem from="1638765350663" duration="1858000" />
     </task>
     <servers />
   </component>
@@ -69,22 +66,22 @@
     <option name="version" value="3" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1685" height="242" key="GridCell.Tab.0.bottom" timestamp="1638589233317">
+    <state width="1685" height="242" key="GridCell.Tab.0.bottom" timestamp="1638717209473">
       <screen x="0" y="0" width="1707" height="920" />
     </state>
-    <state width="1685" height="242" key="GridCell.Tab.0.bottom/-1920.0.1536.816/0.0.1707.920@0.0.1707.920" timestamp="1638589233317" />
-    <state width="1685" height="242" key="GridCell.Tab.0.center" timestamp="1638589233317">
+    <state width="1685" height="242" key="GridCell.Tab.0.bottom/-1920.0.1536.816/0.0.1707.920@0.0.1707.920" timestamp="1638717209473" />
+    <state width="1685" height="242" key="GridCell.Tab.0.center" timestamp="1638717209473">
       <screen x="0" y="0" width="1707" height="920" />
     </state>
-    <state width="1685" height="242" key="GridCell.Tab.0.center/-1920.0.1536.816/0.0.1707.920@0.0.1707.920" timestamp="1638589233317" />
-    <state width="1685" height="242" key="GridCell.Tab.0.left" timestamp="1638589233317">
+    <state width="1685" height="242" key="GridCell.Tab.0.center/-1920.0.1536.816/0.0.1707.920@0.0.1707.920" timestamp="1638717209473" />
+    <state width="1685" height="242" key="GridCell.Tab.0.left" timestamp="1638717209473">
       <screen x="0" y="0" width="1707" height="920" />
     </state>
-    <state width="1685" height="242" key="GridCell.Tab.0.left/-1920.0.1536.816/0.0.1707.920@0.0.1707.920" timestamp="1638589233317" />
-    <state width="1685" height="242" key="GridCell.Tab.0.right" timestamp="1638589233317">
+    <state width="1685" height="242" key="GridCell.Tab.0.left/-1920.0.1536.816/0.0.1707.920@0.0.1707.920" timestamp="1638717209473" />
+    <state width="1685" height="242" key="GridCell.Tab.0.right" timestamp="1638717209473">
       <screen x="0" y="0" width="1707" height="920" />
     </state>
-    <state width="1685" height="242" key="GridCell.Tab.0.right/-1920.0.1536.816/0.0.1707.920@0.0.1707.920" timestamp="1638589233317" />
+    <state width="1685" height="242" key="GridCell.Tab.0.right/-1920.0.1536.816/0.0.1707.920@0.0.1707.920" timestamp="1638717209473" />
     <state x="510" y="211" key="run.anything.popup" timestamp="1638689087895">
       <screen x="0" y="0" width="1707" height="920" />
     </state>
