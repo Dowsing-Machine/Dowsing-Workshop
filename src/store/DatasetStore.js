@@ -10,17 +10,6 @@ import META from "./meta.json";
 
 export const DatasetStore=defineStore({
     id:"DatasetStore",
-    recordOption:{
-        enabled:true,
-        clone:(state)=>({
-            userDefinedColType:_.cloneDeep(state.userDefinedColType)
-        }),
-        diff: (newState, state)=>{
-            const res = !_.isEqual(state.userDefinedColType, newState.userDefinedColType)
-            console.log("diff", res, state.userDefinedColType, newState.userDefinedColType);
-            return res;
-        }
-    },
     state:()=>({
         dataset:[],
         userDefinedColType:{}

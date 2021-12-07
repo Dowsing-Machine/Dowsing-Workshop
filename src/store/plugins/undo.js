@@ -17,14 +17,15 @@ export function Undo({ store, options }) {
     store.undo = () => {
         preventUpdateOnSubscribe = true;
         let undo = stack.undo();
-        store.$patch(undo);
+        store.$patch(cloneState(undo));
     }
     store.redo = () => {
         preventUpdateOnSubscribe = true;
-        store.$patch(stack.redo());
+        store.$patch(cloneState(stack.redo()));
     }
     scope.run(() => {
-        watch(store, (state,prevState) => {
+        watch(store.$state, (state) => {
+            const prevState=stack.top();
             if (preventUpdateOnSubscribe) {
                 preventUpdateOnSubscribe = false;
                 return;

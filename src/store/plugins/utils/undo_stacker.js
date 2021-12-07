@@ -13,7 +13,7 @@ export default function createStack(current) {
     };
 
     function update() {
-        
+
         current = stack[index - 1];
         state = {
             first: index === 1,
@@ -21,12 +21,12 @@ export default function createStack(current) {
             current
         };
 
-        return _.cloneDeep(current);
+        return current;
     }
 
     return {
         push: (value) => {
-            stack.splice(index);     
+            stack.splice(index);
 
             stack[index++] = typeof value === 'function' ? (value)(current) : value;
 
@@ -39,6 +39,9 @@ export default function createStack(current) {
         redo: () => {
             if (index < stack.length) index += 1;
             return update();
+        },
+        top: () => {
+            return stack[index - 1];
         }
     };
 }

@@ -5,19 +5,27 @@ export const QueryStore = defineStore({
     id: "QueryStore",
     undoOption: {
         enabled: true,
+        clone: (state)=>{
+            let clone = _.clone(state);
+            clone.filter=state.filter.map(f=>_.clone(f));
+            return clone;
+        },
+        diff:(state,prevState)=>{
+            return !_.isEqual(state,prevState);
+        }
     },
     state: () => ({
         x_encoding: null,
         x_aggregate: null,
-        x_filter: null,
+        // x_filter: null,
         // x_bin:false,
         y_encoding: null,
         // y_bin:false,
         y_aggregate: null,
-        y_fillter: null,
+        // y_fillter: null,
         category_encoding: null,
         category_aggregate: null,
-        category_filter: null,
+        // category_filter: null,
         chart_type: null,
         filter: []   //[{filter:"...condiation",column:"...field",predicate:"range|oneOf"}]
     }),
