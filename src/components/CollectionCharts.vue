@@ -37,11 +37,17 @@
                                 @update:value="addNote(layout.spec, $event)"
                             ></n-input>
                         </n-popover>
-                        <n-button text class="header_button" @click="removeCollection(layout.spec)">
+                        <add-collection-btn-vue
+                            :inCollection="true"
+                            @removeCollection="removeCollection(layout.spec)"
+                        >
+
+                        </add-collection-btn-vue>
+                        <!-- <n-button text class="header_button" @click="removeCollection(layout.spec)">
                             <n-icon>
                                 <star12-filled />
                             </n-icon>
-                        </n-button>
+                        </n-button> -->
                     </n-space>
                 </template>
                 <chart-raw
@@ -73,6 +79,8 @@ import { onBeforeUpdate } from "vue";
 import _ from "lodash";
 
 import { Star12Filled, CommentNote24Regular } from '@vicons/fluent';
+
+import AddCollectionBtnVue from './AddCollectionBtn.vue';
 
 const collectionStore = CollectionStore();
 const { proxy } = getCurrentInstance();

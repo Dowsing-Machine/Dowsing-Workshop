@@ -1,7 +1,7 @@
 <template>
     <div style="padding: 10px;">
         <n-card v-if="recommendStore.specifiedView !== null" style="margin:10px">
-            <template #header>Specified View</template>
+            <template #header>当前视图 | Specified View</template>
             <n-space justify="center">
                 <recommend-charts-vue :vegalite="recommendStore.specifiedView">
 

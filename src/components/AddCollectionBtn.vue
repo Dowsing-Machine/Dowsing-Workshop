@@ -7,7 +7,7 @@
     <n-popconfirm @positive-click="removeCollection" v-else>
         <template #trigger>
             <n-button text class="header_button">
-                <n-icon>
+                <n-icon color="#ffac2d">
                     <star12-filled />
                 </n-icon>
             </n-button>
