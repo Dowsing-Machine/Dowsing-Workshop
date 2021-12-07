@@ -9,6 +9,7 @@
                             <template #unchecked>面板</template>
                         </n-switch>-->
                         <n-space>
+                            <dataset-select-vue></dataset-select-vue>
                             <collection-button></collection-button>
                             <download-button></download-button>
                         </n-space>
@@ -51,6 +52,7 @@ import SingleChartEdit from "@/components/SingleChartEdit.vue";
 import QueryControlVue from '../components/QueryControl.vue';
 import MultiView from '../components/MultiView.vue';
 import MultiViewCtrl from '../components/MultiViewCtrl.vue';
+import DatasetSelectVue from '../components/DatasetSelect.vue';
 // import Mention from '../components/Mention.vue'
 
 import { MVStore } from '../store/MVStore';

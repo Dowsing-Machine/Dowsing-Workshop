@@ -3,8 +3,10 @@ import { defineStore } from 'pinia'
 import * as cql from "compassql";
 // const cql=require('compassql');
 
-import CarJSON from '@/assets/carjson.json'
+// import CarJSON from '@/assets/carjson.json'
 import _ from 'lodash'
+import axios from 'axios'
+import META from "./meta.json";
 
 export const DatasetStore=defineStore({
     id:"DatasetStore",
@@ -20,7 +22,7 @@ export const DatasetStore=defineStore({
         }
     },
     state:()=>({
-        dataset:CarJSON,
+        dataset:[],
         userDefinedColType:{}
     }),
     getters:{
@@ -35,33 +37,43 @@ export const DatasetStore=defineStore({
                     let numberRatio = numbersCount/colData.length;
                     let uniqueRatio = unique.length/colData.length;
                     // console.log(numberRatio,uniqueRatio);
+                    let temp={
+                        name:col,
+                        min: _(colData).map(_.toNumber).filter(item => !isNaN(item) && _.isNumber(item)).min(),
+                        max: _(colData).map(_.toNumber).filter(item => !isNaN(item) && _.isNumber(item)).max(),
+                        unique,
+                    };
                     if(state.userDefinedColType[col]!=null){
-                        res.push({
-                            name:col,
-                            type:state.userDefinedColType[col],
-                            min: _(colData).filter(_.isNumber).min(),
-                            max: _(colData).filter(_.isNumber).max(),
-                            unique,
-                        })
+                        // res.push({
+                        //     name:col,
+                        //     type:state.userDefinedColType[col],
+                        //     min: _(colData).map(_.toNumber).filter(item=>!isNaN(item)&&_.isNumber(item)).min(),
+                        //     max: _(colData).map(_.toNumber).filter(item => !isNaN(item) && _.isNumber(item)).max(),
+                        //     unique,
+                        // })
+                        temp.type=state.userDefinedColType[col];
                     }
                     else if(numberRatio>0.9 && uniqueRatio>0.1){
-                        res.push({
-                            name:col,
-                            type:"quantitative",
-                            min: _(colData).filter(_.isNumber).min(),
-                            max: _(colData).filter(_.isNumber).max(),
-                            unique,
-                        });
+                        // res.push({
+                        //     name:col,
+                        //     type:"quantitative",
+                        //     min: _(colData).filter(_.isNumber).min(),
+                        //     max: _(colData).filter(_.isNumber).max(),
+                        //     unique,
+                        // });
+                        temp.type="quantitative";
                     }
                     else{
-                        res.push({
-                            name:col,
-                            type:"nominal",
-                            min: _(colData).filter(_.isNumber).min(),
-                            max: _(colData).filter(_.isNumber).max(),
-                            unique,
-                        });
+                        // res.push({
+                        //     name:col,
+                        //     type:"nominal",
+                        //     min: _(colData).filter(_.isNumber).min(),
+                        //     max: _(colData).filter(_.isNumber).max(),
+                        //     unique,
+                        // });
+                        temp.type="nominal";
                     }
+                    res.push(temp);
                 }
                 return res;
             }
@@ -79,6 +91,20 @@ export const DatasetStore=defineStore({
         },
         clearDefinedColType(){
             this.userDefinedColType={};
+        },
+        async loadDataset(url){
+            const response=await axios.get(url);
+            // console.log(response.data);
+            this.dataset=response.data;
+            const dataset_name=url.split("/").pop();
+            const dataset_meta = META.find(meta => meta.name == dataset_name);
+            console.log(url,dataset_name,dataset_meta);
+            if(dataset_meta){
+                this.userDefinedColType=dataset_meta.columns;
+            }
+            else{
+                this.userDefinedColType={};
+            }
         }
     }
 })

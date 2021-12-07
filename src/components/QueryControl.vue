@@ -167,6 +167,10 @@ const debouncedRefreshRecommend = _.debounce(refreshRecommend, 500, {
 });
 
 watch(queryStore, debouncedRefreshRecommend);
+watch(datasetStore, (query)=>{
+    debouncedRefreshRecommend(query);
+    queryStore.$reset();
+});
 
 const x_filter = computed(() => {
     if (queryStore.x_encoding == COUNT) {
