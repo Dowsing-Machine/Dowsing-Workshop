@@ -41,13 +41,7 @@
                             :inCollection="true"
                             @removeCollection="removeCollection(layout.spec)"
                         >
-
                         </add-collection-btn-vue>
-                        <!-- <n-button text class="header_button" @click="removeCollection(layout.spec)">
-                            <n-icon>
-                                <star12-filled />
-                            </n-icon>
-                        </n-button> -->
                     </n-space>
                 </template>
                 <chart-raw

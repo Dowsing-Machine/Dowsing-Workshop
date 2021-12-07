@@ -7,6 +7,8 @@ import * as MARK from 'vega-lite/build/src/mark';
 import { COLOR, COLUMN, ROW, SIZE, X, Y } from 'vega-lite/build/src/channel';
 import _ from "lodash";
 
+import RecommendWorker from "@/worker/recommend?worker";
+
 export const COUNT = "COUNT";
 
 const DEFAULT_CQL_CONFIG = cql.config.extendConfig({
@@ -72,7 +74,7 @@ function specEncodings(query, columns, filter) {
 }
 
 
-export function runQuery(fn, query, data) {
+export function runQuery(fn, query, data, cb=()=>{}) {
     const cql_query = fn(query, data);
     const schema = cql.schema.build(data.dataset);
     // cql_query.spec={
@@ -80,6 +82,13 @@ export function runQuery(fn, query, data) {
         
     // };
     // console.log(cql_query);
+    const worker = new RecommendWorker();
+    worker.postMessage({
+        query: cql_query,
+        schema: schema,
+        config: DEFAULT_CQL_CONFIG
+    });
+    worker.onmessage=({result})=>cb(result);
     const output = cql.recommend(cql_query, schema, DEFAULT_CQL_CONFIG);
     return output.result;
 }
@@ -94,7 +103,6 @@ export function specific(query, data) {
             encodings: encodings.map(encoding => ({
                 ...encoding,
             })),
-            // data: { values: dataset }
         },
         config: {
             "autoAddCount": false

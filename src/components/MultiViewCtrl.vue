@@ -49,7 +49,7 @@ const options = computed(() => ([
         )
     },
     {
-        label: "重做",
+        label: "恢复",
         key: "redo",
         icon: () => h(
             NIcon,

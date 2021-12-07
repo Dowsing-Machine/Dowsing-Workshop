@@ -126,6 +126,7 @@ function refreshRecommend(query) {
                 summaries,
                 query,
                 datasetStore,
+                (e)=>console.log("worker",e)
             )
         });
     }
