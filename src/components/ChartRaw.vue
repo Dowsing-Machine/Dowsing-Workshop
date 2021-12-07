@@ -52,8 +52,10 @@ watch(props, () => {
 
 function resize(){
     if(view.value){
-        view.value.resize();
+        console.log("resize");
+        view.value.resize().run();
         // refreshChart();
+        // window.dispatchEvent(new Event('resize'))
     }
 }
 

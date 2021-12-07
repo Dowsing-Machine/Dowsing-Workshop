@@ -15,9 +15,11 @@
             :w="layout.w"
             :h="layout.h"
             :i="layout.i"
-            @resized="onResize(idx,$event)"
+            @resized="resizedEvent"
         >
-            <n-card style="height: 100%;width: 100%;">
+            <n-card 
+                style="height: 100%;width: 100%;"
+            >
                 <template #header>图表#{{ layout.i }}</template>
                 <template #header-extra>
                     <n-space>
@@ -52,6 +54,7 @@
                         },
                         resize: true
                     }"
+                    v-if="chart_enabled"
                     :ref="el => { if (el) charts[idx] = el }"
                     style="width:100%;height:100%"
                 ></chart-raw>
@@ -65,7 +68,7 @@ import { NSpace, NCard, NScrollbar, NButton, NIcon, NPopover, NInput } from 'nai
 import ChartRaw from './ChartRaw.vue';
 import { CollectionStore } from '../store/CollectionStore';
 
-import { computed, toRaw, ref,getCurrentInstance } from "vue-demi";
+import { computed, toRaw, ref,getCurrentInstance,nextTick } from "vue-demi";
 import { onBeforeUpdate } from "vue";
 import _ from "lodash";
 
@@ -74,6 +77,7 @@ import { Star12Filled, CommentNote24Regular } from '@vicons/fluent';
 const collectionStore = CollectionStore();
 const { proxy } = getCurrentInstance();
 
+const chart_enabled=ref(true);
 
 const SpecWithChart = computed(() => {
     let res= collectionStore.collections.map(collection => {
@@ -96,16 +100,36 @@ onBeforeUpdate(function () {
 
 function onResize(idx,event) {
     const {newH,newW,i} = event;
-    const layout=collectionStore.layouts.find(i => i.i === i);
+    const layout=collectionStore.layouts.findIndex(item => item.i === i);
     proxy.$EventBus.emit(`user:layout:resize:${idx}`,{
         block_val:event
     })
-    if(layout){
-        layout.h = newH;
-        layout.w = newW;
+    if(layout>=0){
+        collectionStore.layouts[layout].h=newH;
+        collectionStore.layouts[layout].w=newW;
+        // layout.h = newH;
+        // layout.w = newW;
     }
     // updateLayout();
     charts.value[idx].resize();
+}
+
+function onIdxResized(idx){
+    return (i,newH,newW) => {
+        onResize(idx,{newH,newW,i})
+    }
+}
+
+
+async function resizedEvent(i, newH, newW, newHPx, newWPx){
+        onResize(i,{
+            newH,
+            newW,
+            i
+        })
+        chart_enabled.value=false;
+        await nextTick();
+        chart_enabled.value=true;
 }
 
 function onReady() {
