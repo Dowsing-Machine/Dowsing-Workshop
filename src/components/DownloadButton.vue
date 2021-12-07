@@ -26,6 +26,7 @@ const {proxy}=getCurrentInstance();
 
 const actionList = []
 const actionSepts = []
+let outputFilename='user_actions.json';
 
 watch(collectionStore.notes, _.debounce(()=> {
   actionList.push({
@@ -84,7 +85,7 @@ function saveActionList(){
   finalState['collections'] = _.cloneDeep(collectionStore.collections)
   finalState['layout'] = _.cloneDeep(collectionStore.layouts)
 
-  saveAs(new Blob([JSON.stringify({'finalState': finalState, 'actionSteps': actionSepts, 'actionList': actionList})], { type: 'text/plain; charset=utf-8' }), 'user_actions.json');
+  saveAs(new Blob([JSON.stringify({'finalState': finalState, 'actionSteps': actionSepts, 'actionList': actionList})], { type: 'text/plain; charset=utf-8' }), outputFilename);
 
 }
 
@@ -95,6 +96,14 @@ proxy.$EventBus.on("*",function(type,e){
     type: type,
     content: e
   })
+
+  if(_.startsWith(type,"user:dataset:load")){
+    actionSepts.length=0;
+    actionList.length=0;
+    const filename=_(e.url).trimStart("dataset/").trimEnd(".json");
+    console.log("filename",filename)
+    outputFilename=`${filename}_user_actions.json`;
+  } 
 })
 
 </script>

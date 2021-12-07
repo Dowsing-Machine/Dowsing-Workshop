@@ -66,7 +66,12 @@ const showDatasetDialog=ref(false);
 const {proxy}=getCurrentInstance();
 
 async function loadDataset(url){
-    proxy.$EventBus.emit(`user:dataset:load:${url}`);
+    proxy.$EventBus.emit(
+        `user:dataset:load:${url}`,
+        {
+            url
+        }
+    );
     await datasetStore.loadDataset(url);
     showDatasetDialog.value=false;
 }
