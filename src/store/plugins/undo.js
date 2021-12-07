@@ -38,17 +38,4 @@ export function Undo({ store, options }) {
         })
     }
     )
-
-
-    // store.$subscribe((_,state) => {
-    //     console.log("subscribe",_);
-    //     if (preventUpdateOnSubscribe) {
-    //         console.log("preventUpdateOnSubscribe");
-    //         preventUpdateOnSubscribe = false;
-    //         return;
-    //     }
-
-    //     state=cloneState(state);
-    //     stack.push(state);
-    // })
 }
