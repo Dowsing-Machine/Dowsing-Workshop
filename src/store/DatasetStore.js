@@ -12,7 +12,8 @@ export const DatasetStore=defineStore({
     id:"DatasetStore",
     state:()=>({
         dataset:[],
-        userDefinedColType:{}
+        userDefinedColType:{},
+        name:"",
     }),
     getters:{
         columns:state=>{
@@ -88,6 +89,7 @@ export const DatasetStore=defineStore({
             const dataset_name=url.split("/").pop();
             const dataset_meta = META.find(meta => meta.name == dataset_name);
             console.log(url,dataset_name,dataset_meta);
+            this.name=dataset_name;
             if(dataset_meta){
                 this.userDefinedColType=dataset_meta.columns;
             }

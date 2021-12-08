@@ -46,9 +46,12 @@ import { ref, getCurrentInstance, computed } from "vue";
 
 import { DatasetStore } from "../store/DatasetStore";
 import { ControlStore } from "../store/ControlStore";
+import {CollectionStore} from "../store/CollectionStore";
+
 
 const datasetStore = DatasetStore();
 const controlStore = ControlStore();
+const collectionStore = CollectionStore();
 
 const datasetReady = computed(() => {
     return datasetStore.dataset.length > 0;
@@ -66,5 +69,9 @@ async function loadDataset(url) {
     );
     await datasetStore.loadDataset(url);
     showDatasetDialog.value = false;
+    collectionStore.$reset();
+    
 }
+
+
 </script>
