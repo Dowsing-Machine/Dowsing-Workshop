@@ -8,7 +8,8 @@ export const ControlStore= defineStore({
     state: ()=>({
         // currentViewId: null,
         groupId: null,
-        Id:null
+        Id:null,
+        chartIdx:0,
     }),
     getters:{
         uuid: state => {

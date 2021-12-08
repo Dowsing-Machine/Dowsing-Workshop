@@ -38,6 +38,12 @@ let outputFilename = 'user_actions.json';
 
 const sending=ref(false);
 
+function setSendingToFalse(){
+  sending.value = false;
+}
+
+const setFalse=_.debounce(setSendingToFalse,1000);
+
 async function sendLog(log, topic) {
   sending.value = true;
   if (import.meta.env.DEV) {
@@ -57,7 +63,10 @@ async function sendLog(log, topic) {
 
   // axios.post(`${uploadURL}/log/${groupId}.${id}.${uuid}/${topic}.json?append`, log);
   await axios.put(`${uploadURL}/log/${groupId}.${id}.${uuid}/${topic}.${time}.json`, log);
-  sending.value = false;
+  // sending.value = false;
+  setTimeout(() => {
+    setFalse();
+  }, 1000);
 }
 
 watch(collectionStore.notes, _.debounce(() => {

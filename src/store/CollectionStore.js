@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 
 import _ from "lodash";
 
-let idx=0;
+// let idx=0;
 
 function findUseableLayout(layouts,size={w:2,h:2}){
     return {
@@ -18,7 +18,8 @@ export const CollectionStore = defineStore({
         collections: [],
         layouts: [],
         specIds:{},
-        notes: {}
+        notes: {},
+        idx:0,
     }),
     getters: {
         inCollection: state => {
@@ -34,14 +35,26 @@ export const CollectionStore = defineStore({
             }
             else{
                 const strSpec = JSON.stringify(spec);
-                if(!_.has(this.specIds,strSpec)){
-                    this.specIds[strSpec] = idx++;
-                }
-                this.collections.push(_.cloneDeep(spec));
-                this.layouts.push({
-                    ...findUseableLayout(this.layouts),
-                    i:this.specIds[strSpec]
-                });
+
+                this.$patch(state=>{
+                    this.collections.push(_.cloneDeep(spec));
+                    if (!_.has(state.specIds, strSpec)) {
+                        state.specIds[strSpec] = state.idx++;
+                    }
+                    state.layouts.push({
+                        ...findUseableLayout(state.layouts),
+                        i: state.specIds[strSpec]
+                    });
+                })
+
+                // if(!_.has(this.specIds,strSpec)){
+                //     this.specIds[strSpec] = this.idx++;
+                // }
+                // this.collections.push(_.cloneDeep(spec));
+                // this.layouts.push({
+                //     ...findUseableLayout(this.layouts),
+                //     i:this.specIds[strSpec]
+                // });
             }
         },
         remove(spec){
