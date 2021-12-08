@@ -1,6 +1,7 @@
 <template>
   <n-badge>
-    <n-button text style="font-size: 28px;" @click="saveActionList(false,true)">
+    <n-spin v-if="sending" size="small" />
+    <n-button v-else text style="font-size: 28px;" @click="saveActionList(false,true)">
       <n-icon>
         <arrow-upload16-filled />
       </n-icon>
@@ -10,7 +11,7 @@
 
 <script setup>
 import { ArrowUpload16Filled } from "@vicons/fluent"
-import { NButton, NIcon, NBadge, NModal, NCard } from "naive-ui";
+import { NButton, NIcon, NBadge, NModal, NCard,NSpin } from "naive-ui";
 import { CollectionStore } from "../store/CollectionStore";
 import CollectionChartsVue from "./CollectionCharts.vue";
 import { QueryStore } from "../store/QueryStore"
@@ -35,9 +36,16 @@ const uploadURL = "https://dowsing-1254359329.cos.ap-chengdu.myqcloud.com";
 
 let outputFilename = 'user_actions.json';
 
-function sendLog(log, topic) {
+const sending=ref(false);
+
+async function sendLog(log, topic) {
+  sending.value = true;
   if (import.meta.env.DEV) {
     console.log(log, topic);
+    setTimeout(() => {
+      sending.value = false;
+    }, 1000);
+    // sending.value = false;
     return;
   }
   const uuid = controlStore.uuid;
@@ -48,7 +56,8 @@ function sendLog(log, topic) {
   topic = topic || "user_action";
 
   // axios.post(`${uploadURL}/log/${groupId}.${id}.${uuid}/${topic}.json?append`, log);
-  axios.put(`${uploadURL}/log/${groupId}.${id}.${uuid}/${topic}.${time}.json`, log);
+  await axios.put(`${uploadURL}/log/${groupId}.${id}.${uuid}/${topic}.${time}.json`, log);
+  sending.value = false;
 }
 
 watch(collectionStore.notes, _.debounce(() => {
