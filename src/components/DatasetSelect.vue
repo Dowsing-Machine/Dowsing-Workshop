@@ -4,7 +4,9 @@
             <database24-filled></database24-filled>
         </n-icon>
     </n-button>
-    <n-modal :show="showDatasetDialog || !datasetReady" :mask-closable="false">
+    <n-modal :show="showDatasetDialog || !datasetReady" 
+    @update-show="showDatasetDialog = $event"
+    :mask-closable="datasetReady">
         <n-card style="max-width: 40vw;">
             <n-space>
                 <n-space vertical>

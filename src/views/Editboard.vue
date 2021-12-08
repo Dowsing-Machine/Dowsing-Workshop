@@ -38,6 +38,11 @@
             <n-layout-footer class="main-footer">
                 <n-space justify="space-between">
                     <div>Dowsing</div>
+                    <div>
+                        Group {{controlStore.groupId}}|
+                        ID {{controlStore.Id}}
+                    </div>
+                    
                     <div>VCL318</div>
                 </n-space>
             </n-layout-footer>

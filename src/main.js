@@ -11,6 +11,8 @@ import App from './App.vue'
 import VueGridLayout from 'vue-grid-layout'
 import mitt from 'mitt'
 
+import persistedstate from 'pinia-persistedstate'
+
 const router = createRouter({
     routes,
     history: createWebHistory(),
@@ -22,6 +24,11 @@ app.use(router);
 const pinia = createPinia();
 pinia.use(Undo);
 // pinia.use(StateRecord);
+
+pinia.use(persistedstate({
+    key:"client",
+    paths:["CollectionStore","DatasetStore","QueryStore","control"]
+}))
 
 app.use(pinia);
 app.use(VueGridLayout);

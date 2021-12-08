@@ -12,7 +12,7 @@ export function Undo({ store, options }) {
     const cloneState=undoOption.clone||_.cloneDeep;
     const diff=undoOption.diff||_.constant(true);
 
-    const stack = createStack(cloneState(store));
+    const stack = createStack(cloneState(store.$state));
     let preventUpdateOnSubscribe = false;
     store.undo = () => {
         preventUpdateOnSubscribe = true;
