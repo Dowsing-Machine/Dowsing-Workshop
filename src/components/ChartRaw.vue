@@ -31,12 +31,12 @@ async function refreshChart() {
             // name:"data"
             values:datasetStore.dataset
         },
-        transform:queryStore.filter.filter(f=>f!=null).map(f=>({
-            filter:{
-                field:f.column,
-                [f.predicate]:f.filter
-            }
-        })),
+        // transform:queryStore.filter.filter(f=>f!=null).map(f=>({
+        //     filter:{
+        //         field:f.column,
+        //         [f.predicate]:f.filter
+        //     }
+        // })),
     }, { actions: false });
     // res.view.insert("data", datasetStore.dataset).run();
     view.value=res.view;

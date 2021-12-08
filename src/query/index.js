@@ -74,21 +74,27 @@ function specEncodings(query, columns, filter) {
 }
 
 
-export function runQuery(fn, query, data, cb=()=>{}) {
+export function runQuery(fn, query, data, cb = () => { }) {
     const cql_query = fn(query, data);
     const schema = cql.schema.build(data.dataset);
-    // cql_query.spec={
-    //     ...cql_query.spec,
-        
-    // };
+    cql_query.spec = {
+        ...cql_query.spec,
+        transform: query.filter.filter(f => f != null).map(f => ({
+            filter: {
+                field: f.column,
+                [f.predicate]: f.filter
+            }
+
+        }))
+    };
     // console.log(cql_query);
-    const worker = new RecommendWorker();
-    worker.postMessage({
-        query: cql_query,
-        schema: schema,
-        config: DEFAULT_CQL_CONFIG
-    });
-    worker.onmessage=({result})=>cb(result);
+    // // const worker = new RecommendWorker();
+    // worker.postMessage({
+    //     query: cql_query,
+    //     schema: schema,
+    //     config: DEFAULT_CQL_CONFIG
+    // });
+    // worker.onmessage=({result})=>cb(result);
     const output = cql.recommend(cql_query, schema, DEFAULT_CQL_CONFIG);
     return output.result;
 }
@@ -223,7 +229,7 @@ export function addCategoricalField(query, data) {
     }
 }
 
-export function univariteSummaries(query,data) {
+export function univariteSummaries(query, data) {
     const { dataset, columns } = data;
     return {
         spec: {
