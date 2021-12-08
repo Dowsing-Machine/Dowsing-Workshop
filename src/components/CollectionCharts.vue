@@ -113,7 +113,7 @@ function onResize(idx,event) {
         // layout.w = newW;
     }
     // updateLayout();
-    charts.value[idx].resize();
+    // charts.value[idx].resize();
 }
 
 function onIdxResized(idx){
