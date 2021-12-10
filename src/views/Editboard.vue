@@ -12,6 +12,7 @@
                             <dataset-select-vue></dataset-select-vue>
                             <collection-button></collection-button>
                             <download-button></download-button>
+                            <log-upload-vue v-if="isDev"></log-upload-vue>
                         </n-space>
                     </div>
                 </n-space>
@@ -40,7 +41,8 @@
                     <div>Dowsing</div>
                     <div>
                         Group {{controlStore.groupId}}|
-                        ID {{controlStore.Id}}
+                        ID {{controlStore.Id}}|
+                        {{datasetStore.name}}
                     </div>
                     
                     <div>VCL318</div>
@@ -67,9 +69,17 @@ import ExplorePanelVue from '@/components/ExplorePanel.vue';
 
 import CollectionButton from '@/components/CollectionButton.vue';
 import DownloadButton from "@/components/DownloadButton.vue";
+import { DatasetStore } from '../store/DatasetStore';
+
+import logUploadVue from '../components/logUpload.vue';
+
+import { computed } from 'vue-demi';
+
+const isDev=computed(()=>import.meta.env.DEV)
 
 const mvStore = MVStore();
 const controlStore = ControlStore();
+const datasetStore = DatasetStore();
 
 const style = {
     header: {

@@ -4,7 +4,7 @@ import _ from "lodash";
 
 // let idx=0;
 
-function findUseableLayout(layouts,size={w:2,h:2}){
+function findUseableLayout(layouts,size={w:4,h:2}){
     return {
         x:0,
         y:_(layouts).map(l=>l.y).max()||0,
@@ -71,6 +71,15 @@ export const CollectionStore = defineStore({
         addNote(spec, note){
             // console.log(this.notes)
             this.notes[spec] = note
+        },
+        load(data){
+            this.$patch(()=>{
+                this.collections=data.collections;
+                this.layouts=data.layout;
+                this.notes=data.notes;
+                this.specIds=data.specIds;
+                this.idx=_.max(_.values(this.specIds))+1;
+            })
         }
     }
 });

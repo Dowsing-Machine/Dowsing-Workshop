@@ -7,7 +7,9 @@ import * as MARK from 'vega-lite/build/src/mark';
 import { COLOR, COLUMN, ROW, SIZE, X, Y } from 'vega-lite/build/src/channel';
 import _ from "lodash";
 
-import RecommendWorker from "@/worker/recommend?worker";
+import RecommendWorker from "@/worker/recommend.js?worker&inline";
+// const worker = new Worker("../worker/recommend.js");
+// const worker = new RecommendWorker();
 
 export const COUNT = "COUNT";
 
@@ -38,7 +40,7 @@ function formEachEncoding(encoding, aggregate, columns) {
     else if (binEnabled) {
         return {
             field: encoding,
-            bin: true,
+            bin: {},
             type: encoding ? columns.find(c => c.name == encoding).type : "?"
 
         }
@@ -74,7 +76,7 @@ function specEncodings(query, columns, filter) {
 }
 
 
-export function runQuery(fn, query, data, cb = () => { }) {
+export function runQuery(fn, query, data, cb) {
     const cql_query = fn(query, data);
     const schema = cql.schema.build(data.dataset);
     cql_query.spec = {
@@ -87,14 +89,21 @@ export function runQuery(fn, query, data, cb = () => { }) {
 
         }))
     };
-    // console.log(cql_query);
-    // // const worker = new RecommendWorker();
+    console.log(cql_query);
+    // const worker = new RecommendWorker();
+    // worker.onmessage = function(e){
+    //     console.log("worker",e,e.data.result,cb);
+    //     if(cb) cb(e.data.result)
+    //     worker.terminate();
+    // };
     // worker.postMessage({
     //     query: cql_query,
-    //     schema: schema,
-    //     config: DEFAULT_CQL_CONFIG
+    //     // data:JSON.stringify(data.dataset),
+    //     schema:schema._tableSchema,
+    //     config: DEFAULT_CQL_CONFIG,
+    //     method:"recommend"
     // });
-    // worker.onmessage=({result})=>cb(result);
+    
     const output = cql.recommend(cql_query, schema, DEFAULT_CQL_CONFIG);
     return output.result;
 }

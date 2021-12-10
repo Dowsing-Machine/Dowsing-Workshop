@@ -18,7 +18,14 @@ export const RecommendStore = defineStore({
                 this.specifiedView=null;
             }
             else{
-                this.specifiedView =cql.result.mapLeaves(resultSet,item=>item.toSpec()).items[0];
+                this.specifiedView =cql.result.mapLeaves(resultSet,item=>{
+                    // cql.model.SpecQueryModel.build(
+                    //     item._spec,
+                    //     item._schema,
+                    //     item._opt
+                    // ).toSpec();
+                    return item.toSpec()
+                }).items[0];
             }
         }
     }

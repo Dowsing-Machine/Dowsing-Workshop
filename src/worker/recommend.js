@@ -11,5 +11,9 @@ onmessage = function(e) {
 }
 
 function recommend(query,schema,config){
-    return cql.recommend(query,schema,config).result;
+    // data=JSON.parse(data);
+    // const schema = cql.schema.build(data);
+    const data_schema = new cql.schema.Schema(schema);
+    console.log("recommend", query, data_schema,config);
+    return cql.recommend(query, data_schema,config).result;
 }

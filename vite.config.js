@@ -17,7 +17,7 @@ export default defineConfig({
       },
       {
         find:"compassql",
-        replacement: resolve("node_modules/compassql/build/compassql.min.js")
+        replacement: resolve("node_modules/compassql/build/compassql.js")
       }
     ]
   },

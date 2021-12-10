@@ -15,7 +15,10 @@
         </template>
         <template #header-extra>
             <n-space style="margin-left: 10px;">
-                <n-popover trigger="click">
+                <n-popover  
+                    trigger="click"
+                    @update:show="onToggle"
+                >
                     <template #trigger>
                         <n-button text class="header_button">
                             <n-icon>
@@ -71,6 +74,8 @@ import { QueryStore } from '../store/QueryStore';
 import { CollectionStore } from '../store/CollectionStore';
 
 import { Tag24Filled, Square20Filled, FullScreenMaximize24Filled, ZoomIn24Regular, CommentNote24Regular, Star12Regular, Star12Filled, ArrowUp16Filled } from "@vicons/fluent"
+
+import {spec2query} from "@/utils/specify";
 
 import _ from "lodash";
 import { COUNT } from "../query";
@@ -134,80 +139,81 @@ const channels = computed(() => {
     })).value();
 })
 
-function specifyEncoding(encoding, field) {
-    if (encoding[field]) {
-        if (encoding[field].field == "*") {
-            return null;
-        }
-        else {
-            return encoding[field].field;
-        }
-    }
-    else {
-        return null;
-    }
-}
+// function specifyEncoding(encoding, field) {
+//     if (encoding[field]) {
+//         if (encoding[field].field == "*") {
+//             return null;
+//         }
+//         else {
+//             return encoding[field].field;
+//         }
+//     }
+//     else {
+//         return null;
+//     }
+// }
 
-function specifyAggregate(encoding, field) {
-    if (encoding[field]) {
-        if (encoding[field].bin) {
-            return "bin";
-        }
-        else {
-            encoding[field].aggregate
-        }
-    }
-    else {
-        return null;
-    }
-}
+// function specifyAggregate(encoding, field) {
+//     if (encoding[field]) {
+//         if (encoding[field].bin) {
+//             return "bin";
+//         }
+//         else {
+//             encoding[field].aggregate
+//         }
+//     }
+//     else {
+//         return null;
+//     }
+// }
 
-function specifyChannel(encoding, field) {
-    if (encoding[field]) {
-        if (encoding[field].field == "*" && encoding[field].aggregate == "count") {
-            return {
-                field: COUNT,
-                aggregate: null,
-            };
-        }
-        else {
-            if (encoding[field].bin) {
-                return {
-                    field: encoding[field].field,
-                    aggregate: "bin",
-                };
-            }
-            else {
-                return {
-                    field: encoding[field].field,
-                    aggregate: encoding[field].aggregate,
-                };
-            }
-        }
-    }
-    else {
-        return {
-            field: null,
-            aggregate: null,
-        };
-    }
-}
+// function specifyChannel(encoding, field) {
+//     if (encoding[field]) {
+//         if (encoding[field].field == "*" && encoding[field].aggregate == "count") {
+//             return {
+//                 field: COUNT,
+//                 aggregate: null,
+//             };
+//         }
+//         else {
+//             if (encoding[field].bin) {
+//                 return {
+//                     field: encoding[field].field,
+//                     aggregate: "bin",
+//                 };
+//             }
+//             else {
+//                 return {
+//                     field: encoding[field].field,
+//                     aggregate: encoding[field].aggregate,
+//                 };
+//             }
+//         }
+//     }
+//     else {
+//         return {
+//             field: null,
+//             aggregate: null,
+//         };
+//     }
+// }
 
-function spec2query(vegalite) {
-    return {
-        x_encoding: specifyChannel(vegalite.encoding, "x").field,
-        y_encoding: specifyChannel(vegalite.encoding, "y").field,
-        category_encoding: specifyChannel(vegalite.encoding, "color").field,
-        x_aggregate: specifyChannel(vegalite.encoding, "x").aggregate,
-        y_aggregate: specifyChannel(vegalite.encoding, "y").aggregate,
-        category_aggregate: specifyChannel(vegalite.encoding, "color").aggregate,
-        chart_type: vegalite.mark,
-    }
-}
+// function spec2query(vegalite) {
+//     return {
+//         x_encoding: specifyChannel(vegalite.encoding, "x").field,
+//         y_encoding: specifyChannel(vegalite.encoding, "y").field,
+//         category_encoding: specifyChannel(vegalite.encoding, "color").field,
+//         x_aggregate: specifyChannel(vegalite.encoding, "x").aggregate,
+//         y_aggregate: specifyChannel(vegalite.encoding, "y").aggregate,
+//         category_aggregate: specifyChannel(vegalite.encoding, "color").aggregate,
+//         chart_type: vegalite.mark,
+//     }
+// }
 
 function specify() {
     proxy.$EventBus.emit("user:specify",{
         vegalite: props.vegalite,
+        from:"recommend",
     })
     queryStore.$patch(spec2query(props.vegalite));
 }
@@ -231,7 +237,14 @@ function addNote(noteValue) {
         target: JSON.stringify({...props.vegalite, 'data': null}),
         note: noteValue,
     });
+    addCollection();
     collectionStore.addNote(JSON.stringify({...props.vegalite, 'data': null}), noteValue)
 }
 
+function onToggle(){
+    proxy.$EventBus.emit("user:control:note:toggle",{
+        target: props.vegalite,
+        insideCollection:false
+    });
+}
 </script>

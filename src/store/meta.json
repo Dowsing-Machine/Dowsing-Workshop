@@ -38,7 +38,10 @@
             "cluster": "nominal",
             "pop": "quantitative",
             "life_expect": "quantitative",
-            "fertility": "quantitative"
+            "fertility": "quantitative",
+            "type":"nominal",
+            "continent":"nominal"
+
         }
     },
     {

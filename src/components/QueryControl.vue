@@ -100,7 +100,16 @@ function refreshRecommend(query) {
                 datasetStore,
             )
         );
-        const specQuery=specific(query, datasetStore);
+        // runQuery(
+        //     specific,
+        //     query,
+        //     datasetStore,
+        //     result => {
+        //         console.log("result", result);
+        //         recommendStore.changeSpecView(result)
+        //     }
+        // )
+        const specQuery = specific(query, datasetStore);
         isSpecAggregate = cql.query.spec.isAggregate(specQuery);
     }
     else {
@@ -118,7 +127,7 @@ function refreshRecommend(query) {
         return;
     }
 
-    const res = [];    
+    const res = [];
     if (!isSpecAggregate) {
         res.push({
             name: "总结 | Summaries",
@@ -126,7 +135,7 @@ function refreshRecommend(query) {
                 summaries,
                 query,
                 datasetStore,
-                (e)=>console.log("worker",e)
+                (e) => console.log("worker", e)
             )
         });
     }
@@ -168,7 +177,7 @@ const debouncedRefreshRecommend = _.debounce(refreshRecommend, 500, {
 });
 
 watch(queryStore, debouncedRefreshRecommend);
-watch(datasetStore, (query)=>{
+watch(datasetStore, (query) => {
     debouncedRefreshRecommend(query);
     queryStore.$reset();
 });

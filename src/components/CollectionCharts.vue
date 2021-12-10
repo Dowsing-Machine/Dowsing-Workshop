@@ -6,6 +6,7 @@
         :is-draggable="true"
         @layout-ready="onReady"
         @update:layout="onLayoutChange"
+        :verticalCompact="false"
     >
         <grid-item
             v-for="(layout,idx) in SpecWithChart"
@@ -17,13 +18,11 @@
             :i="layout.i"
             @resized="resizedEvent"
         >
-            <n-card 
-                style="height: 100%;width: 100%;"
-            >
+            <n-card style="height: 100%;width: 100%;">
                 <template #header>图表#{{ layout.i }}</template>
                 <template #header-extra>
                     <n-space>
-                        <n-popover trigger="click">
+                        <n-popover trigger="click" @update:show="onToggle(layout.spec)">
                             <template #trigger>
                                 <n-button text class="header_button">
                                     <n-icon>
@@ -40,8 +39,12 @@
                         <add-collection-btn-vue
                             :inCollection="true"
                             @removeCollection="removeCollection(layout.spec)"
-                        >
-                        </add-collection-btn-vue>
+                        ></add-collection-btn-vue>
+                        <n-button text class="header_button" @click="specify(layout.spec)">
+                            <n-icon>
+                                <arrow-up16-filled />
+                            </n-icon>
+                        </n-button>
                     </n-space>
                 </template>
                 <chart-raw
@@ -68,21 +71,27 @@ import { NSpace, NCard, NScrollbar, NButton, NIcon, NPopover, NInput } from 'nai
 import ChartRaw from './ChartRaw.vue';
 import { CollectionStore } from '../store/CollectionStore';
 
-import { computed, toRaw, ref,getCurrentInstance,nextTick } from "vue-demi";
+import { computed, toRaw, ref, getCurrentInstance, nextTick,defineEmits } from "vue-demi";
 import { onBeforeUpdate } from "vue";
 import _ from "lodash";
 
-import { Star12Filled, CommentNote24Regular } from '@vicons/fluent';
+import { Star12Filled, CommentNote24Regular,ArrowUp16Filled } from '@vicons/fluent';
 
 import AddCollectionBtnVue from './AddCollectionBtn.vue';
 
+import { spec2query } from "@/utils/specify";
+import { QueryStore } from '../store/QueryStore';
+
 const collectionStore = CollectionStore();
+const queryStore = QueryStore();
 const { proxy } = getCurrentInstance();
 
-const chart_enabled=ref(true);
+const emits=defineEmits(["close"]);
+
+const chart_enabled = ref(true);
 
 const SpecWithChart = computed(() => {
-    let res= collectionStore.collections.map(collection => {
+    let res = collectionStore.collections.map(collection => {
         const strSpec = JSON.stringify(collection)
         const id = collectionStore.specIds[strSpec];
         return {
@@ -100,15 +109,15 @@ onBeforeUpdate(function () {
     charts.value = [];
 })
 
-function onResize(idx,event) {
-    const {newH,newW,i} = event;
-    const layout=collectionStore.layouts.findIndex(item => item.i === i);
-    proxy.$EventBus.emit(`user:layout:resize:${idx}`,{
-        block_val:event
+function onResize(idx, event) {
+    const { newH, newW, i } = event;
+    const layout = collectionStore.layouts.findIndex(item => item.i === i);
+    proxy.$EventBus.emit(`user:layout:resize:${idx}`, {
+        block_val: event
     })
-    if(layout>=0){
-        collectionStore.layouts[layout].h=newH;
-        collectionStore.layouts[layout].w=newW;
+    if (layout >= 0) {
+        collectionStore.layouts[layout].h = newH;
+        collectionStore.layouts[layout].w = newW;
         // layout.h = newH;
         // layout.w = newW;
     }
@@ -116,22 +125,22 @@ function onResize(idx,event) {
     // charts.value[idx].resize();
 }
 
-function onIdxResized(idx){
-    return (i,newH,newW) => {
-        onResize(idx,{newH,newW,i})
+function onIdxResized(idx) {
+    return (i, newH, newW) => {
+        onResize(idx, { newH, newW, i })
     }
 }
 
 
-async function resizedEvent(i, newH, newW, newHPx, newWPx){
-        onResize(i,{
-            newH,
-            newW,
-            i
-        })
-        chart_enabled.value=false;
-        await nextTick();
-        chart_enabled.value=true;
+async function resizedEvent(i, newH, newW, newHPx, newWPx) {
+    onResize(i, {
+        newH,
+        newW,
+        i
+    })
+    chart_enabled.value = false;
+    await nextTick();
+    chart_enabled.value = true;
 }
 
 function onReady() {
@@ -141,14 +150,14 @@ function onReady() {
 }
 
 function updateLayout(value) {
-  console.log(value)
-    proxy.$EventBus.emit("user:layout:update",{
+    console.log(value)
+    proxy.$EventBus.emit("user:layout:update", {
         layout: value.map(i => ({
-          i: i.i,
-          x: i.x,
-          y: i.y,
-          w: i.w,
-          h: i.h
+            i: i.i,
+            x: i.x,
+            y: i.y,
+            w: i.w,
+            h: i.h
         }))
     });
     collectionStore.layouts = value.map(i => ({
@@ -172,11 +181,31 @@ const onLayoutChange = _.debounce(updateLayout, 500);
 // })
 
 function addNote(spec, noteValue) {
+    proxy.$EventBus.emit(`user:note:add`, {
+        target: JSON.stringify({ ...spec, 'data': null }),
+        note: noteValue,
+    });
     const strSpec = JSON.stringify(spec);
     collectionStore.addNote(strSpec, noteValue);
 }
 
 function removeCollection(spec) {
     collectionStore.remove(spec);
+}
+
+function onToggle(spec) {
+    proxy.$EventBus.emit("user:control:note:toggle", {
+        target: spec,
+        insideCollection: true
+    });
+}
+
+function specify(spec) {
+    proxy.$EventBus.emit("user:specify", {
+        vegalite: spec,
+        from:"collection"
+    })
+    queryStore.$patch(spec2query(spec));
+    emits("close");
 }
 </script>
