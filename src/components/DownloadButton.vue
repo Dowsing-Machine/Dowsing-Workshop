@@ -31,7 +31,7 @@ import { CollectionStore } from "../store/CollectionStore";
 import CollectionChartsVue from "./CollectionCharts.vue";
 import { QueryStore } from "../store/QueryStore"
 import { ControlStore } from "../store/ControlStore";
-
+import {DatasetStore} from "../store/DatasetStore";
 import { watch, ref, getCurrentInstance, onBeforeUnmount, computed } from "vue";
 import _ from "lodash"
 import { saveAs } from 'file-saver';
@@ -43,6 +43,7 @@ import axios from "axios";
 const collectionStore = CollectionStore();
 const queryStore = QueryStore();
 const controlStore = ControlStore();
+const datasetStore = DatasetStore();
 
 const { proxy } = getCurrentInstance();
 
@@ -52,6 +53,7 @@ const errorList = ref([])
 const isError = computed(() => errorList.value.length > 0)
 const show = ref(false);
 const isDev = computed(() => import.meta.env.DEV)
+
 
 
 const uploadURL = "https://dowsing-1254359329.cos.ap-chengdu.myqcloud.com";
@@ -196,7 +198,7 @@ function saveActionList(download = true, send = false) {
   });
   comment.value = "";
   show.value = false;
-  return finalState;
+  return logObj;
 }
 
 function onResend() {
@@ -215,8 +217,9 @@ proxy.$EventBus.on("*", function (type, e) {
   sendLog(logObj, "action");
 
   if (_.startsWith(type, "user:dataset:load")) {
-    const filename = _(e.url).trimStart("dataset/").trimEnd(".json");
+    // const filename = _(e.url).trimStart("dataset/").trimEnd(".json");
     // console.log("filename",filename)
+    const filename=datasetStore.name;
     const logObj = saveActionList(false);
     sendLog(logObj, `${filename}_final_state`);
     // outputFilename = `${filename}_user_actions.json`;

@@ -148,7 +148,7 @@ const SUPPORTED_AGGREGATE = [
         value: "min"
     },
     {
-        label: "装箱",
+        label: "分箱",
         value: "bin"
     }
 ];
