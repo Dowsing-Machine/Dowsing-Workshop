@@ -12,7 +12,7 @@
             :aggregate="queryStore.x_aggregate"
             :filter="x_filter"
             @update:encoding="updateEncoding('x_encoding', $event)"
-            @update:filter="updateFilter(queryStore.x_encoding, $event)"
+            @update:filter="updateFilter('x_filter',queryStore.x_encoding, $event)"
             @update:aggregate="updateAggregate('x_aggregate', $event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>Y轴编码
@@ -21,7 +21,7 @@
             :aggregate="queryStore.y_aggregate"
             :filter="y_filter"
             @update:encoding="updateEncoding('y_encoding', $event)"
-            @update:filter="updateFilter(queryStore.y_encoding, $event)"
+            @update:filter="updateFilter('y_filter',queryStore.y_encoding, $event)"
             @update:aggregate="updateAggregate('y_aggregate', $event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>颜色编码
@@ -30,12 +30,14 @@
             :aggregate="queryStore.category_aggregate"
             :filter="category_filter"
             @update:encoding="updateEncoding('category_encoding', $event)"
-            @update:filter="updateFilter(queryStore.category_encoding, $event)"
+            @update:filter="updateFilter('category_filter',queryStore.category_encoding, $event)"
             @update:aggregate="updateAggregate('category_aggregate', $event)"
             :columns="datasetStore.columns"
         ></encoding-embed-ctrl>
         <n-button type="error" style="width:100%" @click="resetQuery()">清空查询</n-button>
     </n-space>
+    <task-predict-vue></task-predict-vue>
+    <task-tag-vue></task-tag-vue>
 </template>
 
 <script setup>
@@ -53,6 +55,9 @@ import EncodingEmbedCtrl from "./EncodingEmbedCtrl.vue";
 import * as cql from "compassql"
 
 import _ from "lodash";
+
+import TaskPredictVue from './Task/TaskPredict.vue';
+import TaskTagVue from "./Task/TaskTag.vue";
 
 const datasetStore = DatasetStore();
 const queryStore = QueryStore();
@@ -131,6 +136,7 @@ function refreshRecommend(query) {
     if (!isSpecAggregate) {
         res.push({
             name: "总结 | Summaries",
+            type:"summary",
             views: runQuery(
                 summaries,
                 query,
@@ -142,6 +148,7 @@ function refreshRecommend(query) {
     if (queryStore.hasOpenPosition || queryStore.hasStyleChannel) {
         res.push({
             name: "添加定量字段 | Add Quantitative Field",
+            type:"add field",
             views: runQuery(
                 addQuantitativeField,
                 query,
@@ -150,6 +157,7 @@ function refreshRecommend(query) {
         });
         res.push({
             name: "添加分类字段 | Add Categorical Field",
+            type:"add field",
             views: runQuery(
                 addCategoricalField,
                 query,
@@ -160,6 +168,7 @@ function refreshRecommend(query) {
 
     res.push({
         name: "可替换的视觉编码 | Alternative Encodings",
+        type:"alternative encoding",
         views: runQuery(
             alternative_encodings,
             query,
@@ -204,15 +213,23 @@ const category_filter = computed(() => {
 })
 
 function updateEncoding(channel, encoding) {
-    proxy.$EventBus.emit(`user:update:encoding:${encoding}`, {
+    const enc=encoding?.encoding??'None';
+    let t=_.find(datasetStore.columns, column => column.name === enc)?.type;
+    if(enc=="COUNT"){
+        t="quantitative";
+    }
+    if(enc.toLowerCase()=="year"){
+        t="time"
+    }
+    proxy.$EventBus.emit(`user:update:${channel}:${t}`, {
         channel,
-        encoding
+        encoding:encoding?.encoding
     });
-    queryStore.editEncoding(channel, encoding);
+    queryStore.editEncoding(channel, encoding?.encoding);
 }
 
-function updateFilter(column, filter) {
-    proxy.$EventBus.emit(`user:update:filter:${column}`, {
+function updateFilter(enc,column, filter) {
+    proxy.$EventBus.emit(`user:update:filter:${enc}`, {
         column,
         filter
     });
@@ -220,7 +237,7 @@ function updateFilter(column, filter) {
 }
 
 function updateChartType(chart_type) {
-    proxy.$EventBus.emit(`user:update:chart_type`, {
+    proxy.$EventBus.emit(`user:update:chart_type:${chart_type??'None'}`, {
         chart_type
     });
     queryStore.chart_type = (chart_type);

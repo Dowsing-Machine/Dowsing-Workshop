@@ -184,9 +184,9 @@ const encodingOptions = computed(() => {
 })
 
 const type = computed(() => {
-    if (!props.encoding) return "unknown";
+    if (!props.encoding) return "None";
     if (props.encoding == COUNT) return "quantitative";
-    return _.find(props.columns, column => column.name === props.encoding).type;
+    return _.find(props.columns, column => column.name === props.encoding)?.type;
 })
 
 function onEncodingUpdate(value) {
@@ -195,8 +195,10 @@ function onEncodingUpdate(value) {
         emits('update:encoding', null);
     }
     else {
-        emits('update:encoding', value);
-
+        emits('update:encoding', {
+            encoding: value,
+            type:type.value
+        });
     }
 }
 

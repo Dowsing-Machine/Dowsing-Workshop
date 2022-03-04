@@ -25,10 +25,10 @@ const pinia = createPinia();
 pinia.use(Undo);
 // pinia.use(StateRecord);
 
-pinia.use(persistedstate({
-    key:"client",
-    paths:["CollectionStore","DatasetStore","QueryStore","control"]
-}))
+// pinia.use(persistedstate({
+//     key:"client",
+//     paths:["CollectionStore","DatasetStore","QueryStore","control"]
+// }))
 
 app.use(pinia);
 app.use(VueGridLayout);

@@ -49,7 +49,7 @@ function formEachEncoding(encoding, aggregate, columns) {
         return {
             field: encoding,
             aggregate,
-            type: encoding ? columns.find(c => c.name == encoding).type : "?"
+            type: encoding ? columns.find(c => c.name == encoding)?.type : "?"
         }
     }
 
@@ -105,6 +105,7 @@ export function runQuery(fn, query, data, cb) {
     // });
     
     const output = cql.recommend(cql_query, schema, DEFAULT_CQL_CONFIG);
+    console.log("recommend",output)
     return output.result;
 }
 

@@ -3,7 +3,7 @@
         <n-card v-if="recommendStore.specifiedView !== null" style="margin:10px">
             <template #header>当前视图 | Specified View</template>
             <n-space justify="center">
-                <recommend-charts-vue :vegalite="recommendStore.specifiedView">
+                <recommend-charts-vue :vegalite="recommendStore.specifiedView" :group="{'type':'same'}">
 
                 </recommend-charts-vue>
             </n-space>
@@ -26,6 +26,7 @@
                     v-for="(node,i) in group.views.items"
                     :key="i"
                     :vegalite="cql.result.getTopResultTreeItem(node).toSpec()"
+                    :group="group"
                 ></recommend-charts-vue>
                 <!-- <n-card
                         v-for="(node,i) in group.views.items"

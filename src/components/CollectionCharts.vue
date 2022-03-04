@@ -201,7 +201,7 @@ function onToggle(spec) {
 }
 
 function specify(spec) {
-    proxy.$EventBus.emit("user:specify", {
+    proxy.$EventBus.emit("user:specify:collection", {
         vegalite: spec,
         from:"collection"
     })

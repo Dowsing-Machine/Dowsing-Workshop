@@ -31,8 +31,10 @@ import { CollectionStore } from "../store/CollectionStore";
 import CollectionChartsVue from "./CollectionCharts.vue";
 import { QueryStore } from "../store/QueryStore"
 import { ControlStore } from "../store/ControlStore";
-import {DatasetStore} from "../store/DatasetStore";
+import { DatasetStore } from "../store/DatasetStore";
 import { watch, ref, getCurrentInstance, onBeforeUnmount, computed } from "vue";
+
+import { DebugStore } from "../store/DebugStore";
 import _ from "lodash"
 import { saveAs } from 'file-saver';
 
@@ -42,6 +44,7 @@ import axios from "axios";
 
 const collectionStore = CollectionStore();
 const queryStore = QueryStore();
+const debugStore = DebugStore();
 const controlStore = ControlStore();
 const datasetStore = DatasetStore();
 
@@ -77,13 +80,30 @@ async function resendLog() {
 async function sendLog(log, topic, time = Date.now()) {
   sending.value = true;
   if (import.meta.env.DEV) {
-    console.log(log, topic);
-    setTimeout(() => {
-      if (Math.random() > 0.5) errorList.value.push({ log, topic, time })
-      sending.value = false;
-    }, 1000);
-    // sending.value = false;
-    return;
+    // console.log(log, topic);
+    // setTimeout(() => {
+    //   if (Math.random() > 0.5) errorList.value.push({ log, topic, time })
+    //   sending.value = false;
+    // }, 1000);
+    // // sending.value = false;
+    // return;
+    let res = await axios.get("http://localhost:5001/action", {
+      params: {
+        topic: log?.type
+      }
+    })
+    let i=debugStore.predicts.length;
+    for (let item of res.data.value) {
+      debugStore.predicts.push({
+        i,
+        ...item
+      });
+      debugStore.newItems.push({
+        i,
+        ...item
+      })
+    }
+
   }
   const uuid = controlStore.uuid;
   const groupId = controlStore.groupId;
@@ -94,10 +114,10 @@ async function sendLog(log, topic, time = Date.now()) {
 
   // axios.post(`${uploadURL}/log/${groupId}.${id}.${uuid}/${topic}.json?append`, log);
   try {
-    await axios.put(`${uploadURL}/log/${groupId}.${id}.${uuid}/${topic}.${time}.json`, log);
-    setTimeout(() => {
-      setFalse();
-    }, 1000);
+    // await axios.put(`${uploadURL}/log/${groupId}.${id}.${uuid}/${topic}.${time}.json`, log);
+    // setTimeout(() => {
+    //   setFalse();
+    // }, 1000);
   }
   catch (error) {
     console.log(error);
@@ -219,7 +239,7 @@ proxy.$EventBus.on("*", function (type, e) {
   if (_.startsWith(type, "user:dataset:load")) {
     // const filename = _(e.url).trimStart("dataset/").trimEnd(".json");
     // console.log("filename",filename)
-    const filename=datasetStore.name;
+    const filename = datasetStore.name;
     const logObj = saveActionList(false);
     sendLog(logObj, `${filename}_final_state`);
     // outputFilename = `${filename}_user_actions.json`;

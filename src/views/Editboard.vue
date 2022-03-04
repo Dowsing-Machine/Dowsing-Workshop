@@ -53,7 +53,7 @@
 
 <script setup>
 import { NLayout, NLayoutHeader, NLayoutFooter, NLayoutSider, NLayoutContent, NSpace, NSwitch } from 'naive-ui';
-
+import DebugViewVue from '../components/DebugView.vue';
 import DataControl from "@/components/DataControl.vue";
 import SingleChartEdit from "@/components/SingleChartEdit.vue";
 import QueryControlVue from '../components/QueryControl.vue';

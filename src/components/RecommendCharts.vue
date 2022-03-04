@@ -87,6 +87,7 @@ const { proxy } = getCurrentInstance();
 
 const props = defineProps({
     vegalite: Object,
+    group:Object
 })
 
 const noteValue = computed(() => {
@@ -211,7 +212,10 @@ const channels = computed(() => {
 // }
 
 function specify() {
-    proxy.$EventBus.emit("user:specify",{
+
+
+
+    proxy.$EventBus.emit(`user:specify:${props.group?.type??'same'}`,{
         vegalite: props.vegalite,
         from:"recommend",
     })
