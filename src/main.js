@@ -13,6 +13,12 @@ import mitt from 'mitt'
 
 import persistedstate from 'pinia-persistedstate'
 
+import 'virtual:windi-base.css'
+import 'virtual:windi-components.css'
+import 'virtual:windi-utilities.css'
+import 'virtual:windi-devtools'
+
+
 const router = createRouter({
     routes,
     history: createWebHistory(),

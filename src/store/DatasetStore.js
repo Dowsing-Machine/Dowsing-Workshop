@@ -73,6 +73,9 @@ export const DatasetStore=defineStore({
         },
         schema:state=>{
             return cql.schema.build(state.columns);
+        },
+        asp:state=>{
+
         }
     },
     actions:{

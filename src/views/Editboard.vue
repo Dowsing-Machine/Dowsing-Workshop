@@ -1,54 +1,66 @@
 <template>
-        <n-layout>
-            <n-layout-header bordered class="main-header">
-                <n-space justify="space-between">
-                    <div style="font-size: 2em">Dowsing Workshop</div>
-                    <div style="align-self: center;">
-                        <!-- <n-switch size="large">
+    <n-layout>
+        <n-layout-header bordered class="main-header">
+            <n-space justify="space-between">
+                <div style="font-size: 2em">Dowsing Workshop</div>
+                <div style="align-self: center;">
+                    <!-- <n-switch size="large">
                             <template #checked>探索</template>
                             <template #unchecked>面板</template>
-                        </n-switch>-->
-                        <n-space>
-                            <dataset-select-vue></dataset-select-vue>
-                            <collection-button></collection-button>
-                            <download-button></download-button>
-                            <log-upload-vue v-if="isDev"></log-upload-vue>
-                        </n-space>
-                    </div>
-                </n-space>
-            </n-layout-header>
-            <n-layout-content>
-                <n-layout has-sider class="main-middle">
-                    <n-layout-sider bordered width="350">
-                        <!-- <single-chart-edit></single-chart-edit> -->
-                        <query-control-vue></query-control-vue>
-                    </n-layout-sider>
-                    <n-layout-content @click="onClick">
-                        <n-layout>
+                    </n-switch>-->
+                    <n-space>
+                        <dataset-select-vue></dataset-select-vue>
+                        <collection-button></collection-button>
+                        <download-button></download-button>
+                        <log-upload-vue v-if="isDev"></log-upload-vue>
+                    </n-space>
+                </div>
+            </n-space>
+        </n-layout-header>
+        <n-layout-content>
+            <n-layout has-sider class="main-middle">
+                <n-layout-sider bordered width="300">
+                    <!-- <single-chart-edit></single-chart-edit> -->
+                    <query-control-vue></query-control-vue>
+                </n-layout-sider>
+                <n-layout-content @click="onClick">
+                    <n-layout has-sider>
+                        <!-- <n-layout-header bordered>
+                            <multi-view-ctrl></multi-view-ctrl>
+                        </n-layout-header>-->
+                        <n-layout-sider
+                            bordered
+                            width="300"
+                            collapse-mode="transform"
+                            :collapsed-width="0"
+                            show-trigger="arrow-circle"
+                        >
+                            <recommend-grid-vue></recommend-grid-vue>
+                        </n-layout-sider>
+                        <n-layout-content>
                             <n-layout-header bordered>
                                 <multi-view-ctrl></multi-view-ctrl>
                             </n-layout-header>
-                            <n-layout-content>
-                                <explore-panel-vue></explore-panel-vue>
-                                <!-- <multi-view></multi-view> -->
-                            </n-layout-content>
-                        </n-layout>
-                    </n-layout-content>
-                </n-layout>
-            </n-layout-content>
-            <n-layout-footer class="main-footer">
-                <n-space justify="space-between">
-                    <div>Dowsing</div>
-                    <div>
-                        Group {{controlStore.groupId}}|
-                        ID {{controlStore.Id}}|
-                        {{datasetStore.name}}
-                    </div>
-                    
-                    <div>VCL318</div>
-                </n-space>
-            </n-layout-footer>
-        </n-layout>
+                            <explore-panel-vue></explore-panel-vue>
+                            <!-- <multi-view></multi-view> -->
+                        </n-layout-content>
+                    </n-layout>
+                </n-layout-content>
+            </n-layout>
+        </n-layout-content>
+        <n-layout-footer class="main-footer">
+            <n-space justify="space-between">
+                <div>Dowsing</div>
+                <div>
+                    Group {{ controlStore.groupId }}|
+                    ID {{ controlStore.Id }}|
+                    {{ datasetStore.name }}
+                </div>
+
+                <div>VCL318</div>
+            </n-space>
+        </n-layout-footer>
+    </n-layout>
 </template>
 
 <script setup>
@@ -74,8 +86,9 @@ import { DatasetStore } from '../store/DatasetStore';
 import logUploadVue from '../components/logUpload.vue';
 
 import { computed } from 'vue-demi';
+import RecommendGridVue from '../components/Recommendation/RecommendGrid.vue';
 
-const isDev=computed(()=>import.meta.env.DEV)
+const isDev = computed(() => import.meta.env.DEV)
 
 const mvStore = MVStore();
 const controlStore = ControlStore();

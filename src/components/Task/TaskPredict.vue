@@ -4,9 +4,15 @@
 
 <script setup>
 import ChartVl from "../Basic/ChartVL.vue";
-import { DebugStore } from '@/store/DebugStore';
-import { computed, reactive, ref, watchEffect,watch } from "vue";
-const debugStore = DebugStore();
+// import { DebugStore } from '@/store/DebugStore';
+import { TaskStore } from "../../store/TaskStore";
+import { computed, reactive, ref, watchEffect, watch } from "vue";
+
+import _ from "lodash";
+
+const taskStore = TaskStore();
+
+
 const spec = {
     "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
     "description": "debug",
@@ -16,22 +22,23 @@ const spec = {
         "point": true
     },
     "encoding": {
-        "x": { "field": "i", "sort": "descending" },
+        "x": { "field": "i" },
         "y": { "field": "score", "type": "quantitative" },
         "color": {
             "field": "type", "type": "nominal", "legend": {
-                "values": ['数据转换', '关联', '关联（趋势）', '对比', '确认值', '聚类/异常']
+                "values": ['数据转换', '关联', '关联（趋势）', '对比', '确认值', '聚类/异常'],
+                "orient":"top",
+                columns:3
             }
         }
-    }
+    },
 }
 
-const predicts=computed(()=>{
-        return debugStore.predicts.map(i=>({
-            ...i,
-            score:i.score[0]
-            })
-        );
-    }
-);
+const predicts = computed(() => {
+    return _(taskStore.predicts).map((p, idx) => _.toPairs(p).map(i => ({
+        i: idx,
+        type: i[0],
+        score: i[1],
+    }))).slice(-10).flatten().value();
+});
 </script>

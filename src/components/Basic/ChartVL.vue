@@ -3,27 +3,31 @@
 </template>
 
 <script setup>
-import embed from 'vega-embed';
-import { ref, watch, onMounted, isReactive, isRef, computed } from 'vue';
+import { ref, watch, onMounted } from 'vue';
+
+import {newChart} from "./utils";
 const props = defineProps({
     spec: Object,
     renderOption: {
         type: Object,
-        default: () => ({actions:false}),
+        default: () => ({ actions: false }),
     },
     data: Array,   //{"field":String,"value":Array}
-    field:String,
+    field: String,
 });
-let vl=null;
-const chart=ref(null);
-onMounted(async function(){
-    vl=await embed(chart.value,props.spec,props.renderOption);
-    vl.view.data(props.field,props.data).run();
+let vl = null;
+const chart = ref(null);
+
+onMounted(async function () {
+    vl = await newChart(chart.value,props.spec,props);
 })
 
+watch(() => props.data, () => {
+    vl.view.data(props.field, props.data).run();
+})
 
-watch(()=>props.data,()=>{
-    vl.view.data(props.field,props.data).run();
+watch(() => props.spec, async function () {
+    vl = await newChart(chart.value,props.spec,props);
 })
 
 </script>

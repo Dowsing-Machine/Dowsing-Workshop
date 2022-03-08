@@ -32,6 +32,7 @@ import CollectionChartsVue from "./CollectionCharts.vue";
 import { QueryStore } from "../store/QueryStore"
 import { ControlStore } from "../store/ControlStore";
 import { DatasetStore } from "../store/DatasetStore";
+import { TaskStore } from "../store/TaskStore";
 import { watch, ref, getCurrentInstance, onBeforeUnmount, computed } from "vue";
 
 import { DebugStore } from "../store/DebugStore";
@@ -47,6 +48,7 @@ const queryStore = QueryStore();
 const debugStore = DebugStore();
 const controlStore = ControlStore();
 const datasetStore = DatasetStore();
+const taskStore = TaskStore();
 
 const { proxy } = getCurrentInstance();
 
@@ -87,22 +89,24 @@ async function sendLog(log, topic, time = Date.now()) {
     // }, 1000);
     // // sending.value = false;
     // return;
-    let res = await axios.get("http://localhost:5001/action", {
-      params: {
-        topic: log?.type
-      }
-    })
-    let i=debugStore.predicts.length;
-    for (let item of res.data.value) {
-      debugStore.predicts.push({
-        i,
-        ...item
-      });
-      debugStore.newItems.push({
-        i,
-        ...item
-      })
-    }
+    // let res = await axios.get("http://localhost:5001/action", {
+    //   params: {
+    //     topic: log?.type
+    //   }
+    // })
+    // let i=debugStore.predicts.length;
+    // for (let item of res.data.value) {
+    //   debugStore.predicts.push({
+    //     i,
+    //     ...item
+    //   });
+    //   debugStore.newItems.push({
+    //     i,
+    //     ...item
+    //   })
+    // }
+    taskStore.getPredicts(log?.type);
+
 
   }
   const uuid = controlStore.uuid;
