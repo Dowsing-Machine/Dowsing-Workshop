@@ -10,11 +10,11 @@ function calPredicts(p,b,h,alpha=0.5){
 
 export const DebugStore=defineStore({
     id:"DebugStore",
-    state:()=>({
+    state:function(){return{
         predicts:[],
         history:{},
         alpha:0.5
-    }),
+    }},
     getters:{
         predict_tasks:(state)=>{
             const model_output = state.predicts.slice(-6);

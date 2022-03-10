@@ -3,6 +3,39 @@ import axios from "axios";
 import _ from "lodash";
 
 const DEFAULT_TASKS = ["数据转换", "关联", "关联（趋势）", "对比", "确认值", "聚类/异常"];
+const action2num = {
+    'user:update:x_encoding:time': 0,
+    'user:update:y_encoding:quantitative': 1,
+    'user:update:category_encoding:nominal': 2,
+    'user:update:filter:category_filter': 3,
+    'user:update:chart_type:point': 4,
+    'user:update:chart_type:line': 5,
+    'user:update:x_encoding:nominal': 6,
+    'user:update:chart_type:bar': 7,
+    'user:update:aggregate:y_aggregate': 8,
+    'user:update:filter:x_filter': 9,
+    'user:update:x_encoding:quantitative': 10,
+    'user:update:chart_type:tick': 11,
+    'user:specify:alternative encoding': 12,
+    'user:specify:same': 13,
+    'user:update:y_encoding:nominal': 14,
+    'user:specify:summary': 15,
+    'user:update:y_encoding:time': 16,
+    'user:update:category_encoding:quantitative': 17,
+    'user:update:category_encoding:time': 18,
+    'user:update:category_encoding:None': 19,
+    'user:update:filter:y_filter': 20,
+    'user:update:y_encoding:None': 21,
+    'user:update:chart_type:None': 22,
+    'user:update:aggregate:x_aggregate': 23,
+    'user:specify:collection': 24,
+    'user:specify:collection': 24,
+    'user:reset:query': 25,
+    'user:control:undo': 26,
+    'user:update:aggregate:category_aggregate': 27,
+    'user:update:x_encoding:None': 28,
+    'user:specify:add field': 29
+}
 const B = 2 ** 11;
 
 
@@ -15,15 +48,27 @@ function calPredicts(p, b, h, opts={}) {
     const {
         a=0.5,
         mode="history",
-        agg_func=x=>Math.max(...x)
+        agg_func=x=>Math.max(...x),
+        clamp=false
     }=opts
-    
     const ht = {}
     for (const task in p) {
+        // if (mode == "bypass") {
+        //     ht[task]=_.clamp(h[task],0,1);
+        // }
+        // else{
+        //     ht[task] = b[task] * ((h[task]) * a + agg_func(p[task]) * (1 - a));
+        //     if (mode == "predict") {
+        //         ht[task] = _.clamp(ht[task], 0, 1);
+        //     }
+        // }
         ht[task] = b[task] * ((h[task]) * a + agg_func(p[task]) * (1 - a));
-        if (mode == "predict") {
+
+        if(clamp){
             ht[task]=_.clamp(ht[task],0,1);
         }
+
+
     }
     // h=ht;
     
@@ -91,6 +136,16 @@ export const TaskStore = defineStore({
     },
     actions: {
         async getPredicts(topic) {
+            if(action2num[topic]==null){
+                this.predicts=this.predicts.concat(
+                    calPredicts(
+                        this.history,
+                        initCustom(),
+                        this.history,
+                        { agg_func: x => x, clamp: true }
+                    )
+                );
+            }
             let res = await axios.get("http://localhost:5001/action", {
                 params: {
                     topic
@@ -113,7 +168,7 @@ export const TaskStore = defineStore({
                 modelOut, 
                 initCustom(), 
                 this.history,
-                { mode: "predict" }
+                { clamp:true }
             );
             const newPredicts = this.predicts.concat(newPre);
             this.$patch({
@@ -129,7 +184,7 @@ export const TaskStore = defineStore({
                 this.history, 
                 initCustom(), 
                 this.history, 
-                { agg_func: x => x, mode:"predict"}
+                { agg_func: x => x, clamp:true}
             );
             this.predicts.push(newPre);
         },
@@ -139,7 +194,7 @@ export const TaskStore = defineStore({
                 this.history,
                 initCustom(),
                 this.history,
-                { agg_func: x => x, mode: "predict" }
+                { agg_func: x => x, clamp:true }
             );
             this.predicts.push(newPre);
         }

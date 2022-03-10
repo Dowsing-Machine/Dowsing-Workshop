@@ -12,6 +12,23 @@ function findUseableLayout(layouts,size={w:4,h:2}){
     }
 }
 
+let ID=0;
+class CollectionItem{
+    id;
+    spec=null;
+    history;
+    constructor(spec){
+        this.id=ID++;
+        this.spec=spec;
+        this.history=[];
+    }
+
+    changeSpec(newSpec){
+        this.history.push(_.cloneDeep(this.spec));
+        this.spec=newSpec;
+    }
+}
+
 export const CollectionStore = defineStore({
     id: "CollectionStore",
     state: () => ({

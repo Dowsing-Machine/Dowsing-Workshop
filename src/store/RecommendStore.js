@@ -8,7 +8,7 @@ import * as cql from "compassql"
 
 export const RecommendStore = defineStore({
     id:"RecommendStore",
-    state:()=>({
+    state: ()=>({
         specifiedView:null,
         relatedViews:[]
     }),

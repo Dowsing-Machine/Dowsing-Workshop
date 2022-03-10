@@ -1,6 +1,52 @@
 import _ from "lodash";
 import { defineStore } from "pinia";
 
+const initState=() => ({
+    x_encoding: null,
+    x_aggregate: null,
+    // x_filter: null,
+    // x_bin:false,
+    y_encoding: null,
+    // y_bin:false,
+    y_aggregate: null,
+    // y_fillter: null,
+    category_encoding: null,
+    category_aggregate: null,
+    // category_filter: null,
+    chart_type: null,
+    filter: []   //[{filter:"...condiation",column:"...field",predicate:"range|oneOf"}]
+})
+
+export function spec2query(spec={}){
+    const state=initState();
+    if(spec.mark){
+        state.chart_type=spec.mark;
+    }
+    if(spec.encoding){
+        const enc=spec.encoding;
+        if(enc.x){
+            state.x_encoding=enc.x.field;
+            if(enc.x.aggregate){
+                state.x_aggregate=enc.x.aggregate;
+            }
+        }
+        if(enc.y){
+            state.y_encoding=enc.y.field;
+            if(enc.y.aggregate){
+                state.y_aggregate=enc.y.aggregate;
+            }
+        }
+        if(enc.color){
+            state.category_encoding=enc.color.field;
+            if(enc.color.aggregate){
+                state.category_aggregate=enc.color.aggregate;
+            }
+        }
+    }
+    return state;
+
+} 
+
 export const QueryStore = defineStore({
     id: "QueryStore",
     undoOption: {
@@ -10,25 +56,11 @@ export const QueryStore = defineStore({
             clone.filter=state.filter.map(f=>_.clone(f));
             return clone;
         },
-        diff:(state,prevState)=>{
+        diff:function(state,prevState){
             return !_.isEqual(state,prevState);
         }
     },
-    state: () => ({
-        x_encoding: null,
-        x_aggregate: null,
-        // x_filter: null,
-        // x_bin:false,
-        y_encoding: null,
-        // y_bin:false,
-        y_aggregate: null,
-        // y_fillter: null,
-        category_encoding: null,
-        category_aggregate: null,
-        // category_filter: null,
-        chart_type: null,
-        filter: []   //[{filter:"...condiation",column:"...field",predicate:"range|oneOf"}]
-    }),
+    state: initState,
     getters: {
         isSpecAggregate: state => {
             return state.x_aggregate && state.y_aggregate;

@@ -1,8 +1,10 @@
 <template>
-    <div ref="chartDiv" style="overflow:auto;"></div>
+    <div v-if="vegalite!=null" ref="chartDiv" style="overflow:auto;"></div>
+    <n-empty v-else description="添加一些视觉编码吧"></n-empty>
 </template>
 <script setup>
 import { defineProps,onMounted,watch,ref,defineExpose } from 'vue-demi';
+import { NEmpty } from 'naive-ui';
 import embed from 'vega-embed';
 
 import {DatasetStore} from '@/store/DatasetStore';

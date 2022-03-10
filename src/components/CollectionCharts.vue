@@ -9,7 +9,7 @@
         :verticalCompact="false"
     >
         <grid-item
-            v-for="(layout,idx) in SpecWithChart"
+            v-for="(layout, idx) in SpecWithChart"
             :key="layout.i"
             :x="layout.x"
             :y="layout.y"
@@ -17,10 +17,15 @@
             :h="layout.h"
             :i="layout.i"
             @resized="resizedEvent"
+            @click.stop="onClickItem(layout)"
+
         >
-            <n-card style="height: 100%;width: 100%;">
+            <n-card 
+                style="height: 100%;width: 100%;" 
+                :class="{'shadow-lg':controlStore.currentViewId==layout.i, 'shadow-blue-500':true}"
+            >
                 <template #header>图表#{{ layout.i }}</template>
-                <template #header-extra>
+                <!-- <template #header-extra>
                     <n-space>
                         <n-popover trigger="click" @update:show="onToggle(layout.spec)">
                             <template #trigger>
@@ -46,7 +51,8 @@
                             </n-icon>
                         </n-button>
                     </n-space>
-                </template>
+                </template>-->
+
                 <chart-raw
                     :vegalite="layout.spec"
                     :render-option="{
@@ -69,26 +75,33 @@
 <script setup>
 import { NSpace, NCard, NScrollbar, NButton, NIcon, NPopover, NInput } from 'naive-ui';
 import ChartRaw from './ChartRaw.vue';
+import ChartVLVue from './Basic/ChartVL.vue';
 import { CollectionStore } from '../store/CollectionStore';
-
-import { computed, toRaw, ref, getCurrentInstance, nextTick,defineEmits } from "vue-demi";
+import { ControlStore } from "../store/ControlStore";
+import { computed, toRaw, ref, getCurrentInstance, nextTick, defineEmits } from "vue-demi";
 import { onBeforeUpdate } from "vue";
 import _ from "lodash";
 
-import { Star12Filled, CommentNote24Regular,ArrowUp16Filled } from '@vicons/fluent';
+import { Star12Filled, CommentNote24Regular, ArrowUp16Filled } from '@vicons/fluent';
 
 import AddCollectionBtnVue from './AddCollectionBtn.vue';
 
-import { spec2query } from "@/utils/specify";
-import { QueryStore } from '../store/QueryStore';
+// import { spec2query } from "@/utils/specify";
+import { QueryStore,spec2query } from '../store/QueryStore';
 
 const collectionStore = CollectionStore();
 const queryStore = QueryStore();
+const controlStore = ControlStore();
 const { proxy } = getCurrentInstance();
 
-const emits=defineEmits(["close"]);
+const emits = defineEmits(["close"]);
 
 const chart_enabled = ref(true);
+
+function onClickItem(layout){
+    controlStore.currentViewId=layout.i;
+    queryStore.$patch(spec2query(layout.spec));
+}
 
 const SpecWithChart = computed(() => {
     let res = collectionStore.collections.map(collection => {
@@ -203,7 +216,7 @@ function onToggle(spec) {
 function specify(spec) {
     proxy.$EventBus.emit("user:specify:collection", {
         vegalite: spec,
-        from:"collection"
+        from: "collection"
     })
     queryStore.$patch(spec2query(spec));
     emits("close");

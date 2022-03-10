@@ -20,25 +20,25 @@ const queryStore = QueryStore();
 const {proxy} = getCurrentInstance();
 
 const options = computed(() => ([
-    // {
-    //     label: "添加",
-    //     key: "add",
-    //     icon: () => h(
-    //         NIcon,
-    //         null,
-    //         { default: () => h(Add20Filled) }
-    //     )
-    // },
-    // {
-    //     label: "删除",
-    //     key: "delete",
-    //     icon: () => h(
-    //         NIcon,
-    //         null,
-    //         { default: () => h(Delete20Filled) }
-    //     ),
-    //     disabled: controlStore.currentViewId == null,
-    // },
+    {
+        label: "添加",
+        key: "add",
+        icon: () => h(
+            NIcon,
+            null,
+            { default: () => h(Add20Filled) }
+        )
+    },
+    {
+        label: "删除",
+        key: "delete",
+        icon: () => h(
+            NIcon,
+            null,
+            { default: () => h(Delete20Filled) }
+        ),
+        disabled: controlStore.currentViewId == null,
+    },
     {
         label: "撤销",
         key: "undo",

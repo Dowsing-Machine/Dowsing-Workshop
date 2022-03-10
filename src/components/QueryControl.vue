@@ -1,47 +1,55 @@
 <template>
-    <n-space vertical style="padding:12px 24px;">
-        视图类型
-        <n-select
-            :options="typeOption"
-            :value="queryStore.chart_type"
-            @update:value="updateChartType"
-            clearable
-        ></n-select>X轴编码
-        <encoding-embed-ctrl
-            :encoding="queryStore.x_encoding"
-            :aggregate="queryStore.x_aggregate"
-            :filter="x_filter"
-            @update:encoding="updateEncoding('x_encoding', $event)"
-            @update:filter="updateFilter('x_filter',queryStore.x_encoding, $event)"
-            @update:aggregate="updateAggregate('x_aggregate', $event)"
-            :columns="datasetStore.columns"
-        ></encoding-embed-ctrl>Y轴编码
-        <encoding-embed-ctrl
-            :encoding="queryStore.y_encoding"
-            :aggregate="queryStore.y_aggregate"
-            :filter="y_filter"
-            @update:encoding="updateEncoding('y_encoding', $event)"
-            @update:filter="updateFilter('y_filter',queryStore.y_encoding, $event)"
-            @update:aggregate="updateAggregate('y_aggregate', $event)"
-            :columns="datasetStore.columns"
-        ></encoding-embed-ctrl>颜色编码
-        <encoding-embed-ctrl
-            :encoding="queryStore.category_encoding"
-            :aggregate="queryStore.category_aggregate"
-            :filter="category_filter"
-            @update:encoding="updateEncoding('category_encoding', $event)"
-            @update:filter="updateFilter('category_filter',queryStore.category_encoding, $event)"
-            @update:aggregate="updateAggregate('category_aggregate', $event)"
-            :columns="datasetStore.columns"
-        ></encoding-embed-ctrl>
-        <n-button type="error" style="width:100%" @click="resetQuery()">清空查询</n-button>
+    <n-space vertical style="padding:12px 24px;" justify="space-between">
+        <n-space vertical>
+            视图类型
+            <n-select
+                :options="typeOption"
+                :value="queryStore.chart_type"
+                @update:value="updateChartType"
+                clearable
+            ></n-select>X轴编码
+            <encoding-embed-ctrl
+                :encoding="queryStore.x_encoding"
+                :aggregate="queryStore.x_aggregate"
+                :filter="x_filter"
+                @update:encoding="updateEncoding('x_encoding', $event)"
+                @update:filter="updateFilter('x_filter', queryStore.x_encoding, $event)"
+                @update:aggregate="updateAggregate('x_aggregate', $event)"
+                :columns="datasetStore.columns"
+            ></encoding-embed-ctrl>Y轴编码
+            <encoding-embed-ctrl
+                :encoding="queryStore.y_encoding"
+                :aggregate="queryStore.y_aggregate"
+                :filter="y_filter"
+                @update:encoding="updateEncoding('y_encoding', $event)"
+                @update:filter="updateFilter('y_filter', queryStore.y_encoding, $event)"
+                @update:aggregate="updateAggregate('y_aggregate', $event)"
+                :columns="datasetStore.columns"
+            ></encoding-embed-ctrl>颜色编码
+            <encoding-embed-ctrl
+                :encoding="queryStore.category_encoding"
+                :aggregate="queryStore.category_aggregate"
+                :filter="category_filter"
+                @update:encoding="updateEncoding('category_encoding', $event)"
+                @update:filter="updateFilter('category_filter', queryStore.category_encoding, $event)"
+                @update:aggregate="updateAggregate('category_aggregate', $event)"
+                :columns="datasetStore.columns"
+            ></encoding-embed-ctrl>
+            <n-button type="error" size="small" style="width:100%" @click="resetQuery()">清空</n-button>
+            <n-divider></n-divider>
+        </n-space>
+        <n-tabs>
+            <n-tab-pane name="任务">
+                <task-predict-vue></task-predict-vue>
+                <task-tag-vue></task-tag-vue>
+            </n-tab-pane>
+            <n-tab-pane name="列"></n-tab-pane>
+        </n-tabs>
     </n-space>
-    <task-predict-vue></task-predict-vue>
-    <task-tag-vue></task-tag-vue>
 </template>
 
 <script setup>
-import { NSelect, NSpace, NButton } from 'naive-ui';
+import { NSelect, NSpace, NButton, NTabs, NTabPane, NDivider } from 'naive-ui';
 import { computed, watch, getCurrentInstance } from 'vue-demi';
 
 import { DatasetStore } from '../store/DatasetStore';
@@ -96,87 +104,87 @@ const typeOption = [
 ]
 
 function refreshRecommend(query) {
-    let isSpecAggregate = false;
-    if (queryStore.hasSpecView) {
-        recommendStore.changeSpecView(
-            runQuery(
-                specific,
-                query,
-                datasetStore,
-            )
-        );
-        // runQuery(
-        //     specific,
-        //     query,
-        //     datasetStore,
-        //     result => {
-        //         console.log("result", result);
-        //         recommendStore.changeSpecView(result)
-        //     }
-        // )
-        const specQuery = specific(query, datasetStore);
-        isSpecAggregate = cql.query.spec.isAggregate(specQuery);
-    }
-    else {
-        recommendStore.changeSpecView(null);
-        recommendStore.relatedViews = [
-            {
-                name: "单变量摘要 | Univariate Summaries",
-                views: runQuery(
-                    univariteSummaries,
-                    query,
-                    datasetStore,
-                )
-            }
-        ]
-        return;
-    }
+    // let isSpecAggregate = false;
+    // if (queryStore.hasSpecView) {
+    //     recommendStore.changeSpecView(
+    //         runQuery(
+    //             specific,
+    //             query,
+    //             datasetStore,
+    //         )
+    //     );
+    //     // runQuery(
+    //     //     specific,
+    //     //     query,
+    //     //     datasetStore,
+    //     //     result => {
+    //     //         console.log("result", result);
+    //     //         recommendStore.changeSpecView(result)
+    //     //     }
+    //     // )
+    //     const specQuery = specific(query, datasetStore);
+    //     isSpecAggregate = cql.query.spec.isAggregate(specQuery);
+    // }
+    // else {
+    //     recommendStore.changeSpecView(null);
+    //     recommendStore.relatedViews = [
+    //         {
+    //             name: "单变量摘要 | Univariate Summaries",
+    //             views: runQuery(
+    //                 univariteSummaries,
+    //                 query,
+    //                 datasetStore,
+    //             )
+    //         }
+    //     ]
+    //     return;
+    // }
 
-    const res = [];
-    if (!isSpecAggregate) {
-        res.push({
-            name: "总结 | Summaries",
-            type:"summary",
-            views: runQuery(
-                summaries,
-                query,
-                datasetStore,
-                (e) => console.log("worker", e)
-            )
-        });
-    }
-    if (queryStore.hasOpenPosition || queryStore.hasStyleChannel) {
-        res.push({
-            name: "添加定量字段 | Add Quantitative Field",
-            type:"add field",
-            views: runQuery(
-                addQuantitativeField,
-                query,
-                datasetStore,
-            )
-        });
-        res.push({
-            name: "添加分类字段 | Add Categorical Field",
-            type:"add field",
-            views: runQuery(
-                addCategoricalField,
-                query,
-                datasetStore,
-            )
-        });
-    }
+    // const res = [];
+    // if (!isSpecAggregate) {
+    //     res.push({
+    //         name: "总结 | Summaries",
+    //         type: "summary",
+    //         views: runQuery(
+    //             summaries,
+    //             query,
+    //             datasetStore,
+    //             (e) => console.log("worker", e)
+    //         )
+    //     });
+    // }
+    // if (queryStore.hasOpenPosition || queryStore.hasStyleChannel) {
+    //     res.push({
+    //         name: "添加定量字段 | Add Quantitative Field",
+    //         type: "add field",
+    //         views: runQuery(
+    //             addQuantitativeField,
+    //             query,
+    //             datasetStore,
+    //         )
+    //     });
+    //     res.push({
+    //         name: "添加分类字段 | Add Categorical Field",
+    //         type: "add field",
+    //         views: runQuery(
+    //             addCategoricalField,
+    //             query,
+    //             datasetStore,
+    //         )
+    //     });
+    // }
 
-    res.push({
-        name: "可替换的视觉编码 | Alternative Encodings",
-        type:"alternative encoding",
-        views: runQuery(
-            alternative_encodings,
-            query,
-            datasetStore,
-        )
-    });
+    // res.push({
+    //     name: "可替换的视觉编码 | Alternative Encodings",
+    //     type: "alternative encoding",
+    //     views: runQuery(
+    //         alternative_encodings,
+    //         query,
+    //         datasetStore,
+    //     )
+    // });
 
-    recommendStore.relatedViews = res;
+    // recommendStore.relatedViews = res;
 }
 
 refreshRecommend(queryStore);
@@ -213,22 +221,22 @@ const category_filter = computed(() => {
 })
 
 function updateEncoding(channel, encoding) {
-    const enc=encoding?.encoding??'None';
-    let t=_.find(datasetStore.columns, column => column.name === enc)?.type;
-    if(enc=="COUNT"){
-        t="quantitative";
+    const enc = encoding?.encoding ?? 'None';
+    let t = _.find(datasetStore.columns, column => column.name === enc)?.type;
+    if (enc == "COUNT") {
+        t = "quantitative";
     }
-    if(enc.toLowerCase()=="year"){
-        t="time"
+    if (enc.toLowerCase() == "year") {
+        t = "time"
     }
     proxy.$EventBus.emit(`user:update:${channel}:${t}`, {
         channel,
-        encoding:encoding?.encoding
+        encoding: encoding?.encoding
     });
     queryStore.editEncoding(channel, encoding?.encoding);
 }
 
-function updateFilter(enc,column, filter) {
+function updateFilter(enc, column, filter) {
     proxy.$EventBus.emit(`user:update:filter:${enc}`, {
         column,
         filter
@@ -237,7 +245,7 @@ function updateFilter(enc,column, filter) {
 }
 
 function updateChartType(chart_type) {
-    proxy.$EventBus.emit(`user:update:chart_type:${chart_type??'None'}`, {
+    proxy.$EventBus.emit(`user:update:chart_type:${chart_type ?? 'None'}`, {
         chart_type
     });
     queryStore.chart_type = (chart_type);

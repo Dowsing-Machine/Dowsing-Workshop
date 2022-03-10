@@ -18,6 +18,7 @@ import 'virtual:windi-components.css'
 import 'virtual:windi-utilities.css'
 import 'virtual:windi-devtools'
 
+// import 'virtual:windi.css'
 
 const router = createRouter({
     routes,

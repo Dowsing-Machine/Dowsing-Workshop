@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 export const ControlStore= defineStore({
     id: 'control',
     state: ()=>({
-        // currentViewId: null,
+        currentViewId: null,
         groupId: null,
         Id:null,
     }),

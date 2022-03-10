@@ -1,14 +1,16 @@
+import Editboard from "../views/Editboard.vue";
+
 
 export default [
     {
         path: '/',
         name: 'editboard',
-        component: () => import('../views/Editboard.vue'),
+        component: Editboard
     },
     {
         path: '/greeting',
         name: 'greeting',
-        component: () => import('../views/Greeting.vue'),
+        // component: () => import('../views/Greeting.vue'),
     },
     // {
     //     path: '/data_specification',

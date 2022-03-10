@@ -10,11 +10,11 @@ import META from "./meta.json";
 
 export const DatasetStore=defineStore({
     id:"DatasetStore",
-    state:()=>({
+    state:function(){return {
         dataset:[],
         userDefinedColType:{},
         name:"",
-    }),
+    }},
     getters:{
         columns:state=>{
             if(state.dataset.length>0){
