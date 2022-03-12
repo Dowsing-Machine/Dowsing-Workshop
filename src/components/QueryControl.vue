@@ -40,7 +40,7 @@
         </n-space>
         <n-tabs>
             <template #suffix>
-                <n-button text>
+                <n-button text class="text-lg">
                     <n-icon>
                         <Settings16Filled />
                     </n-icon>
