@@ -12,12 +12,10 @@ import { QueryStore } from '../store/QueryStore';
 import { stepBack, stepForward, debug } from "@/store/plugins/stateRecord";
 
 import { getCurrentInstance } from 'vue-demi';
-import { CollectionStore } from '../store/CollectionStore';
 
 const mvStore = MVStore();
 const controlStore = ControlStore();
 const queryStore = QueryStore();
-const collectionStore=CollectionStore();
 
 const {proxy} = getCurrentInstance();
 
@@ -65,8 +63,7 @@ const options = computed(() => ([
 const handleUpdate = (key) => {
     switch (key) {
         case "add":
-            // .addView();
-            collectionStore.add({});
+            mvStore.addView();
             break;
         case "undo":
             proxy.$EventBus.emit("user:control:undo")
