@@ -6,7 +6,7 @@
         :is-draggable="true"
         @layout-ready="onReady"
         @update:layout="onLayoutChange"
-        :verticalCompact="false"
+        :verticalCompact="false" 
     >
         <grid-item
             v-for="(layout, idx) in SpecWithChart"
@@ -16,9 +16,10 @@
             :w="layout.w"
             :h="layout.h"
             :i="layout.i"
+            drag-ignore-from=".dont_move"
             @resized="resizedEvent"
             @click.stop="onClickItem(layout)"
-            
+
         >
             <!-- <n-card 
                 style="height: 100%;width: 100%;" 
@@ -59,6 +60,8 @@
                 </template>-->
 
                 <chart-raw
+                    class="dont_move"
+                    @addview="addviews($event,layout.i)"
                     :vegalite="layout.spec.spec"
                     :render-option="{
                         width: 'container', height: 'container',
@@ -123,6 +126,63 @@ const SpecWithChart = computed(() => {
 })
 
 const charts = ref([]);
+
+// const views = ref([]);
+const views=ref({});
+
+function onBrush(nowi) {
+    console.log(111)
+  let data = views.value[nowi].getState().data;
+  for (let key in views.value) {
+// for(let key=0;key<views.value.length;key++){
+    if(key!=nowi){
+      views.value[key].setState({
+        data: data,
+        signals: views.value[key].getState().signals
+      })
+    }
+  }
+  console.log(views.value)
+}
+function clear(now) {
+
+  for (let i = 0; i < viewscnt.value; i++) {
+    if (i != now) {
+      try {
+        console.log(views.value[0]);
+        let d = views.value[i].getState().data;
+        let s = views.value[i].getState().signals;
+        // s.brush={};
+        // s.brush_tuple=null;
+        s.brush_x = [];
+        s.brush_y = [];
+        views.value[i].setState({
+          data: d,
+          signals: s
+        })
+      }
+      catch (err) {
+         console.error('request error', err);
+      }
+    }
+  }
+}
+function addviews(v,i){
+
+    views.value[i]=v;
+    // views.value.push(v)
+    console.log(views.value);
+    v.addSignalListener("brush",
+      _.debounce(() => {
+        onBrush(i);
+      }, 500)
+    )
+    // v.addEventListener("mouseup", () => {
+    //   // if(checkfirst()==0)
+    //   clear(viewscnt.value);
+    // })
+}
+
 
 onBeforeUpdate(function () {
     charts.value = [];
