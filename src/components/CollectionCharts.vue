@@ -18,11 +18,16 @@
             :i="layout.i"
             @resized="resizedEvent"
             @click.stop="onClickItem(layout)"
-
+            
         >
-            <n-card 
+            <!-- <n-card 
                 style="height: 100%;width: 100%;" 
                 :class="{'shadow-lg':controlStore.currentViewId==layout.i, 'shadow-blue-500':true}"
+            > -->
+            <n-card 
+                style="height: 100%;width: 100%;" 
+                :class="{'outline-green-500':controlStore.currentViewId==layout.i}"
+                class="outline-none transition-all duration-300"
             >
                 <template #header>图表#{{ layout.i }}</template>
                 <!-- <template #header-extra>
@@ -54,7 +59,7 @@
                 </template>-->
 
                 <chart-raw
-                    :vegalite="layout.spec"
+                    :vegalite="layout.spec.spec"
                     :render-option="{
                         width: 'container', height: 'container',
                         autosize: {
@@ -87,7 +92,7 @@ import { Star12Filled, CommentNote24Regular, ArrowUp16Filled } from '@vicons/flu
 import AddCollectionBtnVue from './AddCollectionBtn.vue';
 
 // import { spec2query } from "@/utils/specify";
-import { QueryStore,spec2query } from '../store/QueryStore';
+import { QueryStore, spec2query } from '../store/QueryStore';
 
 const collectionStore = CollectionStore();
 const queryStore = QueryStore();
@@ -98,18 +103,19 @@ const emits = defineEmits(["close"]);
 
 const chart_enabled = ref(true);
 
-function onClickItem(layout){
-    controlStore.currentViewId=layout.i;
-    queryStore.$patch(spec2query(layout.spec));
+function onClickItem(layout) {
+    controlStore.currentViewId = layout.i;
+    queryStore.$patch(spec2query(layout.spec.spec));
 }
 
 const SpecWithChart = computed(() => {
     let res = collectionStore.collections.map(collection => {
-        const strSpec = JSON.stringify(collection)
-        const id = collectionStore.specIds[strSpec];
+        // const strSpec = JSON.stringify(collection)
+        // const id = collectionStore.specIds[strSpec];
+        const id = collection.id;
         return {
             spec: collection,
-            note: collectionStore.notes[strSpec],
+            // note: collectionStore.notes[strSpec],
             ...collectionStore.layouts.find(i => i.i === id),
         }
     })

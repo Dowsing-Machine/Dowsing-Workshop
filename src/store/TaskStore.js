@@ -111,7 +111,7 @@ export const TaskStore = defineStore({
         return {
             history,
             customs,
-            predicts: [],
+            predicts: [initHistory()],
             alpha: 0.5,
             // i:0
         };
@@ -137,14 +137,18 @@ export const TaskStore = defineStore({
     actions: {
         async getPredicts(topic) {
             if(action2num[topic]==null){
-                this.predicts=this.predicts.concat(
-                    calPredicts(
-                        this.history,
-                        initCustom(),
-                        this.history,
-                        { agg_func: x => x, clamp: true }
-                    )
-                );
+                // this.predicts=this.predicts.concat(
+                //     calPredicts(
+                //         this.history,
+                //         initCustom(),
+                //         this.history,
+                //         { agg_func: x => x, clamp: true }
+                //     )
+                // );
+                
+                this.predicts.push(
+                    this.predicts.slice(-1)[0]
+                )
             }
             let res = await axios.get("http://localhost:5001/action", {
                 params: {

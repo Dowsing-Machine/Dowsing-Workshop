@@ -1,4 +1,4 @@
-[
+ [
     {
         "name":"cars.json",
         "columns":{
@@ -33,7 +33,10 @@
     {
         "name":"gapminder-lite.json",
         "columns":{
-            "year": "nominal",
+            "Year": "nominal",
+            "Month": "nominal",
+            "Day": "nominal",
+            "date": "nominal",
             "country": "nominal",
             "cluster": "nominal",
             "pop": "quantitative",
