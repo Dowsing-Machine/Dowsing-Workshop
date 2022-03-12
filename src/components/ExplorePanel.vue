@@ -3,9 +3,10 @@
         <n-card v-if="recommendStore.specifiedView !== null" style="margin:10px">
             <template #header>当前视图 | Specified View</template>
             <n-space justify="center">
-                <recommend-charts-vue :vegalite="recommendStore.specifiedView" :group="{'type':'same'}">
-
-                </recommend-charts-vue>
+                <recommend-charts-vue
+                    :vegalite="recommendStore.specifiedView"
+                    :group="{ 'type': 'same' }"
+                ></recommend-charts-vue>
             </n-space>
         </n-card>
         <n-card v-for="group in groups" :key="group.name" style="margin:10px">
@@ -18,16 +19,16 @@
                     <template #checked>Hide Details</template>
                     <template #unchecked>Load More...</template>
                 </n-switch>
-            </template> -->
+            </template>-->
             <!-- {{group.views}} -->
 
             <div style="display: flex;flex-wrap: wrap;">
-                <recommend-charts-vue
-                    v-for="(node,i) in group.views.items"
-                    :key="i"
-                    :vegalite="cql.result.getTopResultTreeItem(node).toSpec()"
-                    :group="group"
-                ></recommend-charts-vue>
+                    <recommend-charts-vue
+                        v-for="(node, i) in group.views.items"
+                        :key="i"
+                        :vegalite="cql.result.getTopResultTreeItem(node).toSpec()"
+                        :group="group"
+                    ></recommend-charts-vue>
                 <!-- <n-card
                         v-for="(node,i) in group.views.items"
                         :key="i"

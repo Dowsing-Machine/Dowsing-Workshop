@@ -74,6 +74,7 @@
                     v-if="chart_enabled"
                     :ref="el => { if (el) charts[idx] = el }"
                     style="width:100%;height:100%"
+                    :replaceColor="true"
                 ></chart-raw>
             </n-card>
         </grid-item>
@@ -288,3 +289,10 @@ function specify(spec) {
     emits("close");
 }
 </script>
+
+<style>
+.vue-grid-item.vue-grid-placeholder {
+    background: green !important;
+}
+
+</style>

@@ -3,7 +3,7 @@
         <n-button-group size="small" style="width: 100%;">
             <n-tooltip trigger="hover" placement="bottom">
                 <template #trigger>
-                    <n-button round>
+                    <n-button>
                         <n-icon v-if="type == 'quantitative'">
                             <NumberSymbol24Filled />
                         </n-icon>
@@ -24,7 +24,7 @@
                 @update:value="onEncodingUpdate"
             >
                 <n-button
-                    round
+                
                     :type="encoding ? 'primary' : 'default'"
                     style="flex: auto;"
                 >{{ columnPlacehold }}</n-button>
@@ -83,7 +83,7 @@
                 @update:value="onAggregateUpdate"
                 :disabled="!encoding"
             >
-                <n-button round :disabled="disableFilterAndAggregate">
+                <n-button :disabled="disableFilterAndAggregate">
                     <n-icon :color="aggregate == null ? null : themeVars.primaryColor">
                         <Autosum24Filled />
                     </n-icon>

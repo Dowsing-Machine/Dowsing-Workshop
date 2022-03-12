@@ -27,7 +27,7 @@ export class CollectionItem {
     }
 
     static isValid(spec) {
-        return spec.mark != null && spec.encoding != null;
+        return spec!=null && spec.mark != null && spec.encoding != null;
     }
 
     addHistory(history) {

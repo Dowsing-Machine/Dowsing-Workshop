@@ -7,6 +7,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@vueuse/core": "^8.0.0",
     "axios": "^0.24.0",
     "compassql": "^0.21.2",
     "draco-vis": "0.0.16",
