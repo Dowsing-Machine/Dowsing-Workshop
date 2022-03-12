@@ -85,6 +85,25 @@ export const QueryStore = defineStore({
                 }
             }
         },
+        spec(state){
+            return {
+                mark:state.chart_type,
+                encoding:{
+                    x:{
+                        field:state.x_encoding,
+                        aggregate:state.x_aggregate
+                    },
+                    y:{
+                        field:state.y_encoding,
+                        aggregate:state.y_aggregate
+                    },
+                    color:{
+                        field:state.category_encoding,
+                        aggregate:state.category_aggregate
+                    }
+                }
+            }
+        }
     },
     actions: {
         setFilterByColumn(column, filter) {

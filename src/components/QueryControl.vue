@@ -56,27 +56,30 @@
 </template>
 
 <script setup>
-import { NSelect, NSpace, NButton, NTabs, NTabPane, NDivider } from 'naive-ui';
+import { NSelect, NSpace, NButton, NTabs, NTabPane, NDivider,NIcon } from 'naive-ui';
 import { computed, watch, getCurrentInstance } from 'vue-demi';
 
 import { DatasetStore } from '../store/DatasetStore';
 import { QueryStore } from '../store/QueryStore';
-import { RecommendStore } from '../store/RecommendStore';
 
-import { specific, runQuery, alternative_encodings, summaries, addQuantitativeField, addCategoricalField, univariteSummaries, COUNT } from '../query';
+import { COUNT } from '../query';
 
 import EncodingEmbedCtrl from "./EncodingEmbedCtrl.vue";
 
-import * as cql from "compassql"
 
 import _ from "lodash";
 
 import TaskPredictVue from './Task/TaskPredict.vue';
 import TaskTagVue from "./Task/TaskTag.vue";
+import { ControlStore } from '../store/ControlStore';
+import { CollectionStore } from '../store/CollectionStore';
+
+import {Settings16Filled} from "@vicons/fluent"
 
 const datasetStore = DatasetStore();
 const queryStore = QueryStore();
-const recommendStore = RecommendStore();
+const controlStore = ControlStore();
+const collectionStore = CollectionStore();
 
 const { proxy } = getCurrentInstance();
 
@@ -110,102 +113,6 @@ const typeOption = [
     }
 ]
 
-function refreshRecommend(query) {
-    // let isSpecAggregate = false;
-    // if (queryStore.hasSpecView) {
-    //     recommendStore.changeSpecView(
-    //         runQuery(
-    //             specific,
-    //             query,
-    //             datasetStore,
-    //         )
-    //     );
-    //     // runQuery(
-    //     //     specific,
-    //     //     query,
-    //     //     datasetStore,
-    //     //     result => {
-    //     //         console.log("result", result);
-    //     //         recommendStore.changeSpecView(result)
-    //     //     }
-    //     // )
-    //     const specQuery = specific(query, datasetStore);
-    //     isSpecAggregate = cql.query.spec.isAggregate(specQuery);
-    // }
-    // else {
-    //     recommendStore.changeSpecView(null);
-    //     recommendStore.relatedViews = [
-    //         {
-    //             name: "单变量摘要 | Univariate Summaries",
-    //             views: runQuery(
-    //                 univariteSummaries,
-    //                 query,
-    //                 datasetStore,
-    //             )
-    //         }
-    //     ]
-    //     return;
-    // }
-
-    // const res = [];
-    // if (!isSpecAggregate) {
-    //     res.push({
-    //         name: "总结 | Summaries",
-    //         type: "summary",
-    //         views: runQuery(
-    //             summaries,
-    //             query,
-    //             datasetStore,
-    //             (e) => console.log("worker", e)
-    //         )
-    //     });
-    // }
-    // if (queryStore.hasOpenPosition || queryStore.hasStyleChannel) {
-    //     res.push({
-    //         name: "添加定量字段 | Add Quantitative Field",
-    //         type: "add field",
-    //         views: runQuery(
-    //             addQuantitativeField,
-    //             query,
-    //             datasetStore,
-    //         )
-    //     });
-    //     res.push({
-    //         name: "添加分类字段 | Add Categorical Field",
-    //         type: "add field",
-    //         views: runQuery(
-    //             addCategoricalField,
-    //             query,
-    //             datasetStore,
-    //         )
-    //     });
-    // }
-
-    // res.push({
-    //     name: "可替换的视觉编码 | Alternative Encodings",
-    //     type: "alternative encoding",
-    //     views: runQuery(
-    //         alternative_encodings,
-    //         query,
-    //         datasetStore,
-    //     )
-    // });
-
-    // recommendStore.relatedViews = res;
-}
-
-refreshRecommend(queryStore);
-
-const debouncedRefreshRecommend = _.debounce(refreshRecommend, 500, {
-    // leading: true,
-});
-
-watch(queryStore, debouncedRefreshRecommend);
-watch(datasetStore, (query) => {
-    debouncedRefreshRecommend(query);
-    queryStore.$reset();
-});
-
 const x_filter = computed(() => {
     if (queryStore.x_encoding == COUNT) {
         return null;
@@ -234,13 +141,37 @@ function updateEncoding(channel, encoding) {
         t = "quantitative";
     }
     if (enc.toLowerCase() == "year") {
-        t = "time"
+        t = "ordinal"
     }
     proxy.$EventBus.emit(`user:update:${channel}:${t}`, {
         channel,
         encoding: encoding?.encoding
     });
     queryStore.editEncoding(channel, encoding?.encoding);
+    const i = controlStore.currentViewId;
+    const chartIns = collectionStore.collections.find(c => c.id == i);
+
+    if (chartIns == null) return;
+    let chn = (channel.match(/(.*?)_encoding/) ?? [, "None"])[1];
+    if (enc != "None") {
+        chartIns.mergeSpec({
+            encoding: {
+                [chn]: {
+                    field: enc,
+                    type: t
+                }
+            }
+        })
+    }
+    else {
+        chartIns.mergeSpec({
+            ...chartIns.spec,
+            encoding: {
+                ...chartIns.spec.encoding,
+                [channel]: null
+            }
+        })
+    }
 }
 
 function updateFilter(enc, column, filter) {
@@ -256,6 +187,13 @@ function updateChartType(chart_type) {
         chart_type
     });
     queryStore.chart_type = (chart_type);
+    const i = controlStore.currentViewId;
+    const chartIns = collectionStore.collections.find(c => c.id == i);
+    if (chartIns == null) return;
+    chartIns.mergeSpec({
+        mark: chart_type
+    })
+
 }
 
 function updateAggregate(channel, aggregate) {
@@ -263,27 +201,24 @@ function updateAggregate(channel, aggregate) {
         channel,
         aggregate
     });
+    let chn = (channel.match(/(.*?)_aggregate/) ?? [, "None"])[1];
+    const i = controlStore.currentViewId;
+    const chartIns = collectionStore.collections.find(c => c.id == i);
+
     queryStore[channel] = aggregate;
+    if (chn != "None") {
+        chartIns.mergeSpec({
+            encoding: {
+                [chn]: {
+                    aggregate
+                }
+            }
+        })
+    }
 }
 
 function resetQuery() {
     proxy.$EventBus.emit(`user:reset:query`);
     queryStore.$reset();
 }
-
-// watch(queryStore,(state,prevState)=>{
-//     if(state.x_encoding==prevState.x_encoding&&state.y_encoding==prevState.y_encoding&&state.category_encoding==prevState.category_encoding){
-//         return;
-//     }
-//     if(state.x_encoding!==prevState.x_encoding){
-//         queryStore.refreshFilter();
-//     }
-//     else if(state.y_encoding!==prevState.y_encoding){
-//         queryStore.refreshFilter();
-//     }
-//     else if(state.category_encoding!==prevState.category_encoding){
-//         queryStore.refreshFilter();
-//     }
-// })
-
 </script>

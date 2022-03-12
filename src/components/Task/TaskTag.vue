@@ -1,19 +1,27 @@
 <template>
     <div class="flex flex-nowrap mx-2">
-        <div class="flex flex-wrap flex-grow items-center" :warp="false">
-            <n-tag
-                closable
-                v-for="tag in activateTags"
-                :key="tag.label"
-                :color="tag.color"
-                @close="punishTask(tag.label)"
-                class="mx-1 my-1"
-                bordered
-            >{{ tag.label }}</n-tag>
+        <div class="flex flex-wrap flex-grow flex-col" :warp="false">
+            <transition-group name="tag">
+                <n-tag
+                    closable
+                    v-for="tag in activateTags"
+                    :key="tag.label"
+                    :color="tag.status == 'normal' ? tag.color : 'grey'"
+                    @close="punishTask(tag.label)"
+                    class="mx-1 my-1"
+                    :style="{
+                        width: `${tag.length * 90}%`,
+                    }"
+                    bordered
+                >
+                    {{ tag.label }}
+                </n-tag>
+            </transition-group>
         </div>
-        <n-dropdown 
-            :options="dropdownOpts" 
-            placement="right-start" 
+
+        <n-dropdown
+            :options="dropdownOpts"
+            placement="right-start"
             show-arrow
             :on-select="onSelected"
         >
@@ -28,6 +36,7 @@ import { TaskStore } from "../../store/TaskStore";
 import { computed } from "vue";
 import _ from "lodash";
 import { Square16Filled } from "@vicons/fluent";
+import { CloseRound } from "@vicons/material";
 import { h } from "vue";
 // const debugStore = DebugStore();
 const taskStore = TaskStore();
@@ -41,13 +50,15 @@ const color_mapping = {
 }
 
 const activateTags = computed(() => {
-    return taskStore.activate_task.map(item => {
+    return _.sortBy(taskStore.activate_task.map(item => {
         return {
             label: item.type,
             color: color_mapping[item.type],
-            value: item.score
+            value: item.score,
+            length: _.round(item.score, 2),
+            status: "normal",
         }
-    })
+    }), i => -i.value);
 })
 
 function punishTask(task) {
@@ -96,7 +107,29 @@ const dropdownOpts = [
     },
 ]
 
-function onSelected(key){
+function onSelected(key) {
     taskStore.addTask(key);
 }
 </script>
+
+<style scoped>
+.tag-enter-from,
+.tag-leave-to {
+    /* @apply scale-x-0; */
+    transform: scaleX(0);
+    transform-origin: left;
+}
+
+.tag-enter-active,
+.tag-leave-active {
+    @apply transition-all duration-500;
+}
+
+.tag-move {
+    @apply transition-all duration-500;
+}
+
+.n-tag:deep(.n-tag__content) {
+    @apply flex-1;
+}
+</style>

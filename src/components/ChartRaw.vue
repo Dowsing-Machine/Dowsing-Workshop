@@ -10,10 +10,7 @@ import embed from 'vega-embed';
 import {DatasetStore} from '@/store/DatasetStore';
 import { NScrollbar } from 'naive-ui';
 import { QueryStore } from '../store/QueryStore';
-import {defineEmits} from 'vue-demi';
-import _ from "lodash";
 
-const emit=defineEmits(["addview"]);
 const datasetStore=DatasetStore();
 const queryStore=QueryStore();
 
@@ -29,37 +26,22 @@ async function refreshChart() {
     if(view.value){
         view.value.finalize();
     }
-    
-    let v={
-        ..._.cloneDeep(props.vegalite),
+    let res=await embed(chartDiv.value, {
+        ...props.vegalite,
         ...props.renderOption,
         data:{
             // name:"data"
             values:datasetStore.dataset
         },
-        "params": [{ "name": "brush", "select": "interval" }]
         // transform:queryStore.filter.filter(f=>f!=null).map(f=>({
         //     filter:{
         //         field:f.column,
         //         [f.predicate]:f.filter
         //     }
         // })),
-    }
-    v.encoding.color={
-        "condition": {
-            "param": "brush",
-            "aggregate": v.encoding?.color?.aggregate,
-            "field":v.encoding?.color?.field,
-            "type": v.encoding?.color?.type,
-        },
-        "value": "grey"
-    };
-    v.$schema="https://vega.github.io/schema/vega-lite/v5.json";
-    let res=await embed(chartDiv.value,v , { actions: false });
+    }, { actions: false });
     // res.view.insert("data", datasetStore.dataset).run();
-
-    emit("addview",res.view);
-
+    view.value=res.view;
 }
 
 onMounted(() => {

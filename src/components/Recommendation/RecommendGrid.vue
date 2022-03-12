@@ -1,7 +1,19 @@
 <template>
     <n-space vertical class="p-3">
-        <n-card v-for="vl in vls" title="卡片分段示例">
-            <chart-raw-vue :vegalite="vl"></chart-raw-vue>
+        <n-card v-for="vl in vls" class="h-50 w-1/1" title="卡片分段示例">
+            <chart-raw-vue
+                :vegalite="vl"
+                :render-option="{
+                    height: 'container',
+                    width: 'container',
+                    autosize: {
+                        type: 'fit',
+                        contains: 'padding'
+                    },
+                    resize: true
+                }"
+                class="h-1/1 w-1/1"
+            ></chart-raw-vue>
             <template #header-extra>
                 <n-button text class="header_button" @click="addCollection(vl)">
                     <n-icon>
@@ -16,7 +28,7 @@
 <script setup>
 import ChartVLVue from '../Basic/ChartVL.vue';
 import ChartRawVue from "../ChartRaw.vue"
-import { NCard,NButton,NIcon } from 'naive-ui';
+import { NCard, NButton, NIcon } from 'naive-ui';
 import _ from "lodash";
 
 import { DebugStore } from '../../store/DebugStore';
@@ -26,7 +38,7 @@ import { TaskStore } from '../../store/TaskStore';
 import Draco from "draco-vis";
 import * as DracoCore from "draco-vis";
 import { computed, ref, watch, getCurrentInstance } from 'vue';
-import {Add20Filled} from "@vicons/fluent";
+import { Add20Filled } from "@vicons/fluent";
 const draco = new Draco();
 const debugStore = DebugStore();
 const datasetStore = DatasetStore();
@@ -37,9 +49,18 @@ const { proxy } = getCurrentInstance();
 import weights_learned from "./weights_learned.json";
 import { NSpace } from 'naive-ui';
 
+
+import DracoWorker from "../../utils/dracoWorker?worker";
+
+const dracoWorker=new DracoWorker();
+dracoWorker.onmessage=function(e){
+    console.log(e.data);
+    res.value=e.data;
+}
+
 const hard_programs = [
     ":- not mark(point); not mark(bar); not mark(line).",
-    "task(summary) :- utask(transform).",
+    // "task(summary) :- utask(transform).",
     ":- not channel(_,x); not channel(_,y); not channel(_,color).",
     // ":- channel(_,shape).",
     ":- channel(_,shape).",
@@ -51,7 +72,12 @@ const hard_programs = [
     // "encoding(e2).",
     // ":- not field(e2,_).",
     // `data("${datasetStore.name}").`,
-    ":- {aggregate(_, mean)}>=2."
+    ":- {aggregate(_, _)}>=2.",
+    ":- utask(trend), not channel(_,y).",
+    // ":- utask(trend), mark(line), channel(E,y), not aggregate(E, mean).",
+    // ":- utask(trend), mark(line), channel(E,x), aggregate(E, _).",
+
+    // ":- utask(trend), x_y_cardinality().",
 ]
 
 const task_asps = [
@@ -77,14 +103,14 @@ const task_weights = {
     // 'trend_aggregate_x': 0,
     // 'trend_x_temporal': 747,
     // 'correlation_x_quantitative': 902
-    'confirm_mark': -100,
-    'correlation_mark': -100,
-    'trend_mark': -200,
-    'transform_aggregate_y': -300,
+    'confirm_mark': -297,
+    'correlation_mark': -110,
+    'trend_mark': -223,
+    'transform_aggregate_y': 0,
     // 'transform_aggregate_color': 512,
-    'trend_aggregate_x': -100,
-    'trend_x_temporal': -300,
-    'correlation_x_quantitative': -200
+    'trend_aggregate_x': -98,
+    'trend_x_temporal': -265,
+    'correlation_x_quantitative': -331
 }
 
 const task_map = {
@@ -123,7 +149,27 @@ const res = ref({});
 //     console.log("task changed");
 // })
 
-watch(() => taskStore.activate_task, () => {
+watch(() => taskStore.activate_task, (newVal, oldVal) => {
+    // console.log(newVal, oldVal);
+    let equal = true;
+    if (newVal.length != oldVal.length) {
+        equal = false;
+    }
+    else {
+        for (const i in newVal) {
+            const v1 = newVal[i];
+            const v2 = oldVal[i];
+            if (v2 == null) {
+                equal = false;
+                break;
+            }
+            if ((v1.type === v2.type) && (Math.round(v1.score, 3) == Math.round(v2.score, 3))) {
+                continue;
+            }
+        }
+    }
+
+    if (equal) return;
     if (!inited) return;
     const tsL = taskStore.predicts.length;
     if (tsL == 0) return;
@@ -137,20 +183,13 @@ watch(() => taskStore.activate_task, () => {
     }
     const dataASP = DracoCore.schema2asp(dataSchema);
     console.log(dataASP);
-    // const tasks = _(taskStore.predicts[tsL-1]).toPairs().map(i=>({
-    //     type:task_map[i[0]],
-    //     score:i[1]
-    // })).filter(i=>i.score>0.5).value();
     const tasks = taskStore.activate_task;
-    // const tasks = debugStore.predict_tasks.map(i => ({
-    //     type: task_map[i.type],
-    //     score: i.score,
-    // }));
+
     const taskFASPs = tasks.map(i => `utask(${task_map[i.type]}).`);
     let task_weights_available = [];
     if (tasks.length > 0) {
         const re = new RegExp(tasks.map(i => task_map[i.type]).join('|'));
-        console.log(re);
+        // console.log(re);
         // const re = new RegExp(tasks.map(i => i.type).join('|'));
         task_weights_available = task_asps.filter(i => re.test(i)).map(i => {
             const name = i.match(/soft\((.*?)\)/)[1];
@@ -159,22 +198,12 @@ watch(() => taskStore.activate_task, () => {
             if (task == null) {
                 console.error(`task ${short_name} not found`, name, i, tasks);
             }
-            const weight = Math.round(task_weights[name] * task.score * 0.1);
+            const weight = Math.round(task_weights[name] * task.score);
             return {
                 name, weight, asp: i, description: "test", type: "soft"
             };
         });
     }
-
-    // const task_weights_available = task_asps.filter(i => re.test(i)).map(i => {
-    //     const name = i.match(/soft\((.*?)\)/)[1];
-    //     const short_name = name.match(re_task_names)[1];
-    //     const task = tasks.find(j => j.type == short_name);
-    //     const weight = Math.round(task_weights[name] * task.score[0] * 1);
-    //     return {
-    //         name, weight, asp: i, description: "test", type: "soft"
-    //     };
-    // });
     const softW = [
         // ...soft.map(i => ({
         //     ...i,
@@ -183,7 +212,7 @@ watch(() => taskStore.activate_task, () => {
         ...soft,
         ...task_weights_available
     ];
-    console.log("softW", task_weights_available);
+    // console.log("softW", softW);
     const weight_assign = task_weights_available.map(i => `soft_weight(${i.name},${i.weight}).`)
     draco.soft = softW;
     const program = [
@@ -192,35 +221,40 @@ watch(() => taskStore.activate_task, () => {
         ...weight_assign,
         ...hard_programs,
     ].join("\n");
-    console.log("program", program);
-    res.value = draco.solve(program, { models: 10 })??{};
+    // console.log("program", program);
+    // res.value = draco.solve(program, { models: 10 }) ?? {};
+    dracoWorker.postMessage({
+        program,
+        typs:"solve",
+        softW,
+    });
 })
 
-function translateEncoding(channels,encoding){
-    for(const channel of channels){
-        if(encoding[channel]==null){
+function translateEncoding(channels, encoding) {
+    for (const channel of channels) {
+        if (encoding[channel] == null) {
             continue;
         }
-        if(encoding[channel].type=="temporal"){
-            encoding[channel].type="ordinal";
+        if (encoding[channel].type == "temporal") {
+            encoding[channel].type = "ordinal";
         };
     }
     return encoding;
 }
 
 const vls = computed(() => {
-    if(res.value==null) return [];
+    if (res.value == null) return [];
     return (res.value.specs ?? []).map(i => ({
         ...i,
         data: {
             values: datasetStore.dataset,
         },
-        encoding:translateEncoding(["x","y","color"],i.encoding),
+        encoding: translateEncoding(["x", "y", "color"], i.encoding),
     }))
 })
 
 function addCollection(spec) {
-    proxy.$EventBus.emit(`user:collection:add`,{
+    proxy.$EventBus.emit(`user:collection:add`, {
         vegalite: spec,
     });
     collectionStore.add(spec);
