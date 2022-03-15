@@ -27,10 +27,10 @@
             > -->
             <n-card 
                 style="height: 100%;width: 100%;" 
-                :class="{'outline-green-500':controlStore.currentViewId==layout.i}"
-                class="outline-none transition-all duration-300"
+                :class="{'!outline-$primary-color !outline-3':controlStore.currentViewId==layout.i}"
+                class="outline-none transition-all duration-300 border-3"
             >
-                <template #header>图表#{{ layout.i }}</template>
+                <template #header>Chart#{{ layout.i }}</template>
                 <!-- <template #header-extra>
                     <n-space>
                         <n-popover trigger="click" @update:show="onToggle(layout.spec)">
@@ -292,7 +292,7 @@ function specify(spec) {
 
 <style>
 .vue-grid-item.vue-grid-placeholder {
-    background: green !important;
+    background: var(--light-primary-color) !important;
 }
 
 </style>

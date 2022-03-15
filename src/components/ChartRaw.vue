@@ -1,6 +1,6 @@
 <template>
     <div v-if="CollectionItem.isValid(vegalite)" ref="chartDiv" style="overflow:auto;"></div>
-    <n-empty v-else size="large" description="开始编辑视图吧" class="h-1/1 justify-center">
+    <n-empty v-else size="large" description="You can edit encoding on data controler panel" class="h-1/1 justify-center">
         <template #icon>
             <BarChartRound />
         </template>
@@ -84,7 +84,12 @@ onMounted(() => {
 watch(() => props.vegalite, (newVal, oldVal) => {
     // console.log("props changed",newVal,oldVal);
     refreshChart();
-}, { deep: true });
+}, { deep: false });
+
+// watch(() => props.vegalite, (newVal, oldVal) => {
+//     // console.log("props changed",newVal,oldVal);
+//     refreshChart();
+// }, { deep: true });
 
 function resize() {
     if (view.value) {

@@ -39,19 +39,20 @@ const action2num = {
 const B = 2 ** 11;
 
 
-function calPredicts(p, b, h, opts={}) {
+function calPredicts(p, b, h, opts = {}) {
     // p: current model output, Object[task]=Array, valur=[0,1]
     // b: custom setting for tasks, Object[task]=[-inf,+inf]
     // h: history state, Object[task]=[-inf, +inf]
     // a: alpha to control prefer history or current output, [0-1]
     // output: h(t)=b*(h(t-1)*a+p(t)*(1-a))
     const {
-        a=0.5,
-        mode="history",
-        agg_func=x=>Math.max(...x),
-        clamp=false
-    }=opts
+        a = 0.5,
+        mode = "history",
+        agg_func = x => Math.max(...x),
+        clamp = false
+    } = opts
     const ht = {}
+    // console.log(h)
     for (const task in p) {
         // if (mode == "bypass") {
         //     ht[task]=_.clamp(h[task],0,1);
@@ -62,16 +63,17 @@ function calPredicts(p, b, h, opts={}) {
         //         ht[task] = _.clamp(ht[task], 0, 1);
         //     }
         // }
-        ht[task] = b[task] * ((h[task]) * a + agg_func(p[task]) * (1 - a));
+        // ht[task] = b[task] * ((h[task]) * a + agg_func(p[task]) * (1 - a));
+        ht[task] = ((h[task]) * a + agg_func(p[task]) * (1 - a));
 
-        if(clamp){
-            ht[task]=_.clamp(ht[task],0,1);
+        if (clamp) {
+            ht[task] = _.clamp(ht[task], 0, 1);
         }
 
 
     }
     // h=ht;
-    
+
     return ht;
 }
 
@@ -107,7 +109,7 @@ export const TaskStore = defineStore({
     id: "TaskStore",
     state: () => {
         const history = initHistory();
-        const customs = {};
+        const customs = initCustom();
         return {
             history,
             customs,
@@ -120,15 +122,18 @@ export const TaskStore = defineStore({
         // current_output:(state)=>{
         //     return state.predicts.slice(-(DEFAULT_TASKS.length));
         // },
-        activate_task:(state)=>{
+        activate_task: (state) => {
             if (state.predicts.length === 0) return [];
             const pre = state.predicts.slice(-1)[0];
-            
+
             return _.toPairs(pre).map(item => {
                 const [type, score] = item;
                 return {
                     type,
-                    score
+                    // score: score * state.customs[type]
+                    score,
+                    customScore: state.customs[type]
+
                 };
             }).filter(item => item.score > 0.5);
 
@@ -136,7 +141,8 @@ export const TaskStore = defineStore({
     },
     actions: {
         async getPredicts(topic) {
-            if(action2num[topic]==null){
+            console.log(topic);
+            if (action2num[topic] == null) {
                 // this.predicts=this.predicts.concat(
                 //     calPredicts(
                 //         this.history,
@@ -145,10 +151,11 @@ export const TaskStore = defineStore({
                 //         { agg_func: x => x, clamp: true }
                 //     )
                 // );
-                
+
                 this.predicts.push(
                     this.predicts.slice(-1)[0]
                 )
+                return;
             }
             let res = await axios.get("http://localhost:5001/action", {
                 params: {
@@ -167,12 +174,12 @@ export const TaskStore = defineStore({
             }
             // console.log(modelOut)
             // const newI=this.i+1;
-            const newHis=calPredicts(modelOut,initCustom(),this.history);
+            const newHis = calPredicts(modelOut, this.customs, this.history);
             const newPre = calPredicts(
-                modelOut, 
-                initCustom(), 
+                modelOut,
+                initCustom(),
                 this.history,
-                { clamp:true }
+                { clamp: true }
             );
             const newPredicts = this.predicts.concat(newPre);
             this.$patch({
@@ -185,10 +192,10 @@ export const TaskStore = defineStore({
         punishTask(t) {
             this.history[t] = -B;
             let newPre = calPredicts(
-                this.history, 
-                initCustom(), 
-                this.history, 
-                { agg_func: x => x, clamp:true}
+                this.history,
+                this.customs,
+                this.history,
+                { agg_func: x => x, clamp: true }
             );
             this.predicts.push(newPre);
         },
@@ -196,9 +203,9 @@ export const TaskStore = defineStore({
             this.history[t] = B;
             let newPre = calPredicts(
                 this.history,
-                initCustom(),
+                this.customs,
                 this.history,
-                { agg_func: x => x, clamp:true }
+                { agg_func: x => x, clamp: true }
             );
             this.predicts.push(newPre);
         }

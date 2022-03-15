@@ -28,7 +28,8 @@ const spec = {
             "field": "type", "type": "nominal", "legend": {
                 "values": ['数据转换', '关联', '关联（趋势）', '对比', '确认值', '聚类/异常'],
                 "orient":"top",
-                columns:3
+                columns:3,
+                disable:true
             }
         }
     },

@@ -1,62 +1,125 @@
 <template>
-    <n-space vertical style="padding:12px 24px;" justify="space-between">
-        <n-space vertical>
-            视图类型
-            <n-select
-                :options="typeOption"
-                :value="queryStore.chart_type"
-                @update:value="updateChartType"
-                clearable
-            ></n-select>X轴编码
-            <encoding-embed-ctrl
-                :encoding="queryStore.x_encoding"
-                :aggregate="queryStore.x_aggregate"
-                :filter="x_filter"
-                @update:encoding="updateEncoding('x_encoding', $event)"
-                @update:filter="updateFilter('x_filter', queryStore.x_encoding, $event)"
-                @update:aggregate="updateAggregate('x_aggregate', $event)"
-                :columns="datasetStore.columns"
-            ></encoding-embed-ctrl>Y轴编码
-            <encoding-embed-ctrl
-                :encoding="queryStore.y_encoding"
-                :aggregate="queryStore.y_aggregate"
-                :filter="y_filter"
-                @update:encoding="updateEncoding('y_encoding', $event)"
-                @update:filter="updateFilter('y_filter', queryStore.y_encoding, $event)"
-                @update:aggregate="updateAggregate('y_aggregate', $event)"
-                :columns="datasetStore.columns"
-            ></encoding-embed-ctrl>颜色编码
-            <encoding-embed-ctrl
-                :encoding="queryStore.category_encoding"
-                :aggregate="queryStore.category_aggregate"
-                :filter="category_filter"
-                @update:encoding="updateEncoding('category_encoding', $event)"
-                @update:filter="updateFilter('category_filter', queryStore.category_encoding, $event)"
-                @update:aggregate="updateAggregate('category_aggregate', $event)"
-                :columns="datasetStore.columns"
-            ></encoding-embed-ctrl>
-            <n-button type="error" size="small" style="width:100%" @click="resetQuery()">清空</n-button>
-            <n-divider></n-divider>
-        </n-space>
-        <n-tabs>
-            <template #suffix>
-                <n-button text class="text-lg">
+    <n-space vertical style="padding:12px 24px;" justify="space-between" class>
+        <div class="flex flex-col">
+            <div class="flex items-center">
+                <div class="panel-subtitle">DATA CONTROLLER</div>
+                <n-button @click="resetQuery()" size="tiny" color="#c4c4c488" text-color="black">
                     <n-icon>
-                        <Settings16Filled />
+                        <ArrowReset20Filled />
                     </n-icon>
                 </n-button>
-            </template>
-            <n-tab-pane name="任务">
+            </div>
+            <hr class="border-0 w-1/1 mt-2 mb-2" />
+            <n-space vertical>
+                <div class="flex flex-col">
+                    <div class="font-semibold">Chart Type</div>
+                    <n-select
+                        class="mt-1"
+                        :options="typeOption"
+                        :value="queryStore.chart_type"
+                        @update:value="updateChartType"
+                        placeholder="Select..."
+                        clearable
+                    ></n-select>
+                </div>
+                <div class="flex flex-col">
+                    <div class="font-semibold">X Encoding</div>
+                    <encoding-embed-ctrl
+                        class="mt-1"
+                        :encoding="queryStore.x_encoding"
+                        :aggregate="queryStore.x_aggregate"
+                        :filter="x_filter"
+                        @update:encoding="updateEncoding('x_encoding', $event)"
+                        @update:filter="updateFilter('x_filter', queryStore.x_encoding, $event)"
+                        @update:aggregate="updateAggregate('x_aggregate', $event)"
+                        :columns="datasetStore.columns"
+                    ></encoding-embed-ctrl>
+                </div>
+                <div class="flex flex-col">
+                    <div class="font-semibold">Y Encoding</div>
+                    <encoding-embed-ctrl
+                        class="mt-1"
+                        :encoding="queryStore.y_encoding"
+                        :aggregate="queryStore.y_aggregate"
+                        :filter="y_filter"
+                        @update:encoding="updateEncoding('y_encoding', $event)"
+                        @update:filter="updateFilter('y_filter', queryStore.y_encoding, $event)"
+                        @update:aggregate="updateAggregate('y_aggregate', $event)"
+                        :columns="datasetStore.columns"
+                    ></encoding-embed-ctrl>
+                </div>
+
+                <div class="flex flex-col">
+                    <div class="font-semibold">Color Encoding</div>
+                    <encoding-embed-ctrl
+                        class="mt-1"
+                        :encoding="queryStore.category_encoding"
+                        :aggregate="queryStore.category_aggregate"
+                        :filter="category_filter"
+                        @update:encoding="updateEncoding('category_encoding', $event)"
+                        @update:filter="updateFilter('category_filter', queryStore.category_encoding, $event)"
+                        @update:aggregate="updateAggregate('category_aggregate', $event)"
+                        :columns="datasetStore.columns"
+                    ></encoding-embed-ctrl>
+                </div>
+
+                <!-- <n-button type="error" size="small" style="width:100%" @click="resetQuery()">Clear</n-button> -->
+            </n-space>
+        </div>
+        <!-- <n-divider></n-divider> -->
+        <div class="flex flex-col">
+            <div class="mt-5 flex items-center">
+                <!-- <div class="panel-subtitle">PREFERENCE</div> -->
+                <div class="panel-subtitle flex">
+                    <div
+                        :class="{ 'text-gray-400': !showTask }"
+                        class="transition-colors duration-200"
+                        @click="showTask = true"
+                    >TASK</div>
+                    <div
+                        class="ml-2 transition-colors duration-200"
+                        :class="{ 'text-gray-400': showTask }"
+                        @click="showTask = false"
+                    >COLUMNS</div>
+                </div>
+
+                <n-button size="tiny" color="#c4c4c488" text-color="black">
+                    <n-icon>
+                        <Settings20Filled />
+                    </n-icon>
+                </n-button>
+            </div>
+            <hr class="border-0 w-1/1 mt-2 mb-2" />
+            <div v-if="showTask">
+                <div class="font-semibold mb-1">Task Types</div>
+                <task-legend-vue class="mb-1" />
                 <task-predict-vue></task-predict-vue>
+                <!-- <div class="flex mb-1">
+                    <div class="font-semibold flex-1">Active Tasks</div>
+                    <n-button size="tiny" color="#c4c4c488" text-color="black">
+                        <n-icon>
+                            <Add20Filled/>
+                        </n-icon>
+                    </n-button>
+                </div>-->
                 <task-tag-vue></task-tag-vue>
-            </n-tab-pane>
-            <n-tab-pane name="列"></n-tab-pane>
-        </n-tabs>
+            </div>
+            <div v-else></div>
+            <!-- <n-tabs>
+                <n-tab-pane name="Task">
+                    <div class="mb-1 font-semibold">TYPE</div>
+                    <task-legend-vue class="mb-1" />
+                    <task-predict-vue></task-predict-vue>
+                    <task-tag-vue></task-tag-vue>
+                </n-tab-pane>
+                <n-tab-pane name="Columns"></n-tab-pane>
+            </n-tabs>-->
+        </div>
     </n-space>
 </template>
 
 <script setup>
-import { NSelect, NSpace, NButton, NTabs, NTabPane, NDivider,NIcon } from 'naive-ui';
+import { NSelect, NSpace, NButton, NTabs, NTabPane, NDivider, NIcon } from 'naive-ui';
 import { computed, watch, getCurrentInstance } from 'vue-demi';
 
 import { DatasetStore } from '../store/DatasetStore';
@@ -65,16 +128,17 @@ import { QueryStore } from '../store/QueryStore';
 import { COUNT } from '../query';
 
 import EncodingEmbedCtrl from "./EncodingEmbedCtrl.vue";
-
+import { ref } from "vue";
 
 import _ from "lodash";
 
 import TaskPredictVue from './Task/TaskPredict.vue';
 import TaskTagVue from "./Task/TaskTag.vue";
+import TaskLegendVue from './Task/TaskLegend.vue';
 import { ControlStore } from '../store/ControlStore';
 import { CollectionStore } from '../store/CollectionStore';
 
-import {Settings16Filled} from "@vicons/fluent"
+import { Settings20Filled, ArrowReset20Filled, Settings20Regular, Add20Filled } from "@vicons/fluent"
 
 const datasetStore = DatasetStore();
 const queryStore = QueryStore();
@@ -89,28 +153,29 @@ const columnOptions = computed(() => {
         value: c.name,
     }));
 });
+const showTask = ref(true);
 
 const typeOption = [
+    // {
+    //     label: "自动",
+    //     value: null
+    // },
     {
-        label: "自动",
-        value: null
-    },
-    {
-        label: "柱状图",
+        label: "Bar",
         value: "bar"
     },
     {
-        label: "折线图",
+        label: "Line",
         value: "line"
     },
     {
-        label: "散点图",
+        label: "Scatter",
         value: "point",
     },
-    {
-        label: "刻度图",
-        value: "tick"
-    }
+    // {
+    //     label: "刻度图",
+    //     value: "tick"
+    // }
 ]
 
 const x_filter = computed(() => {
@@ -153,6 +218,9 @@ function updateEncoding(channel, encoding) {
 
     if (chartIns == null) return;
     let chn = (channel.match(/(.*?)_encoding/) ?? [, "None"])[1];
+    if (chn == "category") {
+        chn = "color";
+    }
     if (enc != "None") {
         chartIns.mergeSpec({
             encoding: {
@@ -222,3 +290,9 @@ function resetQuery() {
     queryStore.$reset();
 }
 </script>
+
+<style scoped>
+.panel-subtitle {
+    @apply font-bold text-lg flex-1 text-$title-color;
+}
+</style>
