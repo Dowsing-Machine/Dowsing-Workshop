@@ -1,8 +1,10 @@
 <template>
     <transition name="scaleY" @after-enter="onEnter" @after-leave="onLeave">
-        <div class="h-50" v-show="props.show">
-            <n-space class="h-1/1 py-2 overflow-x-auto overflow-y-hidden" :wrap="false" :ref="el">
-                <n-card class="h-1/1 w-50" v-for="vl in vegalites">
+        <div class="h-50" v-show="props.show"  >
+        <n-scrollbar   ref="contentRef" :x-scrollable="true">
+            <n-space class="h-1/1 py-2 overflow-x-auto overflow-y-hidden" :wrap="false" :ref="el" >
+            
+                <n-card class="h-44 w-50" v-for="(vl,i) in vegalites" @click="selectHis(i)">
                     <transition name="fade">
                         <chart-raw-vue
                             v-if="chartsShow"
@@ -21,34 +23,51 @@
                         ></chart-raw-vue>
                     </transition>
                 </n-card>
+           
             </n-space>
+             </n-scrollbar>
         </div>
     </transition>
 </template>
 
 <script setup>
-import { NCard, NSpace } from 'naive-ui';
+import { NCard, NSpace,NScrollbar } from 'naive-ui';
 import ChartRawVue from '../ChartRaw.vue';
-import { nextTick, ref, watch } from "vue";
+import { nextTick, ref, watch ,onMounted} from "vue";
 import { useElementSize } from '@vueuse/core'
-
+import { CollectionStore, CollectionItem } from '../../store/CollectionStore';
+const collectionStore = CollectionStore();
 const charts = ref([]);
 const chartsShow = ref(false);
 const props = defineProps({
     vegalites: Array,
-    show: Boolean
+    show: Boolean,
+    selectId:Number
 });
 const el = ref(null);
+const contentRef = ref(null);
 const { height } = useElementSize(el);
 watch(height, () => {
     console.log(height.value);
 })
 function onEnter() {
     chartsShow.value = true;
+    contentRef.value?.scrollTo({ left: 12000, behavior: 'smooth' })
 }
 function onLeave() {
     chartsShow.value = false;
 }
+
+function selectHis(i) {
+
+    collectionStore.collections.find(c => c.id == props.selectId).changeSpec(props.vegalites[i]) ;
+    props.show=true;
+
+}
+watch(()=>props.vegalites,()=>{
+    contentRef.value?.scrollTo({ left: 12000, behavior: 'smooth' })
+})
+
 </script>
 
 <style scoped>
@@ -73,5 +92,13 @@ function onLeave() {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
+}
+
+.n-scrollbar-content{
+    height: 100%;
+}
+
+.n-scrollbar-container{
+    @apply bg-red-500;
 }
 </style>

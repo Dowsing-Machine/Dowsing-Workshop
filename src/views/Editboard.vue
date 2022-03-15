@@ -29,12 +29,13 @@
                     <!-- <single-chart-edit></single-chart-edit> -->
                     <query-control-vue></query-control-vue>
                 </n-layout-sider>
-                <n-layout-content @click="onClick" class="h-1/1">
+                <n-layout-content  class="h-1/1">
                     <n-layout has-sider class="h-1/1">
                         <!-- <n-layout-header bordered>
                             <multi-view-ctrl></multi-view-ctrl>
                         </n-layout-header>-->
                         <n-layout-sider
+                            @click="onClick"
                             bordered
                             width="300"
                             collapse-mode="transform"
@@ -46,7 +47,7 @@
                             v-model:collapsed="recommendClosed"
                             class="shadow-left"
                         >
-                            <recommend-grid-vue></recommend-grid-vue>
+                            <recommend-grid-vue ></recommend-grid-vue>
                         </n-layout-sider>
                         <n-layout-content
                             :content-style="{ display: 'flex', flexDirection: 'column' }"
@@ -54,13 +55,15 @@
                             <n-layout-header 
                                 class="shadow"
                                 bordered
+                                @click="onClick"
                             >
                                 <multi-view-ctrl></multi-view-ctrl>
                             </n-layout-header>
                             <!-- <explore-panel-vue class="flex-1 h-1/1 overflow-auto"></explore-panel-vue> -->
 
                             <!-- <multi-view></multi-view> -->
-                            <collection-charts-vue class="h-1/1 flex-1 overflow-auto"></collection-charts-vue>
+                            <collection-charts-vue class="h-1/1 flex-1 overflow-auto" @click="onClick">
+                            </collection-charts-vue>
                             <div class="p-1 border-t shadow-up">
                                 <n-button
                                     secondary
@@ -72,6 +75,8 @@
                                 <history-view-vue
                                     :vegalites="chartHistories"
                                     :show="pastPanelOpen"
+                                    :selectId="controlStore.currentViewId"
+                                    
                                 />
                                 <!-- <transition name="fade">
                                     <div class="h-50" v-show="pastPanelOpen">
@@ -141,6 +146,7 @@ const fps = useFps();
 
 const showPast = ref(true);
 const pastPanelOpen = computed(() => {
+    console.log(controlStore.currentViewId)
     return (showPast.value == true) && (controlStore.currentViewId != null);
 })
 const isDev = computed(() => import.meta.env.DEV)

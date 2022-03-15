@@ -39,18 +39,18 @@ const action2num = {
 const B = 2 ** 11;
 
 
-function calPredicts(p, b, h, opts={}) {
+function calPredicts(p, b, h, opts = {}) {
     // p: current model output, Object[task]=Array, valur=[0,1]
     // b: custom setting for tasks, Object[task]=[-inf,+inf]
     // h: history state, Object[task]=[-inf, +inf]
     // a: alpha to control prefer history or current output, [0-1]
     // output: h(t)=b*(h(t-1)*a+p(t)*(1-a))
     const {
-        a=0.5,
-        mode="history",
-        agg_func=x=>Math.max(...x),
-        clamp=false
-    }=opts
+        a = 0.5,
+            mode = "history",
+            agg_func = x => Math.max(...x),
+            clamp = false
+    } = opts
     const ht = {}
     for (const task in p) {
         // if (mode == "bypass") {
@@ -64,14 +64,14 @@ function calPredicts(p, b, h, opts={}) {
         // }
         ht[task] = b[task] * ((h[task]) * a + agg_func(p[task]) * (1 - a));
 
-        if(clamp){
-            ht[task]=_.clamp(ht[task],0,1);
+        if (clamp) {
+            ht[task] = _.clamp(ht[task], 0, 1);
         }
 
 
     }
     // h=ht;
-    
+
     return ht;
 }
 
@@ -120,10 +120,10 @@ export const TaskStore = defineStore({
         // current_output:(state)=>{
         //     return state.predicts.slice(-(DEFAULT_TASKS.length));
         // },
-        activate_task:(state)=>{
+        activate_task: (state) => {
             if (state.predicts.length === 0) return [];
             const pre = state.predicts.slice(-1)[0];
-            
+
             return _.toPairs(pre).map(item => {
                 const [type, score] = item;
                 return {
@@ -136,7 +136,7 @@ export const TaskStore = defineStore({
     },
     actions: {
         async getPredicts(topic) {
-            if(action2num[topic]==null){
+            if (action2num[topic] == null) {
                 // this.predicts=this.predicts.concat(
                 //     calPredicts(
                 //         this.history,
@@ -145,7 +145,7 @@ export const TaskStore = defineStore({
                 //         { agg_func: x => x, clamp: true }
                 //     )
                 // );
-                
+
                 this.predicts.push(
                     this.predicts.slice(-1)[0]
                 )
@@ -167,28 +167,26 @@ export const TaskStore = defineStore({
             }
             // console.log(modelOut)
             // const newI=this.i+1;
-            const newHis=calPredicts(modelOut,initCustom(),this.history);
+            const newHis = calPredicts(modelOut, initCustom(), this.history);
             const newPre = calPredicts(
-                modelOut, 
-                initCustom(), 
-                this.history,
-                { clamp:true }
+                modelOut,
+                initCustom(),
+                this.history, { clamp: true }
             );
             const newPredicts = this.predicts.concat(newPre);
             this.$patch({
-                history: newHis,
-                predicts: newPredicts
-            })
-            // this.predicts=newPredicts;
+                    history: newHis,
+                    predicts: newPredicts
+                })
+                // this.predicts=newPredicts;
 
         },
         punishTask(t) {
             this.history[t] = -B;
             let newPre = calPredicts(
-                this.history, 
-                initCustom(), 
-                this.history, 
-                { agg_func: x => x, clamp:true}
+                this.history,
+                initCustom(),
+                this.history, { agg_func: x => x, clamp: true }
             );
             this.predicts.push(newPre);
         },
@@ -197,8 +195,7 @@ export const TaskStore = defineStore({
             let newPre = calPredicts(
                 this.history,
                 initCustom(),
-                this.history,
-                { agg_func: x => x, clamp:true }
+                this.history, { agg_func: x => x, clamp: true }
             );
             this.predicts.push(newPre);
         }
@@ -206,4 +203,3 @@ export const TaskStore = defineStore({
     },
 
 });
-

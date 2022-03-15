@@ -50,7 +50,9 @@
                 <task-predict-vue></task-predict-vue>
                 <task-tag-vue></task-tag-vue>
             </n-tab-pane>
-            <n-tab-pane name="列"></n-tab-pane>
+            <n-tab-pane name="列">
+                <p-o-i></p-o-i>
+            </n-tab-pane>
         </n-tabs>
     </n-space>
 </template>
@@ -71,8 +73,10 @@ import _ from "lodash";
 
 import TaskPredictVue from './Task/TaskPredict.vue';
 import TaskTagVue from "./Task/TaskTag.vue";
+import POI from "./POI.vue";
 import { ControlStore } from '../store/ControlStore';
 import { CollectionStore } from '../store/CollectionStore';
+import { POIStore } from "../store/POIStore";
 
 import {Settings16Filled} from "@vicons/fluent"
 
@@ -80,6 +84,7 @@ const datasetStore = DatasetStore();
 const queryStore = QueryStore();
 const controlStore = ControlStore();
 const collectionStore = CollectionStore();
+const poiStore = POIStore();
 
 const { proxy } = getCurrentInstance();
 
@@ -172,6 +177,8 @@ function updateEncoding(channel, encoding) {
             }
         })
     }
+    poiStore.updateColumn(encoding.encoding);
+    
 }
 
 function updateFilter(enc, column, filter) {
