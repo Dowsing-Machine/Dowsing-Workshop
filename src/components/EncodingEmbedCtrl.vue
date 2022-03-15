@@ -155,7 +155,7 @@ const SUPPORTED_AGGREGATE = [
 
 const columnPlacehold = computed(() => {
     if (!props.aggregate && !props.encoding) {
-        return "请选择字段";
+        return "Empty";
     }
     else if (!props.aggregate) {
         return props.encoding;
@@ -191,6 +191,8 @@ const type = computed(() => {
 
 function onEncodingUpdate(value) {
     // emits("update:filter", null);
+    // console.log("onEncodingUpdate", value, props.encoding);
+    if(value==props.encoding) return;
     if (value === NULL) {
         emits('update:encoding', null);
     }
@@ -204,7 +206,7 @@ function onEncodingUpdate(value) {
 
 function onAggregateUpdate(value) {
     // emits("update:filter", null);
-
+    if(value==props.aggregate) return;
     if (value === NULL) {
         emits('update:aggregate', null);
     }

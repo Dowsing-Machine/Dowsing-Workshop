@@ -137,43 +137,43 @@ async function sendLog(log, topic, time = Date.now()) {
 
 }
 
-watch(collectionStore.notes, _.debounce(() => {
-  const logObj = {
-    time: new Date().toLocaleString(),
-    type: 'note',
-    content: _.cloneDeep(collectionStore.notes)
-  };
-  actionList.push(logObj);
-  sendLog(logObj, "notes");
-  // console.log(new Date().toLocaleTimeString(), collectionStore.notes)
-}, 1000))
+// watch(collectionStore.notes, _.debounce(() => {
+//   const logObj = {
+//     time: new Date().toLocaleString(),
+//     type: 'note',
+//     content: _.cloneDeep(collectionStore.notes)
+//   };
+//   actionList.push(logObj);
+//   sendLog(logObj, "notes");
+//   // console.log(new Date().toLocaleTimeString(), collectionStore.notes)
+// }, 1000))
 
-watch(collectionStore.layouts, _.debounce(() => {
-  const logObj = {
-    time: new Date().toLocaleString(),
-    type: 'layout',
-    content: _.cloneDeep(collectionStore.layouts)
-  }
-  actionList.push(logObj);
-  sendLog(logObj, "layouts");
+// watch(collectionStore.layouts, _.debounce(() => {
+//   const logObj = {
+//     time: new Date().toLocaleString(),
+//     type: 'layout',
+//     content: _.cloneDeep(collectionStore.layouts)
+//   }
+//   actionList.push(logObj);
+//   sendLog(logObj, "layouts");
 
-  // console.log(new Date().toLocaleTimeString(), collectionStore.notes)
-}, 1000), {
-  deep: true
-})
+//   // console.log(new Date().toLocaleTimeString(), collectionStore.notes)
+// }, 1000), {
+//   deep: true
+// })
 
-watch(collectionStore.collections, _.debounce(() => {
-  const logObj = {
-    time: new Date().toLocaleString(),
-    type: 'collection',
-    content: _.cloneDeep(collectionStore.collections)
-  }
-  actionList.push(logObj);
-  sendLog(logObj, "collections");
+// watch(collectionStore.collections, _.debounce(() => {
+//   const logObj = {
+//     time: new Date().toLocaleString(),
+//     type: 'collection',
+//     content: _.cloneDeep(collectionStore.collections)
+//   }
+//   actionList.push(logObj);
+//   sendLog(logObj, "collections");
 
-}, 1000), {
-  deep: true
-})
+// }, 1000), {
+//   deep: true
+// })
 
 // watch(queryStore, _.debounce(()=> {
 //   actionList.push({
@@ -186,16 +186,16 @@ watch(collectionStore.collections, _.debounce(() => {
 let queryTemp = {}
 
 queryStore.$subscribe((mutation, state) => {
-  if (!_.isEqual(state, queryTemp)) {
-    const logObj = {
-      time: new Date().toLocaleString(),
-      type: 'query',
-      content: _.cloneDeep(state)
-    }
-    actionList.push(logObj);
-    sendLog(logObj, "query");
-  }
-  queryTemp = _.cloneDeep(state)
+  // if (!_.isEqual(state, queryTemp)) {
+  //   const logObj = {
+  //     time: new Date().toLocaleString(),
+  //     type: 'query',
+  //     content: _.cloneDeep(state)
+  //   }
+  //   actionList.push(logObj);
+  //   sendLog(logObj, "query");
+  // }
+  // queryTemp = _.cloneDeep(state)
 })
 
 

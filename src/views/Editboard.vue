@@ -3,12 +3,9 @@
         class="h-screen max-h-screen"
         :content-style="{ display: 'flex', flexDirection: 'column' }"
     >
-        <n-layout-header
-            bordered
-            class="p-2 px-5 items-center bg-gradient-to-r to-yellow-200 from-yellow-400"
-        >
+        <n-layout-header class="p-2 px-5 items-center bg-$primary-color">
             <n-space justify="space-between">
-                <div style="font-size: 1.5em" class="text-light-50 text-shadow-lg">Dowsing</div>
+                <div style="font-size: 1.5em" class="text-light-50 text-shadow-lg font-bold">DOWSING</div>
                 <div style="align-self: center;" class="h-1/1">
                     <!-- <n-switch size="large">
                             <template #checked>探索</template>
@@ -42,28 +39,38 @@
                             :collapsed-width="0"
                             show-trigger="bar"
                             content-style="height:100%"
-                            :native-scrollbar="false"
+                            :native-scrollbar="true"
                             :default-collapsed="true"
                             v-model:collapsed="recommendClosed"
                             class="shadow-left"
                         >
-                            <recommend-grid-vue ></recommend-grid-vue>
+                            <div class="flex flex-col px-3 pt-3 h-1/1">
+                                <div class="font-bold text-lg mb-2 text-$title-color">SUGGESTIONS</div>
+                                <hr class="border w-1/1 mb-2 flex-1" />
+                                <n-scrollbar>
+                                    <recommend-grid-vue/>
+                                </n-scrollbar>
+                            </div>
                         </n-layout-sider>
                         <n-layout-content
                             :content-style="{ display: 'flex', flexDirection: 'column' }"
                         >
                             <n-layout-header 
-                                class="shadow"
-                                bordered
-                                @click="onClick"
-                            >
-                                <multi-view-ctrl></multi-view-ctrl>
+                             @click="onClick"
+                             class="bg-$light-primary-color">
+                                <div class="flex items-center w-1/1 h-48px">
+                                    <!-- <div class="flex-1 text-lg px-24px font-bold text-$title-color">CANVAS</div> -->
+                                    <multi-view-ctrl></multi-view-ctrl>
+                                </div>
+                                <hr class="border-0 mx-24px" />
                             </n-layout-header>
                             <!-- <explore-panel-vue class="flex-1 h-1/1 overflow-auto"></explore-panel-vue> -->
 
                             <!-- <multi-view></multi-view> -->
-                            <collection-charts-vue class="h-1/1 flex-1 overflow-auto" @click="onClick">
-                            </collection-charts-vue>
+                            <collection-charts-vue
+                            @click="onClick"
+                                class="bg-$embeded-bg-color h-1/1 flex-1 overflow-auto"
+                            ></collection-charts-vue>
                             <div class="p-1 border-t shadow-up">
                                 <n-button
                                     secondary
@@ -110,12 +117,12 @@
 </template>
 
 <script setup>
-import { NLayout, NLayoutHeader, NLayoutFooter, NLayoutSider, NLayoutContent, NSpace, NSwitch, NCollapseTransition, NButton } from 'naive-ui';
-import DebugViewVue from '../components/DebugView.vue';
-import DataControl from "@/components/DataControl.vue";
-import SingleChartEdit from "@/components/SingleChartEdit.vue";
+import { NLayout, NLayoutHeader, NScrollbar, NLayoutSider, NLayoutContent, NSpace, NSwitch, NCollapseTransition, NButton, useThemeVars } from 'naive-ui';
+// import DebugViewVue from '../components/DebugView.vue';
+// import DataControl from "@/components/DataControl.vue";
+// import SingleChartEdit from "@/components/SingleChartEdit.vue";
 import QueryControlVue from '../components/QueryControl.vue';
-import MultiView from '../components/MultiView.vue';
+// import MultiView from '../components/MultiView.vue';
 import MultiViewCtrl from '../components/MultiViewCtrl.vue';
 import DatasetSelectVue from '../components/DatasetSelect.vue';
 // import Mention from '../components/Mention.vue'
@@ -123,13 +130,13 @@ import DatasetSelectVue from '../components/DatasetSelect.vue';
 import { MVStore } from '../store/MVStore';
 
 import { ControlStore } from '../store/ControlStore';
-import ExplorePanelVue from '@/components/ExplorePanel.vue';
+// import ExplorePanelVue from '@/components/ExplorePanel.vue';
 
-import CollectionButton from '@/components/CollectionButton.vue';
+// import CollectionButton from '@/components/CollectionButton.vue';
 import DownloadButton from "@/components/DownloadButton.vue";
 import { DatasetStore } from '../store/DatasetStore';
 
-import logUploadVue from '../components/logUpload.vue';
+// import logUploadVue from '../components/logUpload.vue';
 
 import { computed, ref } from 'vue-demi';
 import RecommendGridVue from '../components/Recommendation/RecommendGrid.vue';
@@ -143,6 +150,7 @@ import { CollectionStore, CollectionItem } from '../store/CollectionStore';
 import { useFps, useMemory } from "@vueuse/core";
 const { menory } = useMemory();
 const fps = useFps();
+const { primaryColor } = useThemeVars();
 
 const showPast = ref(true);
 const pastPanelOpen = computed(() => {
@@ -212,5 +220,4 @@ function onClick() {
     @apply shadow;
     --tw-shadow: 0 10px 15px -3px rgb(0 0 0/0.1), 0 -4px 6px -4px rgb(0 0 0/0.1);
 }
-
 </style>

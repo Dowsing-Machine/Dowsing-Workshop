@@ -1,6 +1,10 @@
 <template>
-    <n-space vertical class="p-3">
-        <n-card v-for="vl in vls" class="h-50 w-1/1" title="卡片分段示例">
+    <n-space vertical>
+        <n-card 
+            v-for="vl in vls" 
+            class="h-50 w-1/1" 
+            title="卡片分段示例"
+        >
             <chart-raw-vue
                 :vegalite="vl"
                 :render-option="{
@@ -52,10 +56,10 @@ import { NSpace } from 'naive-ui';
 
 import DracoWorker from "../../utils/dracoWorker?worker";
 
-const dracoWorker=new DracoWorker();
-dracoWorker.onmessage=function(e){
+const dracoWorker = new DracoWorker();
+dracoWorker.onmessage = function (e) {
     console.log(e.data);
-    res.value=e.data;
+    res.value = e.data;
 }
 
 const hard_programs = [
@@ -63,19 +67,22 @@ const hard_programs = [
     // "task(summary) :- utask(transform).",
     ":- not channel(_,x); not channel(_,y); not channel(_,color).",
     // ":- channel(_,shape).",
+    ":- channel(_,size).",
     ":- channel(_,shape).",
     ":- channel(_,detail).",
-    "encoding(e0).",
-    ":- not field(e0,_).",
-    "encoding(e1).",
-    ":- not field(e1,_).",
-    // "encoding(e2).",
-    // ":- not field(e2,_).",
+    // "encoding(e0).",
+    // ":- not field(e0,_).",
+    // "encoding(e1).",
+    // ":- not field(e1,_).",
+    ":- not {encoding(_)}>=2.",
+    "encoding(e2).",
+    ":- field(e2,_).",
     // `data("${datasetStore.name}").`,
     ":- {aggregate(_, _)}>=2.",
     ":- utask(trend), not channel(_,y).",
-    // ":- utask(trend), mark(line), channel(E,y), not aggregate(E, mean).",
-    // ":- utask(trend), mark(line), channel(E,x), aggregate(E, _).",
+    // ":- utask(trend), not channel(_,y).",
+    // ":- utask(trend), channel(E,y), not aggregate(E, mean).",
+    // ":- utask(trend), channel(E,x), aggregate(E, _).",
 
     // ":- utask(trend), x_y_cardinality().",
 ]
@@ -83,14 +90,19 @@ const hard_programs = [
 const task_asps = [
     "soft(confirm_mark):- utask(confirm), not mark(line).",
     "soft(correlation_mark):- utask(correlation), mark(point).",
-    "soft(trend_mark):- utask(trend), mark(line;bar).",
+    "soft(trend_mark1):- utask(trend), mark(bar).",
+    "soft(trend_mark2):- utask(trend), mark(line).",
+
     // "task(summary) :- utask(transform).",
     // "soft(compare_color):- utask(transform), encoding(E), channel(E,color).",
 
     'soft(trend_aggregate_x):- utask(trend), encoding(E), channel(E,x),not aggregate(E,_).',
-    'soft(trend_x_temporal):- utask(trend), encoding(E), field(E,F), type(E,temporal), channel(E,x).',
+    'soft(trend_x_temporal):- utask(trend), encoding(E), field(E,F), fieldtype(F,datetime), channel(E,x).',
     'soft(correlation_x_quantitative):- utask(correlation), encoding(E), field(E,F), type(E,quantitative), channel(E,x).',
     "soft(transform_aggregate_y):- utask(transform), encoding(E), channel(E,y), aggregate(E,_).",
+    "soft(trend_aggregrate):- utask(trend), encoding(E), channel(E,y), aggregate(E,_).",
+    // "soft(encoding_num):- {encoding(_)}>2.",
+    "soft(compare_encoding_num):- utask(compare), {encoding(_)}>2.",
 
 ]
 
@@ -103,14 +115,19 @@ const task_weights = {
     // 'trend_aggregate_x': 0,
     // 'trend_x_temporal': 747,
     // 'correlation_x_quantitative': 902
+    'correlation_type':-100,
     'confirm_mark': -297,
     'correlation_mark': -110,
-    'trend_mark': -223,
+    'trend_mark1': -223,
+    'trend_mark2': -300,
+
     'transform_aggregate_y': 0,
     // 'transform_aggregate_color': 512,
     'trend_aggregate_x': -98,
     'trend_x_temporal': -265,
-    'correlation_x_quantitative': -331
+    'correlation_x_quantitative': -331,
+    "trend_aggregrate": -100,
+    "compare_encoding_num": -100,
 }
 
 const task_map = {
@@ -149,7 +166,7 @@ const res = ref({});
 //     console.log("task changed");
 // })
 
-watch(() => taskStore.activate_task, (newVal, oldVal) => {
+watch(() => taskStore.activate_task.filter(item=>item.customScore>0.5), (newVal, oldVal) => {
     // console.log(newVal, oldVal);
     let equal = true;
     if (newVal.length != oldVal.length) {
@@ -183,7 +200,7 @@ watch(() => taskStore.activate_task, (newVal, oldVal) => {
     }
     const dataASP = DracoCore.schema2asp(dataSchema);
     console.log(dataASP);
-    const tasks = taskStore.activate_task;
+    const tasks = taskStore.activate_task.filter(item=>item.customScore>0.5);
 
     const taskFASPs = tasks.map(i => `utask(${task_map[i.type]}).`);
     let task_weights_available = [];
@@ -221,11 +238,11 @@ watch(() => taskStore.activate_task, (newVal, oldVal) => {
         ...weight_assign,
         ...hard_programs,
     ].join("\n");
-    // console.log("program", program);
+    console.log("program", program);
     // res.value = draco.solve(program, { models: 10 }) ?? {};
     dracoWorker.postMessage({
         program,
-        typs:"solve",
+        typs: "solve",
         softW,
     });
 })

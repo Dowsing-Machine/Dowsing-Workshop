@@ -1,5 +1,11 @@
 <template>
-    <n-menu :options="options" mode="horizontal" @update:value="handleUpdate" :value="null"></n-menu>
+    <n-menu 
+        :options="options" 
+        mode="horizontal" 
+        @update:value="handleUpdate" 
+        :value="null"
+        :theme-overrides="styleOverride"
+    />
 </template>
 <script setup>
 import { NMenu, NIcon, NSpace, NButton } from 'naive-ui';
@@ -17,13 +23,20 @@ import { CollectionStore } from '../store/CollectionStore';
 const mvStore = MVStore();
 const controlStore = ControlStore();
 const queryStore = QueryStore();
-const collectionStore=CollectionStore();
+const collectionStore = CollectionStore();
 
-const {proxy} = getCurrentInstance();
+const { proxy } = getCurrentInstance();
+
+const styleOverride={
+    itemTextColor:"#dfe9f7",
+    itemIconColor:"#dfe9f7",
+    itemIconColorHover:"#FFF",
+    itemTextColorHover:"#FFF",
+}
 
 const options = computed(() => ([
     {
-        label: "添加",
+        label: "Add",
         key: "add",
         icon: () => h(
             NIcon,
@@ -32,7 +45,7 @@ const options = computed(() => ([
         )
     },
     {
-        label: "删除",
+        label: "Delete",
         key: "delete",
         icon: () => h(
             NIcon,
@@ -42,7 +55,7 @@ const options = computed(() => ([
         disabled: controlStore.currentViewId == null,
     },
     {
-        label: "撤销",
+        label: "Undo",
         key: "undo",
         icon: () => h(
             NIcon,
@@ -51,7 +64,7 @@ const options = computed(() => ([
         )
     },
     {
-        label: "恢复",
+        label: "Redo",
         key: "redo",
         icon: () => h(
             NIcon,

@@ -52,6 +52,7 @@ function calPredicts(p, b, h, opts = {}) {
             clamp = false
     } = opts
     const ht = {}
+        // console.log(h)
     for (const task in p) {
         // if (mode == "bypass") {
         //     ht[task]=_.clamp(h[task],0,1);
@@ -62,7 +63,8 @@ function calPredicts(p, b, h, opts = {}) {
         //         ht[task] = _.clamp(ht[task], 0, 1);
         //     }
         // }
-        ht[task] = b[task] * ((h[task]) * a + agg_func(p[task]) * (1 - a));
+        // ht[task] = b[task] * ((h[task]) * a + agg_func(p[task]) * (1 - a));
+        ht[task] = ((h[task]) * a + agg_func(p[task]) * (1 - a));
 
         if (clamp) {
             ht[task] = _.clamp(ht[task], 0, 1);
@@ -107,7 +109,7 @@ export const TaskStore = defineStore({
     id: "TaskStore",
     state: () => {
         const history = initHistory();
-        const customs = {};
+        const customs = initCustom();
         return {
             history,
             customs,
@@ -128,7 +130,10 @@ export const TaskStore = defineStore({
                 const [type, score] = item;
                 return {
                     type,
-                    score
+                    // score: score * state.customs[type]
+                    score,
+                    customScore: state.customs[type]
+
                 };
             }).filter(item => item.score > 0.5);
 
@@ -149,6 +154,7 @@ export const TaskStore = defineStore({
                 this.predicts.push(
                     this.predicts.slice(-1)[0]
                 )
+                return;
             }
             let res = await axios.get("http://localhost:5001/action", {
                 params: {
@@ -167,7 +173,7 @@ export const TaskStore = defineStore({
             }
             // console.log(modelOut)
             // const newI=this.i+1;
-            const newHis = calPredicts(modelOut, initCustom(), this.history);
+            const newHis = calPredicts(modelOut, this.customs, this.history);
             const newPre = calPredicts(
                 modelOut,
                 initCustom(),
@@ -185,7 +191,7 @@ export const TaskStore = defineStore({
             this.history[t] = -B;
             let newPre = calPredicts(
                 this.history,
-                initCustom(),
+                this.customs,
                 this.history, { agg_func: x => x, clamp: true }
             );
             this.predicts.push(newPre);
@@ -194,7 +200,7 @@ export const TaskStore = defineStore({
             this.history[t] = B;
             let newPre = calPredicts(
                 this.history,
-                initCustom(),
+                this.customs,
                 this.history, { agg_func: x => x, clamp: true }
             );
             this.predicts.push(newPre);

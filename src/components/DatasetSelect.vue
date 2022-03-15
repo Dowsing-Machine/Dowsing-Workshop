@@ -1,6 +1,6 @@
 <template>
     <n-button text style="font-size: 28px;" @click="showDatasetDialog = true">
-        <n-icon>
+        <n-icon color="#b2caec">
             <database24-filled></database24-filled>
         </n-icon>
     </n-button>
