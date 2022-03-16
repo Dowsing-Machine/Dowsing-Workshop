@@ -47,12 +47,12 @@ function calPredicts(p, b, h, opts = {}) {
     // output: h(t)=b*(h(t-1)*a+p(t)*(1-a))
     const {
         a = 0.5,
-        mode = "history",
-        agg_func = x => Math.max(...x),
-        clamp = false
+            mode = "history",
+            agg_func = x => Math.max(...x),
+            clamp = false
     } = opts
     const ht = {}
-    // console.log(h)
+        // console.log(h)
     for (const task in p) {
         // if (mode == "bypass") {
         //     ht[task]=_.clamp(h[task],0,1);
@@ -141,7 +141,6 @@ export const TaskStore = defineStore({
     },
     actions: {
         async getPredicts(topic) {
-            console.log(topic);
             if (action2num[topic] == null) {
                 // this.predicts=this.predicts.concat(
                 //     calPredicts(
@@ -178,15 +177,14 @@ export const TaskStore = defineStore({
             const newPre = calPredicts(
                 modelOut,
                 initCustom(),
-                this.history,
-                { clamp: true }
+                this.history, { clamp: true }
             );
             const newPredicts = this.predicts.concat(newPre);
             this.$patch({
-                history: newHis,
-                predicts: newPredicts
-            })
-            // this.predicts=newPredicts;
+                    history: newHis,
+                    predicts: newPredicts
+                })
+                // this.predicts=newPredicts;
 
         },
         punishTask(t) {
@@ -194,8 +192,7 @@ export const TaskStore = defineStore({
             let newPre = calPredicts(
                 this.history,
                 this.customs,
-                this.history,
-                { agg_func: x => x, clamp: true }
+                this.history, { agg_func: x => x, clamp: true }
             );
             this.predicts.push(newPre);
         },
@@ -204,8 +201,7 @@ export const TaskStore = defineStore({
             let newPre = calPredicts(
                 this.history,
                 this.customs,
-                this.history,
-                { agg_func: x => x, clamp: true }
+                this.history, { agg_func: x => x, clamp: true }
             );
             this.predicts.push(newPre);
         }
@@ -213,4 +209,3 @@ export const TaskStore = defineStore({
     },
 
 });
-

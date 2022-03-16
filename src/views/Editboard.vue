@@ -27,12 +27,13 @@
                     <!-- <single-chart-edit></single-chart-edit> -->
                     <query-control-vue></query-control-vue>
                 </n-layout-sider>
-                <n-layout-content @click="onClick" class="h-1/1">
+                <n-layout-content  class="h-1/1">
                     <n-layout has-sider class="h-1/1">
                         <!-- <n-layout-header bordered>
                             <multi-view-ctrl></multi-view-ctrl>
                         </n-layout-header>-->
                         <n-layout-sider
+                            @click="onClick"
                             bordered
                             width="300"
                             collapse-mode="transform"
@@ -56,7 +57,9 @@
                         <n-layout-content
                             :content-style="{ display: 'flex', flexDirection: 'column' }"
                         >
-                            <n-layout-header class="bg-$light-primary-color">
+                            <n-layout-header 
+                             @click="onClick"
+                             class="bg-$light-primary-color">
                                 <div class="flex items-center w-1/1 h-48px">
                                     <!-- <div class="flex-1 text-lg px-24px font-bold text-$title-color">CANVAS</div> -->
                                     <multi-view-ctrl></multi-view-ctrl>
@@ -67,6 +70,7 @@
 
                             <!-- <multi-view></multi-view> -->
                             <collection-charts-vue
+                            @click="onClick"
                                 class="bg-$embeded-bg-color h-1/1 flex-1 overflow-auto"
                             ></collection-charts-vue>
                             <div class="p-1 border-t shadow-up">
@@ -80,6 +84,8 @@
                                 <history-view-vue
                                     :vegalites="chartHistories"
                                     :show="pastPanelOpen"
+                                    :selectId="controlStore.currentViewId"
+                                    
                                 />
                                 <!-- <transition name="fade">
                                     <div class="h-50" v-show="pastPanelOpen">
@@ -153,6 +159,7 @@ function onHeadVisableChange(val){
 
 const showPast = ref(true);
 const pastPanelOpen = computed(() => {
+    console.log(controlStore.currentViewId)
     return (showPast.value == true) && (controlStore.currentViewId != null);
 })
 const isDev = computed(() => import.meta.env.DEV)

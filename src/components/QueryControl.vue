@@ -159,9 +159,11 @@ import _ from "lodash";
 
 import TaskPredictVue from './Task/TaskPredict.vue';
 import TaskTagVue from "./Task/TaskTag.vue";
+import POI from "./POI.vue";
 import TaskLegendVue from './Task/TaskLegend.vue';
 import { ControlStore } from '../store/ControlStore';
 import { CollectionStore } from '../store/CollectionStore';
+import { POIStore } from "../store/POIStore";
 
 import { Settings20Filled, ArrowReset20Filled, Settings20Regular, Add20Filled } from "@vicons/fluent"
 
@@ -169,6 +171,7 @@ const datasetStore = DatasetStore();
 const queryStore = QueryStore();
 const controlStore = ControlStore();
 const collectionStore = CollectionStore();
+const poiStore = POIStore();
 
 const { proxy } = getCurrentInstance();
 
@@ -265,6 +268,8 @@ function updateEncoding(channel, encoding) {
             }
         })
     }
+    poiStore.updateColumn(encoding.encoding);
+    
 }
 
 function updateFilter(enc, column, filter) {
