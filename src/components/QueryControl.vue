@@ -104,7 +104,9 @@
                 </div>-->
                 <task-tag-vue></task-tag-vue>
             </div>
-            <div v-else></div>
+            <div v-else>
+                <p-o-i></p-o-i>
+            </div>
             <!-- <n-tabs>
                 <n-tab-pane name="Task">
                     <div class="mb-1 font-semibold">TYPE</div>
@@ -181,10 +183,13 @@ const typeOption = [
     // }
 ]
 
+//大问题，重新选中图时候，queryStore不恢复
 const x_filter = computed(() => {
     if (queryStore.x_encoding == COUNT) {
         return null;
     }
+    console.log(queryStore.filter);
+    console.log(queryStore.getFilterByColumn(queryStore.x_encoding))
     return queryStore.getFilterByColumn(queryStore.x_encoding);
 })
 
@@ -215,9 +220,28 @@ function updateEncoding(channel, encoding) {
         channel,
         encoding: encoding?.encoding
     });
+    const old = queryStore[channel];
+    console.log(queryStore.filter)
+    queryStore.deleteFilterByColumn(old);
+    console.log(queryStore.filter)
     queryStore.editEncoding(channel, encoding?.encoding);
     const i = controlStore.currentViewId;
     const chartIns = collectionStore.collections.find(c => c.id == i);
+    
+    const nowFilter=queryStore.filter.map(f=>{
+        return {
+            "filter":{
+                field:f.column,
+                [f.predicate]:f.filter,
+            }
+        }
+    });
+    
+    const newspec=chartIns.spec;
+    newspec.transform=nowFilter;
+
+    chartIns.changeSpec(newspec);
+
 
     if (chartIns == null) return;
     let chn = (channel.match(/(.*?)_encoding/) ?? [, "None"])[1];
@@ -231,7 +255,8 @@ function updateEncoding(channel, encoding) {
                     field: enc,
                     type: t
                 }
-            }
+            },
+            "transform":nowFilter
         })
     }
     else {
@@ -240,19 +265,50 @@ function updateEncoding(channel, encoding) {
             encoding: {
                 ...chartIns.spec.encoding,
                 [channel]: null
-            }
+            },
+            "transform":nowFilter
         })
     }
+    
     poiStore.updateColumn(encoding.encoding);
     
 }
 
-function updateFilter(enc, column, filter) {
-    proxy.$EventBus.emit(`user:update:filter:${enc}`, {
+function updateFilter(channel, column, filter) {
+    
+    proxy.$EventBus.emit(`user:update:filter:${channel}`, {
         column,
         filter
     });
     queryStore.setFilterByColumn(column, filter);
+    const i = controlStore.currentViewId;
+    const chartIns = collectionStore.collections.find(c => c.id == i);
+
+    if (chartIns == null) return;
+
+    let chn = (channel.match(/(.*?)_encoding/) ?? [, "None"])[1];
+    if (chn == "category") {
+        chn = "color";
+    }
+
+    const nowFilter=queryStore.filter.map(f=>{
+        return {
+            "filter":{
+                field:f.column,
+            [f.predicate]:f.filter,
+            }
+        }
+    });
+    const newspec=chartIns.spec;
+    newspec.transform=nowFilter;
+    ///////
+    // chartIns.changeSpec(newspec);
+
+    chartIns.mergeSpec({
+        transform: nowFilter,
+    })
+    console.log(chartIns.spec.transform)
+
 }
 
 function updateChartType(chart_type) {
@@ -279,11 +335,22 @@ function updateAggregate(channel, aggregate) {
     const chartIns = collectionStore.collections.find(c => c.id == i);
 
     queryStore[channel] = aggregate;
-    if (chn != "None") {
+    console.log(aggregate)
+    if (chn != "None" && aggregate != "bin") {
         chartIns.mergeSpec({
             encoding: {
                 [chn]: {
-                    aggregate
+                    aggregate,
+                    "bin": false,
+                }
+            }
+        })
+    }
+    if(chn != "None" && aggregate == "bin"){
+        chartIns.mergeSpec({
+            encoding: {
+                [chn]: {
+                    "bin": true,
                 }
             }
         })

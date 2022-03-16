@@ -27,7 +27,7 @@ export class CollectionItem {
     }
 
     static isValid(spec) {
-        return spec!=null && spec.mark != null && spec.encoding != null;
+        return spec != null && spec.mark != null && spec.encoding != null;
     }
 
     addHistory(history) {
@@ -56,6 +56,7 @@ export const CollectionStore = defineStore({
         specIds: {},
         notes: {},
         idx: 0,
+        exists: []
     }),
     getters: {
         inCollection: state => {
@@ -93,14 +94,21 @@ export const CollectionStore = defineStore({
             //     // });
             // }
             this.$patch(state => {
-                const item = new CollectionItem(spec);
-                state.collections.push(item);
-                state.layouts.push({
-                    ...findUseableLayout(state.layouts),
-                    i: item.id
-                });
+                    const item = new CollectionItem(spec);
+                    state.collections.push(item);
+                    state.layouts.push({
+                        ...findUseableLayout(state.layouts),
+                        i: item.id
+                    });
+                    state.exists.push(1);
+                })
+                // this.collections.push(new CollectionItem(spec));
+        },
+        delete(currentViewId) {
+
+            this.$patch(state => {
+                state.exists[currentViewId] = 0;
             })
-            // this.collections.push(new CollectionItem(spec));
         },
         remove(spec) {
             if (this.inCollection(spec)) {

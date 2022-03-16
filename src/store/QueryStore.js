@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { defineStore } from "pinia";
 
-const initState=() => ({
+const initState = () => ({
     x_encoding: null,
     x_aggregate: null,
     // x_filter: null,
@@ -14,50 +14,68 @@ const initState=() => ({
     category_aggregate: null,
     // category_filter: null,
     chart_type: null,
-    filter: []   //[{filter:"...condiation",column:"...field",predicate:"range|oneOf"}]
+    filter: [] //[{filter:"...condiation",column:"...field",predicate:"range|oneOf"}]
 })
 
-export function spec2query(spec={}){
-    const state=initState();
-    if(spec.mark){
-        state.chart_type=spec.mark;
+export function spec2query(spec = {}) {
+    const state = initState();
+    if (spec.mark) {
+        state.chart_type = spec.mark;
     }
-    if(spec.encoding){
-        const enc=spec.encoding;
-        if(enc.x){
-            state.x_encoding=enc.x.field;
-            if(enc.x.aggregate){
-                state.x_aggregate=enc.x.aggregate;
+    if (spec.encoding) {
+        const enc = spec.encoding;
+        if (enc.x) {
+            state.x_encoding = enc.x.field;
+            if (enc.x.aggregate) {
+                state.x_aggregate = enc.x.aggregate;
             }
         }
-        if(enc.y){
-            state.y_encoding=enc.y.field;
-            if(enc.y.aggregate){
-                state.y_aggregate=enc.y.aggregate;
+        if (enc.y) {
+            state.y_encoding = enc.y.field;
+            if (enc.y.aggregate) {
+                state.y_aggregate = enc.y.aggregate;
             }
         }
-        if(enc.color){
-            state.category_encoding=enc.color.field;
-            if(enc.color.aggregate){
-                state.category_aggregate=enc.color.aggregate;
+        if (enc.color) {
+            state.category_encoding = enc.color.field;
+            if (enc.color.aggregate) {
+                state.category_aggregate = enc.color.aggregate;
             }
         }
+    }
+    if (spec.transform) {
+        state.filter = spec.transform.map(t => {
+            if (t.filter.oneOf != null) {
+                return {
+                    filter: t.filter.oneOf,
+                    column: t.filter.field,
+                    predicate: "oneOf",
+                }
+            }
+            if (t.filter.range != null) {
+                return {
+                    filter: t.filter.range,
+                    column: t.filter.field,
+                    predicate: "range",
+                }
+            }
+        });
     }
     return state;
 
-} 
+}
 
 export const QueryStore = defineStore({
     id: "QueryStore",
     undoOption: {
         enabled: true,
-        clone: (state)=>{
+        clone: (state) => {
             let clone = _.clone(state);
-            clone.filter=state.filter.map(f=>_.clone(f));
+            clone.filter = state.filter.map(f => _.clone(f));
             return clone;
         },
-        diff:function(state,prevState){
-            return !_.isEqual(state,prevState);
+        diff: function(state, prevState) {
+            return !_.isEqual(state, prevState);
         }
     },
     state: initState,
@@ -76,30 +94,29 @@ export const QueryStore = defineStore({
         },
         getFilterByColumn(state) {
             return (column) => {
-                const filter = state.filter.find(f => f&&(f.column == column));
+                const filter = state.filter.find(f => f && (f.column == column));
                 if (filter) {
                     return filter;
-                }
-                else {
+                } else {
                     return null;
                 }
             }
         },
-        spec(state){
+        spec(state) {
             return {
-                mark:state.chart_type,
-                encoding:{
-                    x:{
-                        field:state.x_encoding,
-                        aggregate:state.x_aggregate
+                mark: state.chart_type,
+                encoding: {
+                    x: {
+                        field: state.x_encoding,
+                        aggregate: state.x_aggregate
                     },
-                    y:{
-                        field:state.y_encoding,
-                        aggregate:state.y_aggregate
+                    y: {
+                        field: state.y_encoding,
+                        aggregate: state.y_aggregate
                     },
-                    color:{
-                        field:state.category_encoding,
-                        aggregate:state.category_aggregate
+                    color: {
+                        field: state.category_encoding,
+                        aggregate: state.category_aggregate
                     }
                 }
             }
@@ -107,34 +124,35 @@ export const QueryStore = defineStore({
     },
     actions: {
         setFilterByColumn(column, filter) {
-            const existFilter = this.filter.find(f => f&&(f.column == column));
+            console.log("setFilterByColumn", column, filter);
+            const existFilter = this.filter.find(f => f && (f.column == column));
             if (existFilter) {
-                existFilter.filter=filter.filter;
-            }
-            else {
+                existFilter.filter = filter.filter;
+            } else {
                 this.filter.push(filter);
             }
         },
-        refreshFilter(){
-            this.filter=this.filter.filter(
-                f=>f&&_.find(
-                    [this.x_encoding,this.y_encoding,this.category_encoding],
-                    c=>c==f.column
+        deleteFilterByColumn(column) {
+            this.filter = this.filter.filter(f => f.column != column);
+        },
+        refreshFilter() {
+            this.filter = this.filter.filter(
+                f => f && _.find(
+                    [this.x_encoding, this.y_encoding, this.category_encoding],
+                    c => c == f.column
                 )
             );
         },
         editEncoding(channel, encoding) {
-            this.$patch(()=>{
+            this.$patch(() => {
                 this[channel] = encoding;
                 this.refreshFilter();
-                if(channel=="x_encoding"){
-                    this.x_aggregate=null;
-                }
-                else if(channel=="y_encoding"){
-                    this.y_aggregate=null;
-                }
-                else if(channel=="category_encoding"){
-                    this.category_aggregate=null;
+                if (channel == "x_encoding") {
+                    this.x_aggregate = null;
+                } else if (channel == "y_encoding") {
+                    this.y_aggregate = null;
+                } else if (channel == "category_encoding") {
+                    this.category_aggregate = null;
                 }
             })
         }

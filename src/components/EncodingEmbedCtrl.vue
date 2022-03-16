@@ -46,7 +46,7 @@
                 </template>
                 <div v-if="type == 'quantitative'">
                     <n-slider
-                        :value="filter.filter"
+                        :value="filter?.filter"
                         range
                         :step="1"
                         :max="column.max"
@@ -61,14 +61,14 @@
                 </div>
                 <div v-else-if="type == 'nominal'">
                     <n-checkbox-group
-                        :value="filter.filter"
+                        :value="filter?.filter"
                         @update:value="onFilterUpdate"
                         :disabled="disableFilterAndAggregate"
                     >
                         <n-space warp style="max-width: 240px;max-height: 400px;overflow: auto;">
                             <n-checkbox
                                 v-for="item in column.unique"
-                                :key="item"
+                                :key="item.toString()"
                                 :value="item"
                                 :label="item"
                             ></n-checkbox>
@@ -219,6 +219,7 @@ const showFilter = ref(false);
 
 async function onFilterOpen() {
     // 当Filter打开的时候，如果没有配置filter就需要配置filter
+    console.log(props.filter)
     if (props.filter == null) {
         if (type.value == "quantitative") {
             emits('update:filter', {
@@ -240,9 +241,19 @@ async function onFilterOpen() {
 
 
 function onFilterUpdate(value) {
-    emits('update:filter', {
-        filter: value
-    });
+    if (type.value == "quantitative") {
+        emits('update:filter', {
+            filter: value,
+            predicate: "range"
+        });
+    }
+    else {
+        emits('update:filter', {
+            filter: value,
+            predicate: "oneOf"
+        });
+    }
+    
 }
 
 const disableFilterAndAggregate = computed(() => {

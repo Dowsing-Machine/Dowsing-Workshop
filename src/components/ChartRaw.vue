@@ -58,7 +58,8 @@ async function refreshChart() {
         //     }
         // })),
     }
-    if (props.replaceColor) {
+    
+    if (props.replaceColor && v.encoding) {
         v.encoding.color = {
             "condition": {
                 "param": "brush",
