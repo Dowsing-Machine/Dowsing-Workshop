@@ -83,26 +83,51 @@
                     >COLUMNS</div>
                 </div>
 
-                <n-button size="tiny" color="#c4c4c488" text-color="black">
-                    <n-icon>
-                        <Settings20Filled />
-                    </n-icon>
-                </n-button>
+                <n-popover trigger="click" placement="right-start">
+                    <template #trigger>
+                        <n-button size="tiny" color="#c4c4c488" text-color="black">
+                            <n-icon>
+                                <Settings20Filled />
+                            </n-icon>
+                        </n-button>
+                    </template>
+                    <div class="flex flex-col">
+                        <div class="font-bold border-b">Settings</div>
+                        <div class="flex my-2">
+                            <div class="flex-1 pr-2">Task-aware</div>
+                            <n-switch size="small" v-model:value="controlStore.taskOn" />
+                        </div>
+                        <div class="flex my-2">
+                            <div class="flex-1 pr-2">Column Interest</div>
+                            <n-switch size="small" v-model:value="controlStore.poiOn" />
+                        </div>
+                        <div class="flex my-2">
+                            <div class="flex-1 pr-2">Suggestion</div>
+                            <n-switch size="small" v-model:value="controlStore.suggestionOn" />
+                        </div>
+                        <n-button class="w-1/1 my-2" size="tiny">Reset Model</n-button>
+                    </div>
+                </n-popover>
             </div>
             <hr class="border-0 w-1/1 mt-2 mb-2" />
             <div v-if="showTask">
-                <div class="font-semibold mb-1">Task Types</div>
-                <task-legend-vue class="mb-1" />
-                <task-predict-vue></task-predict-vue>
-                <!-- <div class="flex mb-1">
+                <div v-if="controlStore.taskOn">
+                    <div class="font-semibold mb-1">Task Types</div>
+                    <task-legend-vue class="mb-1" />
+                    <task-predict-vue></task-predict-vue>
+                    <!-- <div class="flex mb-1">
                     <div class="font-semibold flex-1">Active Tasks</div>
                     <n-button size="tiny" color="#c4c4c488" text-color="black">
                         <n-icon>
                             <Add20Filled/>
                         </n-icon>
                     </n-button>
-                </div>-->
-                <task-tag-vue></task-tag-vue>
+                    </div>-->
+                    <task-tag-vue></task-tag-vue>
+                </div>
+                <n-empty v-else description="Task Aware disabled">
+
+                </n-empty>
             </div>
             <div v-else></div>
             <!-- <n-tabs>
@@ -119,7 +144,7 @@
 </template>
 
 <script setup>
-import { NSelect, NSpace, NButton, NTabs, NTabPane, NDivider, NIcon } from 'naive-ui';
+import { NSelect, NSpace, NButton, NTabs, NSwitch, NEmpty, NIcon, NPopover } from 'naive-ui';
 import { computed, watch, getCurrentInstance } from 'vue-demi';
 
 import { DatasetStore } from '../store/DatasetStore';

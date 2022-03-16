@@ -1,10 +1,7 @@
 <template>
     <n-space vertical>
-        <n-card 
-            v-for="vl in vls" 
-            class="h-50 w-1/1" 
-            title="卡片分段示例"
-        >
+        <div ref="head"></div>
+        <n-card v-for="vl in vls" class="h-50 w-1/1" title="卡片分段示例">
             <chart-raw-vue
                 :vegalite="vl"
                 :render-option="{
@@ -43,11 +40,24 @@ import Draco from "draco-vis";
 import * as DracoCore from "draco-vis";
 import { computed, ref, watch, getCurrentInstance } from 'vue';
 import { Add20Filled } from "@vicons/fluent";
+
+import { useIntersectionObserver } from '@vueuse/core'
+
+const emits = defineEmits(["update:headVisable"]);
+const head = ref(null);
+useIntersectionObserver(
+    head,
+    ([{ isIntersecting }]) => {
+        // isVisible.value = isIntersecting
+        emits("update:headVisable", isIntersecting);
+    },
+)
 const draco = new Draco();
 const debugStore = DebugStore();
 const datasetStore = DatasetStore();
 const taskStore = TaskStore();
 const collectionStore = CollectionStore();
+
 
 const { proxy } = getCurrentInstance();
 import weights_learned from "./weights_learned.json";
@@ -115,7 +125,7 @@ const task_weights = {
     // 'trend_aggregate_x': 0,
     // 'trend_x_temporal': 747,
     // 'correlation_x_quantitative': 902
-    'correlation_type':-100,
+    'correlation_type': -100,
     'confirm_mark': -297,
     'correlation_mark': -110,
     'trend_mark1': -223,
@@ -166,31 +176,7 @@ const res = ref({});
 //     console.log("task changed");
 // })
 
-watch(() => taskStore.activate_task.filter(item=>item.customScore>0.5), (newVal, oldVal) => {
-    // console.log(newVal, oldVal);
-    let equal = true;
-    if (newVal.length != oldVal.length) {
-        equal = false;
-    }
-    else {
-        for (const i in newVal) {
-            const v1 = newVal[i];
-            const v2 = oldVal[i];
-            if (v2 == null) {
-                equal = false;
-                break;
-            }
-            if ((v1.type === v2.type) && (Math.round(v1.score, 3) == Math.round(v2.score, 3))) {
-                continue;
-            }
-        }
-    }
-
-    if (equal) return;
-    if (!inited) return;
-    const tsL = taskStore.predicts.length;
-    if (tsL == 0) return;
-    // console.log('predicts changed');
+function refreshRecommend() {
     const dataSchema = DracoCore.data2schema(datasetStore.dataset);
     for (const col in dataSchema.stats) {
         const isDate = ["year", "date", "month", "day"].includes(col.toLowerCase());
@@ -200,7 +186,7 @@ watch(() => taskStore.activate_task.filter(item=>item.customScore>0.5), (newVal,
     }
     const dataASP = DracoCore.schema2asp(dataSchema);
     console.log(dataASP);
-    const tasks = taskStore.activate_task.filter(item=>item.customScore>0.5);
+    const tasks = taskStore.activate_task.filter(item => item.customScore > 0.5);
 
     const taskFASPs = tasks.map(i => `utask(${task_map[i.type]}).`);
     let task_weights_available = [];
@@ -245,6 +231,34 @@ watch(() => taskStore.activate_task.filter(item=>item.customScore>0.5), (newVal,
         typs: "solve",
         softW,
     });
+}
+
+watch(() => taskStore.activate_task.filter(item => item.customScore > 0.5), (newVal, oldVal) => {
+    // console.log(newVal, oldVal);
+    let equal = true;
+    if (newVal.length != oldVal.length) {
+        equal = false;
+    }
+    else {
+        for (const i in newVal) {
+            const v1 = newVal[i];
+            const v2 = oldVal[i];
+            if (v2 == null) {
+                equal = false;
+                break;
+            }
+            if ((v1.type === v2.type) && (Math.round(v1.score, 3) == Math.round(v2.score, 3))) {
+                continue;
+            }
+        }
+    }
+
+    if (equal) return;
+    if (!inited) return;
+    const tsL = taskStore.predicts.length;
+    if (tsL == 0) return;
+    // console.log('predicts changed');
+    refreshRecommend();
 })
 
 function translateEncoding(channels, encoding) {
@@ -276,4 +290,6 @@ function addCollection(spec) {
     });
     collectionStore.add(spec);
 }
+
+refreshRecommend();
 </script>
