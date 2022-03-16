@@ -23,13 +23,13 @@
                         v-for="tag in activateTags"
                         :key="tag.label"
                         :color="tag.status == 'normal' ? tag.color : { color: '#fafafc' }"
-                        @close="punishTask(tag.label)"
+                        @close="punishTask(tag.key)"
                         class="my-1"
                         :style="{
                             width: `${tag.length * 100}%`,
                         }"
                         bordered
-                        @click="onTagClick(tag.label)"
+                        @click="onTagClick(tag.key)"
                     >{{ tag.label }}</n-tag>
                 </transition-group>
             </div>
@@ -73,6 +73,7 @@ const activateTags = computed(() => {
             value: item.score,
             length: _.round(item.score, 2),
             status: item.customScore == 1 ? "normal" : "disabled",
+            key:item.type
         }
     }), i => -i.value);
 })

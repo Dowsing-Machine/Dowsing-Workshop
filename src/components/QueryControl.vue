@@ -129,7 +129,10 @@
 
                 </n-empty>
             </div>
-            <div v-else></div>
+            <div v-else>
+                <p-o-i v-if="controlStore.poiOn" />
+                <n-empty v-else description="Column Interest disabled"></n-empty>
+            </div>
             <!-- <n-tabs>
                 <n-tab-pane name="Task">
                     <div class="mb-1 font-semibold">TYPE</div>
@@ -139,6 +142,7 @@
                 </n-tab-pane>
                 <n-tab-pane name="Columns"></n-tab-pane>
             </n-tabs>-->
+            
         </div>
     </n-space>
 </template>

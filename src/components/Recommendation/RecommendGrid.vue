@@ -41,23 +41,26 @@ import * as DracoCore from "draco-vis";
 import { computed, ref, watch, getCurrentInstance } from 'vue';
 import { Add20Filled } from "@vicons/fluent";
 
-import { useIntersectionObserver } from '@vueuse/core'
+import { ControlStore } from '../../store/ControlStore';
+import {POIStore} from "../../store/POIStore";
+const controlStore=ControlStore();
+// import { useIntersectionObserver } from '@vueuse/core'
 
-const emits = defineEmits(["update:headVisable"]);
-const head = ref(null);
-useIntersectionObserver(
-    head,
-    ([{ isIntersecting }]) => {
-        // isVisible.value = isIntersecting
-        emits("update:headVisable", isIntersecting);
-    },
-)
+// const emits = defineEmits(["update:headVisable"]);
+// const head = ref(null);
+// useIntersectionObserver(
+//     head,
+//     ([{ isIntersecting }]) => {
+//         // isVisible.value = isIntersecting
+//         emits("update:headVisable", isIntersecting);
+//     },
+// )
 const draco = new Draco();
 const debugStore = DebugStore();
 const datasetStore = DatasetStore();
 const taskStore = TaskStore();
 const collectionStore = CollectionStore();
-
+const poiStore=POIStore();
 
 const { proxy } = getCurrentInstance();
 import weights_learned from "./weights_learned.json";
@@ -68,7 +71,7 @@ import DracoWorker from "../../utils/dracoWorker?worker";
 
 const dracoWorker = new DracoWorker();
 dracoWorker.onmessage = function (e) {
-    console.log(e.data);
+    // console.log(e.data);
     res.value = e.data;
 }
 
@@ -80,6 +83,9 @@ const hard_programs = [
     ":- channel(_,size).",
     ":- channel(_,shape).",
     ":- channel(_,detail).",
+    ":- channel(_,text).",
+    ":- channel(_,row).",
+    ":- channel(_,column).",
     // "encoding(e0).",
     // ":- not field(e0,_).",
     // "encoding(e1).",
@@ -168,13 +174,13 @@ draco.init().then(() => {
 
 const res = ref({});
 
-// watch(()=>taskStore.activate_task,()=>{
-//     console.log("task changed");
-// })
-
-// watch(taskStore,()=>{
-//     console.log("task changed");
-// })
+function calAvg(columns){
+    const s=_.sumBy(columns,i=>i.cnt);
+    return columns.map(i=>({
+        ...i,
+        cnt:i.cnt/s
+    }));
+}
 
 function refreshRecommend() {
     const dataSchema = DracoCore.data2schema(datasetStore.dataset);
@@ -188,7 +194,7 @@ function refreshRecommend() {
     console.log(dataASP);
     const tasks = taskStore.activate_task.filter(item => item.customScore > 0.5);
 
-    const taskFASPs = tasks.map(i => `utask(${task_map[i.type]}).`);
+    let taskFASPs = tasks.map(i => `utask(${task_map[i.type]}).`);
     let task_weights_available = [];
     if (tasks.length > 0) {
         const re = new RegExp(tasks.map(i => task_map[i.type]).join('|'));
@@ -207,17 +213,32 @@ function refreshRecommend() {
             };
         });
     }
+
+    const columns = calAvg(poiStore.column);
+    let poiWeights=columns.map(c=>({
+        name:c.col.toLowerCase(),
+        weight:c.cnt*-100,
+        asp:`soft(${c.col.toLowerCase()}):-field(_,"${c.col}").`,
+        description: "test", type: "soft"
+    }))
+    if(!controlStore.poiOn){
+        poiWeights=[];
+    }
     const softW = [
         // ...soft.map(i => ({
         //     ...i,
         //     weight: weights_learned[i.name]
         // })),
         ...soft,
-        ...task_weights_available
+        ...task_weights_available,
+        ...poiWeights
     ];
-    // console.log("softW", softW);
+    console.log("softW", softW, dataASP);
     const weight_assign = task_weights_available.map(i => `soft_weight(${i.name},${i.weight}).`)
     draco.soft = softW;
+    if(!controlStore.taskOn){
+        taskFASPs=[];
+    }
     const program = [
         ...dataASP,
         ...taskFASPs,
@@ -260,6 +281,8 @@ watch(() => taskStore.activate_task.filter(item => item.customScore > 0.5), (new
     // console.log('predicts changed');
     refreshRecommend();
 })
+
+watch([()=>controlStore.taskOn,()=>controlStore.poiOn],refreshRecommend);
 
 function translateEncoding(channels, encoding) {
     for (const channel of channels) {
