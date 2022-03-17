@@ -23,7 +23,12 @@
         </n-layout-header>
         <n-layout-content class="flex-1 overflow-hidden">
             <n-layout has-sider class="h-1/1">
-                <n-layout-sider bordered width="300" :class="{ 'shadow-left': recommendClosed }">
+                <n-layout-sider 
+                    bordered 
+                    width="300" 
+                    :class="{ 'shadow-left': recommendClosed }"
+                    :native-scrollbar="false"
+                >
                     <!-- <single-chart-edit></single-chart-edit> -->
                     <query-control-vue></query-control-vue>
                 </n-layout-sider>

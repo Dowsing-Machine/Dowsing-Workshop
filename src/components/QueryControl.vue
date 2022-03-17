@@ -329,4 +329,11 @@ function resetQuery() {
 .panel-subtitle {
     @apply font-bold text-lg flex-1 text-$title-color;
 }
+
+.mask::after{
+    @apply bg-red-400 h-10 w-10;
+    display: block;
+    position: absolute;
+content: "";
+}
 </style>

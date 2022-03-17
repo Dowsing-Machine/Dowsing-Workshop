@@ -27,6 +27,9 @@
                 <n-button @click="loadDataset('/datasets/cars_copy.json')">Cars</n-button>
                 <n-button @click="loadDataset('/datasets/birdstrikes-lite.json')">Birdstrikes</n-button>
                 <n-button @click="loadDataset('/datasets/gapminder-lite.json')">Gapminder</n-button>
+                <n-upload>
+                    <n-button>Upload File</n-button>
+                </n-upload>
             </n-space>
             <n-data-table
                 :data="datasetStore.dataset"
@@ -64,7 +67,7 @@
 </template>
 
 <script setup>
-import { NButton, NIcon, NModal, NCard, NSpace, NH3, NDivider, NInput, useMessage, NDataTable, NEmpty } from "naive-ui";
+import { NButton, NIcon, NModal, NCard, NSpace, NH3, NDivider, NInput, useMessage, NDataTable, NEmpty, NUpload } from "naive-ui";
 import { Database24Filled } from "@vicons/fluent"
 import { ref, getCurrentInstance, computed } from "vue";
 
