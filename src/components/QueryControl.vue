@@ -125,13 +125,14 @@
                     </div>-->
                     <task-tag-vue></task-tag-vue>
                 </div>
-                <n-empty v-else description="Task Aware disabled">
-
-                </n-empty>
+                <n-empty v-else description="Task Aware disabled"></n-empty>
             </div>
             <div v-else>
                 <p-o-i v-if="controlStore.poiOn" />
-                <n-empty v-else description="Column Interest disabled"></n-empty>
+                <n-empty v-else-if="controlStore.poiOn == null" description="No Significant Interest">
+                    <n-button size="tiny" @click="controlStore.poiOn=true">Open Anyway</n-button>
+                </n-empty>
+                <n-empty v-else description="Column Interest Disabled"></n-empty>
             </div>
             <!-- <n-tabs>
                 <n-tab-pane name="Task">
@@ -142,7 +143,6 @@
                 </n-tab-pane>
                 <n-tab-pane name="Columns"></n-tab-pane>
             </n-tabs>-->
-            
         </div>
     </n-space>
 </template>
@@ -273,7 +273,7 @@ function updateEncoding(channel, encoding) {
         })
     }
     poiStore.updateColumn(encoding.encoding);
-    
+
 }
 
 function updateFilter(enc, column, filter) {
@@ -330,10 +330,10 @@ function resetQuery() {
     @apply font-bold text-lg flex-1 text-$title-color;
 }
 
-.mask::after{
+.mask::after {
     @apply bg-red-400 h-10 w-10;
     display: block;
     position: absolute;
-content: "";
+    content: "";
 }
 </style>

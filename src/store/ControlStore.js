@@ -10,7 +10,7 @@ export const ControlStore= defineStore({
         groupId: null,
         Id:null,
         taskOn:true,
-        poiOn:true,
+        poiOn:null,
         suggestionOn:true,
     }),
     getters:{

@@ -2,6 +2,8 @@ import { defineStore } from "pinia";
 import axios from "axios";
 import _ from "lodash";
 
+
+
 export const POIStore = defineStore({
     id: "POIStore",
     state: () => {

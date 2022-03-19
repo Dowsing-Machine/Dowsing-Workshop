@@ -221,7 +221,7 @@ function refreshRecommend() {
         asp:`soft(${c.col.toLowerCase()}):-field(_,"${c.col}").`,
         description: "test", type: "soft"
     }))
-    if(!controlStore.poiOn){
+    if(controlStore.poiOn!=true){
         poiWeights=[];
     }
     const softW = [
