@@ -128,27 +128,27 @@ const NULL = Symbol();
 
 const SUPPORTED_AGGREGATE = [
     {
-        label: "空",
+        label: "Empty",
         value: NULL
     },
     {
-        label: "求和",
+        label: "Sum",
         value: "sum"
     },
     {
-        label: "平均值",
+        label: "Mean",
         value: "mean"
     },
     {
-        label: "最大值",
+        label: "Max",
         value: "max"
     },
     {
-        label: "最小值",
+        label: "Min",
         value: "min"
     },
     {
-        label: "分箱",
+        label: "Bin",
         value: "bin"
     }
 ];
@@ -169,7 +169,7 @@ const columnPlacehold = computed(() => {
 const encodingOptions = computed(() => {
     return [
         {
-            label: "空",
+            label: "Empty",
             value: NULL
         },
         ...props.columns.map(column => ({

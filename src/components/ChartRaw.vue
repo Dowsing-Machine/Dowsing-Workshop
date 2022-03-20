@@ -44,7 +44,7 @@ async function refreshChart() {
     }
 
     let v = {
-        ..._.cloneDeep(props.vegalite),
+        ...props.vegalite,
         ...props.renderOption,
         data: {
             // name:"data"

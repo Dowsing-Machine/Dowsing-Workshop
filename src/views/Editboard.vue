@@ -12,9 +12,10 @@
                             <template #unchecked>面板</template>
                     </n-switch>-->
                     <n-space>
+                        <download-button></download-button>
+
                         <dataset-select-vue></dataset-select-vue>
                         <!-- <collection-button></collection-button> -->
-                        <download-button></download-button>
                         <!-- <log-upload-vue v-if="isDev"></log-upload-vue> -->
                     </n-space>
                 </div>
@@ -22,7 +23,12 @@
         </n-layout-header>
         <n-layout-content class="flex-1 overflow-hidden">
             <n-layout has-sider class="h-1/1">
-                <n-layout-sider bordered width="300" :class="{ 'shadow-left': recommendClosed }">
+                <n-layout-sider 
+                    bordered 
+                    width="300" 
+                    :class="{ 'shadow-left': recommendClosed }"
+                    :native-scrollbar="false"
+                >
                     <!-- <single-chart-edit></single-chart-edit> -->
                     <query-control-vue></query-control-vue>
                 </n-layout-sider>
@@ -45,11 +51,12 @@
                             class="shadow-left"
                         >
                             <div class="flex flex-col px-3 pt-3 h-1/1">
-                                <div class="font-bold text-lg mb-2 text-$title-color">SUGGESTIONS</div>
-                                <hr class="border w-1/1 mb-2 flex-1" />
-                                <n-scrollbar>
-                                    <recommend-grid-vue/>
+                                <div class="font-bold text-lg pb-4 text-$title-color">SUGGESTIONS</div>
+                                <!-- <hr class="border-0 w-1/1 mb-2 flex-1 shadow-lg transition-all duration-500" :class="{'shadow !border !border-1':!suggestHeadVisable}"/> -->
+                                <n-scrollbar v-if="controlStore.suggestionOn">
+                                    <recommend-grid-vue @update:head-visable="onHeadVisableChange"/>
                                 </n-scrollbar>
+                                <n-empty v-else description="Suggestion disabled"></n-empty>
                             </div>
                         </n-layout-sider>
                         <n-layout-content
@@ -78,7 +85,7 @@
                                     class="w-1/1"
                                     @click.stop="showPast = !showPast"
                                     :disabled="controlStore.currentViewId == null"
-                                >{{ !pastPanelOpen ? '展开历史记录 ▲' : '收起历史记录 ▼' }}</n-button>
+                                >{{ !pastPanelOpen ? 'HISTORY ▲' : 'HISTORY ▼' }}</n-button>
                                 <history-view-vue
                                     :vegalites="chartHistories"
                                     :show="pastPanelOpen"
@@ -117,7 +124,7 @@
 </template>
 
 <script setup>
-import { NLayout, NLayoutHeader, NScrollbar, NLayoutSider, NLayoutContent, NSpace, NSwitch, NCollapseTransition, NButton, useThemeVars } from 'naive-ui';
+import { NLayout, NLayoutHeader, NScrollbar, NLayoutSider, NLayoutContent, NSpace, NSwitch, NCollapseTransition, NButton, useThemeVars, NEmpty } from 'naive-ui';
 // import DebugViewVue from '../components/DebugView.vue';
 // import DataControl from "@/components/DataControl.vue";
 // import SingleChartEdit from "@/components/SingleChartEdit.vue";
@@ -148,9 +155,12 @@ import HistoryViewVue from '../components/History/HistoryView.vue';
 import { CollectionStore, CollectionItem } from '../store/CollectionStore';
 
 import { useFps, useMemory } from "@vueuse/core";
-const { menory } = useMemory();
-const fps = useFps();
-const { primaryColor } = useThemeVars();
+
+const suggestHeadVisable=ref(true);
+function onHeadVisableChange(val){
+    console.log("visable",val)
+    suggestHeadVisable.value=val;
+}
 
 const showPast = ref(true);
 const pastPanelOpen = computed(() => {

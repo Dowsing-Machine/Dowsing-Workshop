@@ -180,12 +180,26 @@ def print_pred(pred):
     res = []
     for n in num2task:
         res.append({
-            "score": list(map(float,pred[:, n])),
+            "score": list(map(float, pred[:, n])),
             "type": num2task[n]
         })
     return res
 
-last=print_pred(np.zeros((5,6)))
+
+last = print_pred(np.zeros((5, 6)))
+
+
+@app.route("/reset")
+def on_reset():
+    global last, actionList, encodingList, typeList, aggList, otherList
+    last = print_pred(np.zeros((5, 6)))
+    actionList = [0]*30
+    encodingList = [0]*30
+    typeList = [0]*30
+    aggList = [0]*30
+    otherList = [0]*30
+
+
 @app.route("/action")
 def on_action():
     global last
@@ -212,12 +226,13 @@ def on_action():
         inSeq.extend(opSeq)
         inSeq.extend(featSeq)
         x = torch.Tensor(np.array([np.eye(len(action2num)+1)[inSeq]]))
-        pred_ys = np.array([model(x).detach().numpy() for model in models]).squeeze()
+        pred_ys = np.array([model(x).detach().numpy()
+                            for model in models]).squeeze()
         # pred_y = np.max(pred_ys, axis=0)
         # pred_y = model(x)
         print(t, inSeq)
         res = print_pred(pred_ys)
-        last=res
+        last = res
     else:
         res = last
     return {
@@ -270,4 +285,4 @@ def on_recommend():
     }
 
 
-app.run(port=5001,debug=True)
+app.run(port=5001, debug=True)

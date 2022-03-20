@@ -9,6 +9,9 @@ export const ControlStore= defineStore({
         currentViewId: null,
         groupId: null,
         Id:null,
+        taskOn:true,
+        poiOn:null,
+        suggestionOn:true,
     }),
     getters:{
         uuid: state => {

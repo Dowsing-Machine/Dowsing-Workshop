@@ -13,6 +13,7 @@
     "draco-vis": "0.0.16",
     "file-saver": "^2.0.5",
     "highlight.js": "^11.3.1",
+    "jstat": "^1.9.5",
     "lodash": "^4.17.21",
     "mitt": "^3.0.0",
     "pinia": "^2.0.4",
