@@ -198,6 +198,7 @@ def on_reset():
     typeList = [0]*30
     aggList = [0]*30
     otherList = [0]*30
+    return "done"
 
 
 @app.route("/action")

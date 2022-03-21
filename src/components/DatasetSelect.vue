@@ -27,6 +27,7 @@
                 <n-button @click="loadDataset('/datasets/cars_copy.json')">Cars</n-button>
                 <n-button @click="loadDataset('/datasets/birdstrikes-lite.json')">Birdstrikes</n-button>
                 <n-button @click="loadDataset('/datasets/gapminder-lite.json')">Gapminder</n-button>
+                <n-button @click="loadDataset('/datasets/movies.json')">Movies</n-button>
                 <n-upload>
                     <n-button>Upload File</n-button>
                 </n-upload>

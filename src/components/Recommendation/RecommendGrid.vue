@@ -1,7 +1,7 @@
 <template>
     <n-space vertical>
         <div ref="head"></div>
-        <n-card v-for="vl in vls" class="h-50 w-1/1" title="卡片分段示例">
+        <n-card v-for="vl,i in vls" class="h-50 w-1/1" :title="`Suggestion#${i}`">
             <chart-raw-vue
                 :vegalite="vl"
                 :render-option="{
@@ -31,7 +31,7 @@ import ChartVLVue from '../Basic/ChartVL.vue';
 import ChartRawVue from "../ChartRaw.vue"
 import { NCard, NButton, NIcon } from 'naive-ui';
 import _ from "lodash";
-
+import {onMounted} from "vue";
 import { DebugStore } from '../../store/DebugStore';
 import { DatasetStore } from '../../store/DatasetStore';
 import { CollectionStore } from '../../store/CollectionStore';
@@ -314,5 +314,5 @@ function addCollection(spec) {
     collectionStore.add(spec);
 }
 
-refreshRecommend();
+onMounted(refreshRecommend);
 </script>
