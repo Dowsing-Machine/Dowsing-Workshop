@@ -117,13 +117,20 @@ const SpecWithChart = computed(() => {
         // const strSpec = JSON.stringify(collection)
         // const id = collectionStore.specIds[strSpec];
         const id = collection.id;
-        return {
-            spec: collection,
-            // note: collectionStore.notes[strSpec],
-            ...collectionStore.layouts.find(i => i.i === id),
-        }
+        if(collectionStore.exists[id]==1)
+            return {
+                spec: collection,
+                // note: collectionStore.notes[strSpec],
+                ...collectionStore.layouts.find(i => i.i === id),
+            }
     })
-    return res;
+    let res2=[];
+    for(let i=0;i<res.length;i++){
+        if(res[i])
+            res2.push(res[i])
+    }
+    // console.log(res2)
+    return res2;
 })
 
 const charts = ref([]);

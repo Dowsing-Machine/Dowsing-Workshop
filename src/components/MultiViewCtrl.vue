@@ -90,6 +90,7 @@ const handleUpdate = (key) => {
             collectionStore.redo();
             break;
         case "delete":
+            collectionStore.delete(controlStore.currentViewId);
             mvStore.removeView(controlStore.currentViewId);
             break;
     }
