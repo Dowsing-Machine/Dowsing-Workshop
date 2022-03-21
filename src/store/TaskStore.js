@@ -156,7 +156,7 @@ export const TaskStore = defineStore({
                 )
                 return;
             }
-            let res = await axios.get("http://localhost:5001/action", {
+            let res = await axios.get("/api/action", {
                 params: {
                     topic
                 }

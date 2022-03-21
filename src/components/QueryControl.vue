@@ -425,7 +425,7 @@ function resetQuery() {
 }
 
 async function reset() {
-    await axios.get("http://localhost:5001/reset");
+    await axios.get("/api/reset");
     taskStore.$reset();
     poiStore.$reset();
 }
