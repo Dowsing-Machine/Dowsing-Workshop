@@ -7,7 +7,7 @@
     </n-empty>
 </template>
 <script setup>
-import { defineProps, onMounted, watch, ref, defineExpose } from 'vue-demi';
+import { defineProps, onMounted, watch, ref, defineExpose,nextTick } from 'vue-demi';
 import { NEmpty } from 'naive-ui';
 import embed from 'vega-embed';
 
@@ -69,10 +69,13 @@ async function refreshChart() {
             "value": "grey"
         };
     }
+
     v.$schema = "https://vega.github.io/schema/vega-lite/v5.json";
+    await nextTick();
     let res = await embed(chartDiv.value, v, { actions: false });
+
     // res.view.insert("data", datasetStore.dataset).run();
-    console.log("refresh");
+    console.log("refresh",v);
     emit("addview", res.view);
 
 }

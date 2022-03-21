@@ -49,17 +49,17 @@ export function spec2query(spec={}){
 
 export const QueryStore = defineStore({
     id: "QueryStore",
-    undoOption: {
-        enabled: true,
-        clone: (state)=>{
-            let clone = _.clone(state);
-            clone.filter=state.filter.map(f=>_.clone(f));
-            return clone;
-        },
-        diff:function(state,prevState){
-            return !_.isEqual(state,prevState);
-        }
-    },
+    // undoOption: {
+    //     enabled: true,
+    //     clone: (state)=>{
+    //         let clone = _.clone(state);
+    //         clone.filter=state.filter.map(f=>_.clone(f));
+    //         return clone;
+    //     },
+    //     diff:function(state,prevState){
+    //         return !_.isEqual(state,prevState);
+    //     }
+    // },
     state: initState,
     getters: {
         isSpecAggregate: state => {

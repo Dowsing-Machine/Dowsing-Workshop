@@ -24,9 +24,8 @@
                 @update:value="onEncodingUpdate"
             >
                 <n-button
-                
-                    :type="encoding ? 'primary' : 'default'"
                     style="flex: auto;"
+                    :color="encoding?'#6696da': null"
                 >{{ columnPlacehold }}</n-button>
             </n-popselect>
 
