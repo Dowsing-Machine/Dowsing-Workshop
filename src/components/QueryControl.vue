@@ -276,10 +276,10 @@ function updateEncoding(channel, encoding) {
         }
     });
     
-    const newspec=chartIns.spec;
+    const newspec=chartIns?.spec;
     newspec.transform=nowFilter;
 
-    chartIns.changeSpec(newspec);
+    // chartIns.changeSpec(newspec);
 
 
     if (chartIns == null) return;
@@ -287,14 +287,20 @@ function updateEncoding(channel, encoding) {
     if (chn == "category") {
         chn = "color";
     }
+    
     if (enc != "None") {
-        chartIns.mergeSpec({
-            encoding: {
-                [chn]: {
-                    field: enc,
-                    type: t
-                }
-            },
+        const e=enc=="COUNT"?{
+            "aggregate": "count", "field": "*", "type": t,"bin": false,
+        }:{
+            "field": enc, "type": t,"aggregate": null,"bin": false
+        }
+        const newspec=_.merge({},chartIns.spec,{
+        encoding:{[chn]:e,"transform":null}
+        });
+        console.log(encoding)
+        chartIns.changeSpec({
+            ...newspec,
+            
             "transform":nowFilter
         })
     }
