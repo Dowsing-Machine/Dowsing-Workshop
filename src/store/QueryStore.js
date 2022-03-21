@@ -27,20 +27,31 @@ export function spec2query(spec = {}) {
         if (enc.x) {
             state.x_encoding = enc.x.field;
             if (enc.x.aggregate) {
-                state.x_aggregate = enc.x.aggregate;
-            }
+                if (enc.x.aggregate != "count")
+                    state.x_aggregate = enc.x.aggregate;
+                else state.x_encoding = "COUNT"
+
+            } else if (enc.x.bin)
+                state.x_aggregate = "bin"
+
         }
         if (enc.y) {
             state.y_encoding = enc.y.field;
             if (enc.y.aggregate) {
-                state.y_aggregate = enc.y.aggregate;
-            }
+                if (enc.y.aggregate != "count")
+                    state.y_aggregate = enc.y.aggregate;
+                else state.y_encoding = "COUNT"
+            } else if (enc.y.bin)
+                state.y_aggregate = "bin"
         }
         if (enc.color) {
             state.category_encoding = enc.color.field;
             if (enc.color.aggregate) {
-                state.category_aggregate = enc.color.aggregate;
-            }
+                if (enc.color.aggregate != "count")
+                    state.category_aggregate = enc.color.aggregate;
+                else state.category_encoding = "COUNT"
+            } else if (enc.color.bin)
+                state.category_aggregate = "bin"
         }
     }
     if (spec.transform) {
