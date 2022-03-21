@@ -1,38 +1,38 @@
- [
+[
     {
-        "name":"cars.json",
-        "columns":{
-            "Cylinders":"nominal",
-            "Name":"nominal",
-            "Origin":"nominal",
-            "Year":"nominal",
-            "Miles_per_Gallon":"quantitative",
-            "Acceleration":"quantitative",
-            "Weight_in_lbs":"quantitative",
-            "Horsepower":"quantitative",
-            "Displacement":"quantitative"
+        "name": "cars.json",
+        "columns": {
+            "Cylinders": "nominal",
+            "Name": "nominal",
+            "Origin": "nominal",
+            "Year": "nominal",
+            "Miles_per_Gallon": "quantitative",
+            "Acceleration": "quantitative",
+            "Weight_in_lbs": "quantitative",
+            "Horsepower": "quantitative",
+            "Displacement": "quantitative"
         }
     },
     {
-        "name":"birdstrikes-lite.json",
-        "columns":{
-            "Effect Amount of damage": "nominal",
-            "Flight Date": "nominal",
-            "Phase of flight": "nominal",
-            "Wildlife Size": "nominal",
-            "Time of day": "nominal",
-            "Cost Other": "quantitative",
-            "Cost Repair": "quantitative",
-            "Cost Total $": "quantitative",
-            "Speed IAS in knots": "quantitative",
+        "name": "birdstrikes-lite.json",
+        "columns": {
+            "Effect_Amount_of _damage": "nominal",
+            "Flight_Date": "nominal",
+            "Phase_of_flight": "nominal",
+            "Wildlife_Size": "nominal",
+            "Time_of_day": "nominal",
+            "Cost_Other": "quantitative",
+            "Cost_Repair": "quantitative",
+            "Cost_Total_$": "quantitative",
+            "Speed_IAS_in_knots": "quantitative",
             "Year": "nominal",
             "Month": "nominal",
             "Day": "nominal"
         }
     },
     {
-        "name":"gapminder-lite.json",
-        "columns":{
+        "name": "gapminder-lite.json",
+        "columns": {
             "Year": "nominal",
             "Month": "nominal",
             "Day": "nominal",
@@ -42,14 +42,13 @@
             "pop": "quantitative",
             "life_expect": "quantitative",
             "fertility": "quantitative",
-            "type":"nominal",
-            "continent":"nominal"
-
+            "type": "nominal",
+            "continent": "nominal"
         }
     },
     {
-        "name":"penguins.json",
-        "columns":{
+        "name": "penguins.json",
+        "columns": {
             "Species": "nominal",
             "Island": "nominal",
             "Beak Length (mm)": "quantitative",
@@ -60,8 +59,8 @@
         }
     },
     {
-        "name":"weather.json",
-        "columns":{
+        "name": "weather.json",
+        "columns": {
             "location": "nominal",
             "date": "nominal",
             "precipitation": "quantitative",
@@ -69,6 +68,29 @@
             "temp_min": "quantitative",
             "wind": "quantitative",
             "weather": "nominal",
+            "Year": "nominal",
+            "Month": "nominal",
+            "Day": "nominal"
+        }
+    },
+    {
+        "name": "movies.json",
+        "columns": {
+            "Title": "nominal",
+            "US_Gross": "quantitative",
+            "Worldwide_Gross": "quantitative",
+            "US_DVD_Sales": "quantitative",
+            "Production_Budget": "quantitative",
+            "MPAA_Rating": "nominal",
+            "Running_Time_min": "quantitative",
+            "Distributor": "nominal",
+            "Source": "nominal",
+            "Major_Genre": "nominal",
+            "Creative_Type": "nominal",
+            "Director": "nominal",
+            "Rotten_Tomatoes_Rating": "quantitative",
+            "IMDB_Rating": "quantitative",
+            "IMDB_Votes": "quantitative",
             "Year": "nominal",
             "Month": "nominal",
             "Day": "nominal"

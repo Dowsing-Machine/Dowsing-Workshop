@@ -105,7 +105,7 @@
                             <div class="flex-1 pr-2">Suggestion</div>
                             <n-switch size="small" v-model:value="controlStore.suggestionOn" />
                         </div>
-                        <n-button class="w-1/1 my-2" size="tiny">Reset Model</n-button>
+                        <n-button class="w-1/1 my-2" size="tiny" @click="reset">Reset Model</n-button>
                     </div>
                 </n-popover>
             </div>
@@ -129,8 +129,14 @@
             </div>
             <div v-else>
                 <p-o-i v-if="controlStore.poiOn" />
-                <n-empty v-else-if="controlStore.poiOn == null" description="No Significant Interest">
-                    <n-button size="tiny" @click="controlStore.poiOn=true">Open Anyway</n-button>
+                <n-empty
+                    v-else-if="controlStore.poiOn == null"
+                    description="No Significant Interest"
+                >
+                    <div class="text-center">
+                        <div>No Significant Interest</div>
+                        <n-button class="mt-1" size="tiny" @click="controlStore.poiOn = true">Open Anyway</n-button>
+                    </div>
                 </n-empty>
                 <n-empty v-else description="Column Interest Disabled"></n-empty>
             </div>
@@ -171,14 +177,17 @@ import TaskLegendVue from './Task/TaskLegend.vue';
 import { ControlStore } from '../store/ControlStore';
 import { CollectionStore } from '../store/CollectionStore';
 import { POIStore } from "../store/POIStore";
+import { TaskStore } from "../store/TaskStore";
 
 import { Settings20Filled, ArrowReset20Filled, Settings20Regular, Add20Filled } from "@vicons/fluent"
+import axios from 'axios';
 
 const datasetStore = DatasetStore();
 const queryStore = QueryStore();
 const controlStore = ControlStore();
 const collectionStore = CollectionStore();
 const poiStore = POIStore();
+const taskStore = TaskStore();
 
 const { proxy } = getCurrentInstance();
 
@@ -390,6 +399,12 @@ function updateAggregate(channel, aggregate) {
 function resetQuery() {
     proxy.$EventBus.emit(`user:reset:query`);
     queryStore.$reset();
+}
+
+async function reset() {
+    await axios.get("http://localhost:5001/reset");
+    taskStore.$reset();
+    poiStore.$reset();
 }
 </script>
 
