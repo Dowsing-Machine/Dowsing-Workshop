@@ -50,6 +50,24 @@ export class CollectionItem {
 
 export const CollectionStore = defineStore({
     id: "CollectionStore",
+    undoOption: {
+        enabled: true,
+        clone: (state) => {
+            let clone = _.cloneDeep(state);
+            // clone.filter = state.filter.map(f => _.clone(f));
+            return clone;
+        },
+        diff: function (state, prevState) {
+            const ss=_.sortBy(state.collections, "id");
+            const pss=_.sortBy(prevState.collections, "id");
+            const sl=_.sortBy(state.layouts,"i");
+            const pl=_.sortBy(prevState.layouts,"i");
+            return !_.every(_.zip(ss,pss),(pair)=>_.isEqual(pair[0],pair[1])) || !_.every(_.zip(sl,pl),(pair)=>_.isEqual(pair[0],pair[1]));
+            return !_.every(state.collections,_.isEqual);
+            // return !_.isEqual(state, prevState);
+            // return true;
+        }
+    },
     state: () => ({
         collections: [],
         layouts: [],

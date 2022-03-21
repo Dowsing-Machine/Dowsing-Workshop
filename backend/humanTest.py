@@ -1,6 +1,6 @@
 
 from itertools import chain
-import draco
+# import draco
 import torch
 import numpy as np
 import torch.nn as nn
@@ -241,49 +241,49 @@ def on_action():
     }
 
 
-@app.route("/draco", methods=["POST"])
-def on_recommend():
-    task_asps = [
-        "soft(confirm_mark):- utask(confirm), not mark(line).",
-        "soft(correlation_mark):- utask(correlation), mark(point).",
-        "soft(trend_mark):- utask(trend), mark(line).",
-        "soft(transform_aggregate_x):- utask(transform), encoding(E), channel(E,x), aggregate(E,_).",
-        "soft(transform_aggregate_y):- utask(transform), encoding(E), channel(E,y), aggregate(E,_).",
-        "soft(transform_aggregate_color):- utask(transform), encoding(E), channel(E,color), aggregate(E,_).",
-        'soft(trend_aggregate_x):- utask(trend), encoding(E), channel(E,x),not aggregate(E,_).',
-        'soft(trend_x_temporal):- utask(trend), encoding(E), field(E,F), type(E,temporal), channel(E,x).',
-        'soft(correlation_x_quantitative):- utask(correlation), encoding(E), field(E,F), type(E,quantitative), channel(E,x).',
-    ]
+# @app.route("/draco", methods=["POST"])
+# def on_recommend():
+#     task_asps = [
+#         "soft(confirm_mark):- utask(confirm), not mark(line).",
+#         "soft(correlation_mark):- utask(correlation), mark(point).",
+#         "soft(trend_mark):- utask(trend), mark(line).",
+#         "soft(transform_aggregate_x):- utask(transform), encoding(E), channel(E,x), aggregate(E,_).",
+#         "soft(transform_aggregate_y):- utask(transform), encoding(E), channel(E,y), aggregate(E,_).",
+#         "soft(transform_aggregate_color):- utask(transform), encoding(E), channel(E,color), aggregate(E,_).",
+#         'soft(trend_aggregate_x):- utask(trend), encoding(E), channel(E,x),not aggregate(E,_).',
+#         'soft(trend_x_temporal):- utask(trend), encoding(E), field(E,F), type(E,temporal), channel(E,x).',
+#         'soft(correlation_x_quantitative):- utask(correlation), encoding(E), field(E,F), type(E,quantitative), channel(E,x).',
+#     ]
 
-    task_weights = {
-        "confirm_mark": 500,
-        "correlation_mark": -500,
-        "trend_mark": -666,
-        "transform_aggregate_x": -727,
-        "transform_aggregate_y": -181,
-        "transform_aggregate_color": -848,
-        "trend_aggregate_x": -100,
-        "trend_x_temporal": -500,
-        "correlation_x_quantitative": -200
-    }
+#     task_weights = {
+#         "confirm_mark": 500,
+#         "correlation_mark": -500,
+#         "trend_mark": -666,
+#         "transform_aggregate_x": -727,
+#         "transform_aggregate_y": -181,
+#         "transform_aggregate_color": -848,
+#         "trend_aggregate_x": -100,
+#         "trend_x_temporal": -500,
+#         "correlation_x_quantitative": -200
+#     }
 
-    weights_asps = [
-        f"soft_weight({key},{value})." for key, value in task_weights.items()
-    ]
-    print(request.get_json(force=True))
+#     weights_asps = [
+#         f"soft_weight({key},{value})." for key, value in task_weights.items()
+#     ]
+#     print(request.get_json(force=True))
 
-    program = request.get_json(force=True)["asp"]
-    program = program.split("\n")
+#     program = request.get_json(force=True)["asp"]
+#     program = program.split("\n")
 
-    res = draco.run(
-        chain(task_asps, weights_asps, program),
+#     res = draco.run(
+#         chain(task_asps, weights_asps, program),
 
-    )
-    return {
-        "cost": res.cost,
-        "violations": res.violations,
-        "vl": res.as_vl()
-    }
+#     )
+#     return {
+#         "cost": res.cost,
+#         "violations": res.violations,
+#         "vl": res.as_vl()
+#     }
 
 
 app.run(port=5001, debug=True)

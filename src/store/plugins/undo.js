@@ -17,6 +17,7 @@ export function Undo({ store, options }) {
     store.undo = () => {
         preventUpdateOnSubscribe = true;
         let undo = stack.undo();
+        console.log("undo", undo);
         store.$patch(cloneState(undo));
     }
     store.redo = () => {
@@ -25,6 +26,7 @@ export function Undo({ store, options }) {
     }
     scope.run(() => {
         watch(store.$state, (state) => {
+
             const prevState=stack.top();
             if (preventUpdateOnSubscribe) {
                 preventUpdateOnSubscribe = false;
@@ -33,6 +35,7 @@ export function Undo({ store, options }) {
             if(!diff(state,prevState)){
                 return;
             }
+            console.log("state changed", state.collections, prevState.collections);
             state = cloneState(state);
             stack.push(state);
         })

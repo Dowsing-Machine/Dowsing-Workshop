@@ -83,11 +83,11 @@ const handleUpdate = (key) => {
             break;
         case "undo":
             proxy.$EventBus.emit("user:control:undo")
-            queryStore.undo();
+            collectionStore.undo();
             break;
         case "redo":
             proxy.$EventBus.emit("user:control:redo")
-            queryStore.redo();
+            collectionStore.redo();
             break;
         case "delete":
             collectionStore.delete(controlStore.currentViewId);

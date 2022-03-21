@@ -154,7 +154,7 @@ import { QueryStore, spec2query } from '../store/QueryStore';
 import HistoryViewVue from '../components/History/HistoryView.vue';
 import { CollectionStore, CollectionItem } from '../store/CollectionStore';
 
-import { useFps, useMemory } from "@vueuse/core";
+// import { useFps, useMemory } from "@vueuse/core";
 
 const suggestHeadVisable=ref(true);
 function onHeadVisableChange(val){

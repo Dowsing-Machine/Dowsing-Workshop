@@ -10,7 +10,14 @@
                 </n-button>
             </div>
             <hr class="border-0 w-1/1 mt-2 mb-2" />
-            <n-space vertical>
+            <n-space vertical ref="panel">
+                <div v-if="controlStore.currentViewId==null" class="mask bg-white opacity-100">
+                    <n-empty description="Add or select a chart to edit">
+
+                    </n-empty>
+                </div>
+
+
                 <div class="flex flex-col">
                     <div class="font-semibold">Chart Type</div>
                     <n-select
@@ -181,6 +188,8 @@ import { TaskStore } from "../store/TaskStore";
 
 import { Settings20Filled, ArrowReset20Filled, Settings20Regular, Add20Filled } from "@vicons/fluent"
 import axios from 'axios';
+import { useElementBounding  } from '@vueuse/core'
+
 
 const datasetStore = DatasetStore();
 const queryStore = QueryStore();
@@ -190,6 +199,14 @@ const poiStore = POIStore();
 const taskStore = TaskStore();
 
 const { proxy } = getCurrentInstance();
+
+
+const panel=ref(null);
+const { width, height,top,right } = useElementBounding (panel);
+const maskWidth=computed(()=>`${width.value}px`);
+const maskHeight=computed(()=>`${height.value}px`);
+const maskTop=computed(()=>`${top.value}px`);
+const maskRight=computed(()=>`${right.value}px`);
 
 const columnOptions = computed(() => {
     return datasetStore.columns.map(c => ({
@@ -419,10 +436,15 @@ async function reset() {
     @apply font-bold text-lg flex-1 text-$title-color;
 }
 
-.mask::after {
-    @apply bg-red-400 h-10 w-10;
+.mask {
+    /* @apply bg-red-400 h-10 w-10; */
     display: block;
     position: absolute;
-    content: "";
+    /* top: v-bind(maskTop);
+    right:v-bind(maskRight); */
+    width:v-bind(maskWidth);
+    height:v-bind(maskHeight);
+    z-index: 99;
+    content: "aaa";
 }
 </style>
