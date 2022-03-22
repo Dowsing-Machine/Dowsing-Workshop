@@ -96,6 +96,7 @@ const hard_programs = [
     // `data("${datasetStore.name}").`,
     ":- {aggregate(_, _)}>=2.",
     ":- utask(trend), not channel(_,y).",
+    ":- utask(trend), bin(_,_)."
     // ":- utask(trend), not channel(_,y).",
     // ":- utask(trend), channel(E,y), not aggregate(E, mean).",
     // ":- utask(trend), channel(E,x), aggregate(E, _).",
@@ -119,7 +120,7 @@ const task_asps = [
     "soft(trend_aggregrate):- utask(trend), encoding(E), channel(E,y), aggregate(E,_).",
     // "soft(encoding_num):- {encoding(_)}>2.",
     "soft(compare_encoding_num):- utask(compare), {encoding(_)}>2.",
-
+    // "soft(allTask_count):- aggregate(_,count).",
 ]
 
 const task_weights = {
@@ -144,6 +145,7 @@ const task_weights = {
     'correlation_x_quantitative': -331,
     "trend_aggregrate": -100,
     "compare_encoding_num": -100,
+    // "allTask_count": 80000,
 }
 
 const task_map = {
@@ -197,17 +199,17 @@ function refreshRecommend() {
     let taskFASPs = tasks.map(i => `utask(${task_map[i.type]}).`);
     let task_weights_available = [];
     if (tasks.length > 0) {
-        const re = new RegExp(tasks.map(i => task_map[i.type]).join('|'));
+        const re = new RegExp(_.concat(tasks.map(i => task_map[i.type]),"allTask").join('|'));
         // console.log(re);
         // const re = new RegExp(tasks.map(i => i.type).join('|'));
         task_weights_available = task_asps.filter(i => re.test(i)).map(i => {
             const name = i.match(/soft\((.*?)\)/)[1];
-            const short_name = name.match(re_task_names)[1];
+            const short_name = (name.match(re_task_names)??[,"allTask"])[1];
             const task = tasks.find(j => task_map[j.type] == short_name);
             if (task == null) {
                 console.error(`task ${short_name} not found`, name, i, tasks);
             }
-            const weight = Math.round(task_weights[name] * task.score);
+            const weight = Math.round(task_weights[name] * (task?.score ?? 1));
             return {
                 name, weight, asp: i, description: "test", type: "soft"
             };
