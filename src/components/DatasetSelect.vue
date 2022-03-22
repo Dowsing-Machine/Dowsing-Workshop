@@ -101,6 +101,8 @@ import { ref, getCurrentInstance, computed } from "vue";
 import { DatasetStore } from "../store/DatasetStore";
 import { ControlStore } from "../store/ControlStore";
 import { CollectionStore } from "../store/CollectionStore";
+import { TaskStore } from "../store/TaskStore";
+import { POIStore } from "../store/POIStore";
 import _ from "lodash";
 // import {computed} from "vue";
 
@@ -108,6 +110,8 @@ import _ from "lodash";
 const datasetStore = DatasetStore();
 const controlStore = ControlStore();
 const collectionStore = CollectionStore();
+const taskStore = TaskStore();
+const poiStore = POIStore();
 
 const datasetReady = computed(() => {
     return datasetStore.dataset.length > 0;
@@ -116,6 +120,12 @@ const datasetReady = computed(() => {
 const showDatasetDialog = ref(true);
 const { proxy } = getCurrentInstance();
 const message = useMessage()
+
+async function reset() {
+    await axios.get("/api/reset");
+    taskStore.$reset();
+    poiStore.$reset();
+}
 
 async function loadDataset(url) {
     proxy.$EventBus.emit(
@@ -129,6 +139,7 @@ async function loadDataset(url) {
         // showDatasetDialog.value = false;
         collectionStore.$reset();
         message.success(`Successfully load dataset ${datasetStore.name}`);
+        reset();
     } catch (error) {
         message.error("可能是网络开小差了~");
     }
