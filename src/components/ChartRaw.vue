@@ -64,8 +64,8 @@ async function refreshChart() {
             "condition": {
                 "param": "brush",
                 "aggregate": v.encoding?.color?.aggregate,
-                "field": v.encoding?.color?.field,
-                "type": v.encoding?.color?.type,
+                "field": v.encoding?.color?.field||v.encoding?.color?.condition?.field,
+                "type": v.encoding?.color?.type||v.encoding?.color?.condition?.type,
             },
             "value": "grey"
         };

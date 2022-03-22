@@ -239,13 +239,12 @@ const typeOption = [
     // }
 ]
 
-//大问题，重新选中图时候，queryStore不恢复
+
 const x_filter = computed(() => {
     if (queryStore.x_encoding == COUNT) {
         return null;
     }
-    console.log(queryStore.filter);
-    console.log(queryStore.getFilterByColumn(queryStore.x_encoding))
+    
     return queryStore.getFilterByColumn(queryStore.x_encoding);
 })
 
@@ -298,7 +297,7 @@ function updateEncoding(channel, encoding) {
 
     // chartIns.changeSpec(newspec);
 
-
+    console.log(chartIns.spec)
     if (chartIns == null) return;
     let chn = (channel.match(/(.*?)_encoding/) ?? [, "None"])[1];
     if (chn == "category") {
@@ -314,7 +313,7 @@ function updateEncoding(channel, encoding) {
         const newspec=_.merge({},chartIns.spec,{
         encoding:{[chn]:e,"transform":null}
         });
-        console.log(encoding)
+        
         chartIns.changeSpec({
             ...newspec,
             
@@ -333,7 +332,7 @@ function updateEncoding(channel, encoding) {
     }
     
     poiStore.updateColumn(encoding.encoding);
-
+    console.log(chartIns.spec)
 }
 
 function updateFilter(channel, column, filter) {
@@ -397,27 +396,22 @@ function updateAggregate(channel, aggregate) {
     const chartIns = collectionStore.collections.find(c => c.id == i);
 
     queryStore[channel] = aggregate;
-    console.log(aggregate)
-    if (chn != "None" && aggregate != "bin") {
-        chartIns.mergeSpec({
-            encoding: {
-                [chn]: {
+    if(chn=="None") return;
+    if(chn=="category") chn="color";
+    const newagg=aggregate=="bin"?{
+                    "aggregate":null,
+                    "bin": true,
+                }:{
                     aggregate,
                     "bin": false,
                 }
-            }
-        })
-    }
-    if(chn != "None" && aggregate == "bin"){
-        chartIns.mergeSpec({
-            encoding: {
-                [chn]: {
-                    "aggregate":null,
-                    "bin": true,
-                }
-            }
-        })
-    }
+    chartIns.mergeSpec({
+        encoding: {
+            [chn]: newagg
+        }
+    })
+    
+    
 }
 
 function resetQuery() {

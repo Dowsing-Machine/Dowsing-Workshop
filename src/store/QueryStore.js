@@ -45,12 +45,12 @@ export function spec2query(spec = {}) {
                 state.y_aggregate = "bin"
         }
         if (enc.color) {
-            state.category_encoding = enc.color.field;
-            if (enc.color.aggregate) {
-                if (enc.color.aggregate != "count")
-                    state.category_aggregate = enc.color.aggregate;
+            state.category_encoding = enc.color.condition.field;
+            if (enc.color.condition.aggregate) {
+                if (enc.color.condition.aggregate != "count")
+                    state.category_aggregate = enc.color.condition.aggregate;
                 else state.category_encoding = "COUNT"
-            } else if (enc.color.bin)
+            } else if (enc.color.condition.bin)
                 state.category_aggregate = "bin"
         }
     }
