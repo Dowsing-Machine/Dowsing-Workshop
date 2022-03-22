@@ -1,7 +1,7 @@
 <template>
     <n-space vertical>
         <div ref="head"></div>
-        <n-card v-for="vl,i in vls" class="h-50 w-1/1" :title="`Suggestion#${i}`">
+        <n-card v-for="vl, i in vls" class="h-50 w-1/1" :title="`Suggestion#${i}`">
             <chart-raw-vue
                 :vegalite="vl"
                 :render-option="{
@@ -11,7 +11,19 @@
                         type: 'fit',
                         contains: 'padding'
                     },
-                    resize: true
+                    resize: true,
+                    config: {
+                        legend: {
+                
+                            titleLimit: 50,
+                            labelLimit: 30,
+                            symbolLimit: 5
+                        },
+                        axis: {
+                            ticks:true,
+                            labelOverlap:true
+                        }
+                    }
                 }"
                 class="h-1/1 w-1/1"
             ></chart-raw-vue>
@@ -31,7 +43,7 @@ import ChartVLVue from '../Basic/ChartVL.vue';
 import ChartRawVue from "../ChartRaw.vue"
 import { NCard, NButton, NIcon } from 'naive-ui';
 import _ from "lodash";
-import {onMounted} from "vue";
+import { onMounted } from "vue";
 import { DebugStore } from '../../store/DebugStore';
 import { DatasetStore } from '../../store/DatasetStore';
 import { CollectionStore } from '../../store/CollectionStore';
@@ -42,8 +54,8 @@ import { computed, ref, watch, getCurrentInstance } from 'vue';
 import { Add20Filled } from "@vicons/fluent";
 
 import { ControlStore } from '../../store/ControlStore';
-import {POIStore} from "../../store/POIStore";
-const controlStore=ControlStore();
+import { POIStore } from "../../store/POIStore";
+const controlStore = ControlStore();
 // import { useIntersectionObserver } from '@vueuse/core'
 
 // const emits = defineEmits(["update:headVisable"]);
@@ -60,7 +72,7 @@ const debugStore = DebugStore();
 const datasetStore = DatasetStore();
 const taskStore = TaskStore();
 const collectionStore = CollectionStore();
-const poiStore=POIStore();
+const poiStore = POIStore();
 
 const { proxy } = getCurrentInstance();
 import weights_learned from "./weights_learned.json";
@@ -71,7 +83,7 @@ import DracoWorker from "../../utils/dracoWorker?worker";
 
 const dracoWorker = new DracoWorker();
 dracoWorker.onmessage = function (e) {
-    console.log("dracoWorker",e.data);
+    console.log("dracoWorker", e.data);
     res.value = e.data;
 }
 
@@ -177,11 +189,11 @@ draco.init().then(() => {
 
 const res = ref({});
 
-function calAvg(columns){
-    const s=_.sumBy(columns,i=>i.cnt);
-    return columns.map(i=>({
+function calAvg(columns) {
+    const s = _.sumBy(columns, i => i.cnt);
+    return columns.map(i => ({
         ...i,
-        cnt:i.cnt/s
+        cnt: i.cnt / s
     }));
 }
 
@@ -200,12 +212,12 @@ function refreshRecommend() {
     let taskFASPs = tasks.map(i => `utask(${task_map[i.type]}).`);
     let task_weights_available = [];
     if (tasks.length > 0) {
-        const re = new RegExp(_.concat(tasks.map(i => task_map[i.type]),"allTask").join('|'));
+        const re = new RegExp(_.concat(tasks.map(i => task_map[i.type]), "allTask").join('|'));
         // console.log(re);
         // const re = new RegExp(tasks.map(i => i.type).join('|'));
         task_weights_available = task_asps.filter(i => re.test(i)).map(i => {
             const name = i.match(/soft\((.*?)\)/)[1];
-            const short_name = (name.match(re_task_names)??[,"allTask"])[1];
+            const short_name = (name.match(re_task_names) ?? [, "allTask"])[1];
             const task = tasks.find(j => task_map[j.type] == short_name);
             if (task == null) {
                 console.error(`task ${short_name} not found`, name, i, tasks);
@@ -218,14 +230,14 @@ function refreshRecommend() {
     }
 
     const columns = calAvg(poiStore.column);
-    let poiWeights=columns.map(c=>({
-        name:c.col.toLowerCase(),
-        weight:c.cnt*-100,
-        asp:`soft(${c.col.toLowerCase()}):-field(_,"${c.col}").`,
+    let poiWeights = columns.map(c => ({
+        name: c.col.toLowerCase(),
+        weight: c.cnt * -100,
+        asp: `soft(${c.col.toLowerCase()}):-field(_,"${c.col}").`,
         description: "test", type: "soft"
     }))
-    if(controlStore.poiOn!=true){
-        poiWeights=[];
+    if (controlStore.poiOn != true) {
+        poiWeights = [];
     }
     const softW = [
         // ...soft.map(i => ({
@@ -239,8 +251,8 @@ function refreshRecommend() {
     console.log("softW", softW, dataASP);
     const weight_assign = task_weights_available.map(i => `soft_weight(${i.name},${i.weight}).`)
     draco.soft = softW;
-    if(!controlStore.taskOn){
-        taskFASPs=[];
+    if (!controlStore.taskOn) {
+        taskFASPs = [];
     }
     const program = [
         ...dataASP,
@@ -286,43 +298,49 @@ watch(() => taskStore.activate_task.filter(item => item.customScore > 0.5), (new
 })
 
 watch(
-    [()=>controlStore.taskOn,()=>controlStore.poiOn,()=>datasetStore.dataset],
+    [() => controlStore.taskOn, () => controlStore.poiOn, () => datasetStore.dataset],
     refreshRecommend
 );
 
 function translateEncoding(channels, encoding) {
     for (const channel of channels) {
+
         if (encoding[channel] == null) {
             continue;
         }
+        console.log(channel, encoding[channel]);
         if (encoding[channel].type == "temporal") {
             encoding[channel].type = "ordinal";
-        };
+        }
+        else if (encoding[channel].type == "ordinal") {
+            encoding[channel].type = "nominal";
+        }
+
     }
     return encoding;
 }
 
 const vls = computed(() => {
     if (res.value == null) return [];
-    const s=new Set();
+    const s = new Set();
     const vls = [];
-    for(const vl of res.value?.specs ?? []){
-        const x_enc=vl.encoding?.x?.field;
-        const y_enc=vl.encoding?.y?.field;
-        const c_enc=vl.encoding?.color?.field;
-        const x_agg=vl.encoding?.x?.aggregate;
-        const y_agg=vl.encoding?.y?.aggregate;
-        const c_agg=vl.encoding?.color?.aggregate;
-        const x_bin=vl.encoding?.x?.bin;
-        const y_bin=vl.encoding?.y?.bin;
-        const c_bin=vl.encoding?.color?.bin;
-        const m=vl.marl;
-        const key=[x_enc,y_enc,c_enc,x_agg,y_agg,c_agg,x_bin,y_bin,c_bin,m].join("|");
+    for (const vl of res.value?.specs ?? []) {
+        const x_enc = vl.encoding?.x?.field;
+        const y_enc = vl.encoding?.y?.field;
+        const c_enc = vl.encoding?.color?.field;
+        const x_agg = vl.encoding?.x?.aggregate;
+        const y_agg = vl.encoding?.y?.aggregate;
+        const c_agg = vl.encoding?.color?.aggregate;
+        const x_bin = vl.encoding?.x?.bin;
+        const y_bin = vl.encoding?.y?.bin;
+        const c_bin = vl.encoding?.color?.bin;
+        const m = vl.marl;
+        const key = [x_enc, y_enc, c_enc, x_agg, y_agg, c_agg, x_bin, y_bin, c_bin, m].join("|");
         console.log(key)
-        if(s.has(key)){
+        if (s.has(key)) {
             continue;
         }
-        else{
+        else {
             s.add(key);
             vls.push(vl);
         }

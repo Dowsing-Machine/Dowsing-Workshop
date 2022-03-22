@@ -5,9 +5,10 @@
         </n-icon>
     </n-button>
     <n-modal
-        :show="showDatasetDialog || !datasetReady"
+        :show="showDatasetDialog"
         @update-show="showDatasetDialog = $event"
         :mask-closable="datasetReady"
+        :auto-focus="false"
     >
         <n-card class="max-w-1000px min-w-300px">
             <div class="text-lg font-bold mb-4">DATASETS</div>
@@ -21,21 +22,41 @@
                     <n-input v-model:value="controlStore.Id"></n-input>
                 </n-space>
             </n-space>-->
-            <n-space>
-                <n-button @click="loadDataset('/datasets/weather.json')">Weather</n-button>
-                <n-button @click="loadDataset('/datasets/penguins.json')">Penguins</n-button>
-                <n-button @click="loadDataset('/datasets/cars_copy.json')">Cars</n-button>
-                <n-button @click="loadDataset('/datasets/birdstrikes-lite.json')">Birdstrikes</n-button>
-                <n-button @click="loadDataset('/datasets/gapminder-lite.json')">Gapminder</n-button>
-                <n-button @click="loadDataset('/datasets/movies.json')">Movies</n-button>
-                <n-upload>
-                    <n-button>Upload File</n-button>
-                </n-upload>
-            </n-space>
+            <n-button-group>
+                <n-button 
+                    @click="loadDataset('/datasets/weather.json')"
+                    :color="datasetStore.name=='weather.json'?'#0051c2':null"
+                >
+                    Weather
+                </n-button>
+                <n-button 
+                    @click="loadDataset('/datasets/penguins.json')"
+                    :color="datasetStore.name=='penguins.json'?'#0051c2':null"
+                >Penguins</n-button>
+                <n-button 
+                    @click="loadDataset('/datasets/cars_copy.json')"
+                    :color="datasetStore.name=='cars_copy.json'?'#0051c2':null"
+                >Cars</n-button>
+                <n-button 
+                    @click="loadDataset('/datasets/birdstrikes-lite.json')"
+                    :color="datasetStore.name=='birdstrikes-lite.json'?'#0051c2':null"
+                >Birdstrikes</n-button>
+                <n-button 
+                    @click="loadDataset('/datasets/gapminder-lite.json')"
+                    :color="datasetStore.name=='gapminder-lite.json'?'#0051c2':null"
+                >Gapminder</n-button>
+                <n-button 
+                    @click="loadDataset('/datasets/movies.json')"
+                    :color="datasetStore.name=='movies.json'?'#0051c2':null"
+                >Movies</n-button>
+            </n-button-group>
+            <!-- <n-upload>
+                <n-button>Upload File</n-button>
+            </n-upload> -->
             <n-data-table
                 :data="datasetStore.dataset"
                 :columns="columns"
-                class="mt-2 max-h-300px overflow-auto"
+                class="my-2 max-h-300px overflow-auto"
                 virtual-scroll
                 :max-height="200"
                 size="small"
@@ -63,12 +84,17 @@
                 >Birdstrikes</n-button>
                 <n-button @click="loadDataset('/datasets/gapminder-lite.json')">Gapminder</n-button>
             </n-space>-->
+            <n-button 
+                type="primary" 
+                @click="showDatasetDialog=false"
+                :disabled="!datasetReady"
+            >Confirm</n-button>
         </n-card>
     </n-modal>
 </template>
 
 <script setup>
-import { NButton, NIcon, NModal, NCard, NSpace, NH3, NDivider, NInput, useMessage, NDataTable, NEmpty, NUpload } from "naive-ui";
+import { NButton, NIcon, NModal, NCard, NSpace, NButtonGroup, NH3, NDivider, NInput, useMessage, NDataTable, NEmpty, NUpload } from "naive-ui";
 import { Database24Filled } from "@vicons/fluent"
 import { ref, getCurrentInstance, computed } from "vue";
 
@@ -87,7 +113,7 @@ const datasetReady = computed(() => {
     return datasetStore.dataset.length > 0;
 })
 
-const showDatasetDialog = ref(false);
+const showDatasetDialog = ref(true);
 const { proxy } = getCurrentInstance();
 const message = useMessage()
 
@@ -100,9 +126,9 @@ async function loadDataset(url) {
     );
     try {
         await datasetStore.loadDataset(url);
-        showDatasetDialog.value = false;
+        // showDatasetDialog.value = false;
         collectionStore.$reset();
-        message.success(`成功加载数据集${datasetStore.name}`);
+        message.success(`Successfully load dataset ${datasetStore.name}`);
     } catch (error) {
         message.error("可能是网络开小差了~");
     }

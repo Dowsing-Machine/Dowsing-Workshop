@@ -17,6 +17,16 @@
                                     contains: 'padding'
                                 },
                                 resize: true,
+                                config:{
+                                    legend:{
+                                        disable:true
+                                    },
+                                    axis:{
+                                        ticks:false,
+                                        labels:false,
+                                    },
+
+                                }
                             }"
                             :ref="el => { if (el) charts[idx] = el }"
                             class="h-1/1 w-1/1"
