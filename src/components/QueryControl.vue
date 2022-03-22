@@ -402,7 +402,7 @@ function updateAggregate(channel, aggregate) {
         chartIns.mergeSpec({
             encoding: {
                 [chn]: {
-                    "aggregate":null,
+                    aggregate,
                     "bin": false,
                 }
             }
@@ -412,6 +412,7 @@ function updateAggregate(channel, aggregate) {
         chartIns.mergeSpec({
             encoding: {
                 [chn]: {
+                    "aggregate":null,
                     "bin": true,
                 }
             }

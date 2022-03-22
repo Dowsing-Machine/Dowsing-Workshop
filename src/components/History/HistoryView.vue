@@ -65,10 +65,10 @@ function selectHis(i) {
 
 }
 watch(()=>props.vegalites,()=>{
-    setTimeout(()=>{
-        contentRef.value?.scrollTo({ left: 12000, behavior: 'smooth' })
-    },100)
-    // contentRef.value?.scrollTo({ left: 12000, behavior: 'smooth' })
+    // setTimeout(()=>{
+    //     contentRef.value?.scrollTo({ left: 12000, behavior: 'smooth' })
+    // },100)
+    contentRef.value?.scrollTo({ left: 12000, behavior: 'smooth' })
 })
 
 </script>
