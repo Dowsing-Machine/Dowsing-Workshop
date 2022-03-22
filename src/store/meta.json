@@ -23,7 +23,7 @@
             "Time_of_day": "nominal",
             "Cost_Other": "quantitative",
             "Cost_Repair": "quantitative",
-            "Cost_Total_$": "quantitative",
+            "Cost_Total_dollars": "quantitative",
             "Speed_IAS_in_knots": "quantitative",
             "Year": "nominal",
             "Month": "nominal",
