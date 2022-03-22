@@ -161,7 +161,6 @@ const task_weights = {
     "compare_encoding_num": -100,
     // "allTask_count": 80000,
 }
-
 const task_map = {
     "数据转换": "transform",
     "确认值": "confirm",

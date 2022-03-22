@@ -276,9 +276,9 @@ function updateEncoding(channel, encoding) {
         encoding: encoding?.encoding
     });
     const old = queryStore[channel];
-    console.log(queryStore.filter)
+    
     queryStore.deleteFilterByColumn(old);
-    console.log(queryStore.filter)
+    
     queryStore.editEncoding(channel, encoding?.encoding);
     const i = controlStore.currentViewId;
     const chartIns = collectionStore.collections.find(c => c.id == i);
@@ -325,14 +325,16 @@ function updateEncoding(channel, encoding) {
             ...chartIns.spec,
             encoding: {
                 ...chartIns.spec.encoding,
-                [channel]: null
+                [chn]: null
             },
             "transform":nowFilter
         })
     }
-    
-    poiStore.updateColumn(encoding.encoding);
     console.log(chartIns.spec)
+    if(encoding?.encoding!=null )
+        poiStore.updateColumn(encoding.encoding);
+    
+    
 }
 
 function updateFilter(channel, column, filter) {
