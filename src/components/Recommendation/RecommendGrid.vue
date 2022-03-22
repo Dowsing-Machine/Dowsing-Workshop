@@ -91,6 +91,8 @@ const hard_programs = [
     // "encoding(e1).",
     // ":- not field(e1,_).",
     ":- not {encoding(_)}>=2.",
+    // ":- channel(E,x;y), not {field(_,_)}>=2.",
+
     "encoding(e2).",
     ":- field(e2,_).",
     // `data("${datasetStore.name}").`,
