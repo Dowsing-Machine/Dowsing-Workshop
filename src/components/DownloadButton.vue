@@ -105,10 +105,11 @@ async function sendLog(log, topic, time = Date.now()) {
     //     ...item
     //   })
     // }
-    taskStore.getPredicts(log?.type);
 
 
   }
+  taskStore.getPredicts(log?.type);
+
   const uuid = controlStore.uuid;
   const groupId = controlStore.groupId;
   const id = controlStore.Id;
