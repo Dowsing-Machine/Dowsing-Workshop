@@ -13,7 +13,7 @@ draco.init().then(() => {
 
 function solve(event) {
     const {
-        program, softW, options = { models: 10 }
+        program, softW, options = { models: 20 }
     } = event.data;
     draco.soft=softW;
     console.log("worker",softW);

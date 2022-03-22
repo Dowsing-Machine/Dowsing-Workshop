@@ -40,6 +40,7 @@ const prob=computed(()=>{
 })
 
 watch(prob,()=>{
+    console.log("column poi",prob.value);
     if(prob.value==null&&prob.value<0.05){
         controlStore.poiOn=true;
     }

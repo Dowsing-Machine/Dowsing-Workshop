@@ -71,7 +71,7 @@ import DracoWorker from "../../utils/dracoWorker?worker";
 
 const dracoWorker = new DracoWorker();
 dracoWorker.onmessage = function (e) {
-    // console.log(e.data);
+    console.log("dracoWorker",e.data);
     res.value = e.data;
 }
 
@@ -99,7 +99,7 @@ const hard_programs = [
     // ":- utask(trend), not channel(_,y).",
     // ":- utask(trend), channel(E,y), not aggregate(E, mean).",
     // ":- utask(trend), channel(E,x), aggregate(E, _).",
-
+    // ":- aggregate(_,count).",
     // ":- utask(trend), x_y_cardinality().",
 ]
 
@@ -282,7 +282,10 @@ watch(() => taskStore.activate_task.filter(item => item.customScore > 0.5), (new
     refreshRecommend();
 })
 
-watch([()=>controlStore.taskOn,()=>controlStore.poiOn],refreshRecommend);
+watch(
+    [()=>controlStore.taskOn,()=>controlStore.poiOn,()=>datasetStore.dataset],
+    refreshRecommend
+);
 
 function translateEncoding(channels, encoding) {
     for (const channel of channels) {
@@ -298,7 +301,30 @@ function translateEncoding(channels, encoding) {
 
 const vls = computed(() => {
     if (res.value == null) return [];
-    return (res.value.specs ?? []).map(i => ({
+    const s=new Set();
+    const vls = [];
+    for(const vl of res.value?.specs ?? []){
+        const x_enc=vl.encoding?.x?.field;
+        const y_enc=vl.encoding?.y?.field;
+        const c_enc=vl.encoding?.color?.field;
+        const x_agg=vl.encoding?.x?.aggregate;
+        const y_agg=vl.encoding?.y?.aggregate;
+        const c_agg=vl.encoding?.color?.aggregate;
+        const x_bin=vl.encoding?.x?.bin;
+        const y_bin=vl.encoding?.y?.bin;
+        const c_bin=vl.encoding?.color?.bin;
+        const m=vl.marl;
+        const key=[x_enc,y_enc,c_enc,x_agg,y_agg,c_agg,x_bin,y_bin,c_bin,m].join("|");
+        console.log(key)
+        if(s.has(key)){
+            continue;
+        }
+        else{
+            s.add(key);
+            vls.push(vl);
+        }
+    }
+    return (vls).map(i => ({
         ...i,
         data: {
             values: datasetStore.dataset,

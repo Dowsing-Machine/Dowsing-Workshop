@@ -135,7 +135,7 @@
                 <n-empty v-else description="Task Aware disabled"></n-empty>
             </div>
             <div v-else>
-                <p-o-i v-if="controlStore.poiOn" />
+                <p-o-i v-if="controlStore.poiOn==true" />
                 <n-empty
                     v-else-if="controlStore.poiOn == null"
                     description="No Significant Interest"
@@ -147,9 +147,9 @@
                 </n-empty>
                 <n-empty v-else description="Column Interest Disabled"></n-empty>
             </div>
-            <div v-else>
+            <!-- <div v-else>
                 <p-o-i></p-o-i>
-            </div>
+            </div> -->
             <!-- <n-tabs>
                 <n-tab-pane name="Task">
                     <div class="mb-1 font-semibold">TYPE</div>
