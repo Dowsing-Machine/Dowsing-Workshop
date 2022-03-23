@@ -117,7 +117,7 @@
                 </n-popover>
             </div>
             <hr class="border-0 w-1/1 mt-2 mb-2" />
-            <div v-if="showTask">
+            <div v-show="showTask">
                 <div v-if="controlStore.taskOn">
                     <div class="font-semibold mb-1">Task Types</div>
                     <task-legend-vue class="mb-1" />
@@ -134,10 +134,10 @@
                 </div>
                 <n-empty v-else description="Task Aware disabled"></n-empty>
             </div>
-            <div v-else>
-                <p-o-i v-if="controlStore.poiOn==true" />
+            <div v-show="!showTask">
+                <p-o-i v-show="controlStore.poiOn==true" />
                 <n-empty
-                    v-else-if="controlStore.poiOn == null"
+                    v-show="controlStore.poiOn == null"
                     description="No Significant Interest"
                 >
                     <div class="text-center">
@@ -145,7 +145,7 @@
                         <n-button class="mt-1" size="tiny" @click="controlStore.poiOn = true">Open Anyway</n-button>
                     </div>
                 </n-empty>
-                <n-empty v-else description="Column Interest Disabled"></n-empty>
+                <n-empty v-show="controlStore.poiOn==false" description="Column Interest Disabled"></n-empty>
             </div>
             <!-- <div v-else>
                 <p-o-i></p-o-i>
