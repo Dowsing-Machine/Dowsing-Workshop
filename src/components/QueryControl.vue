@@ -366,13 +366,18 @@ function updateFilter(channel, column, filter) {
     newspec.transform=nowFilter;
     ///////
     // chartIns.changeSpec(newspec);
-
-    chartIns.mergeSpec({
-        transform: nowFilter,
-    })
-    console.log(chartIns.spec.transform)
+    f(chartIns,nowFilter)
+    // chartIns.mergeSpec({
+    //     transform: nowFilter,
+    // })
 
 }
+
+const f=_.debounce((chartIns,nowFilter)=>{
+        console.log(111)
+        chartIns.mergeSpec({
+        transform: nowFilter,
+    })},400,{"trailing":true})
 
 function updateChartType(chart_type) {
     proxy.$EventBus.emit(`user:update:chart_type:${chart_type ?? 'None'}`, {
