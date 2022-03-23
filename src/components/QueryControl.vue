@@ -265,6 +265,7 @@ const category_filter = computed(() => {
 function updateEncoding(channel, encoding) {
     const enc = encoding?.encoding ?? 'None';
     let t = _.find(datasetStore.columns, column => column.name === enc)?.type;
+
     if (enc == "COUNT") {
         t = "quantitative";
     }
@@ -276,6 +277,9 @@ function updateEncoding(channel, encoding) {
         channel,
         encoding: encoding?.encoding
     });
+    if(t=="time"){
+        t="ordinal";
+    }
     const old = queryStore[channel];
 
     queryStore.deleteFilterByColumn(old);
