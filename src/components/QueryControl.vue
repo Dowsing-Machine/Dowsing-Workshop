@@ -12,9 +12,9 @@
             <hr class="border-0 w-1/1 mt-2 mb-2" />
             <n-space vertical ref="panel">
                 <div v-if="controlStore.currentViewId==null" class="mask bg-white opacity-100">
-                    <n-empty description="Add or select a chart to edit">
+                    <!-- <n-empty description="Add or select a chart to edit">
 
-                    </n-empty>
+                    </n-empty> -->
                 </div>
 
 
@@ -433,8 +433,15 @@ async function reset() {
     @apply font-bold text-lg flex-1 text-$title-color;
 }
 
-.mask {
+.mask{
+    position: relative;
+    width: 0px;
+    height: 0px;
+
+}
+.mask::before{
     /* @apply bg-red-400 h-10 w-10; */
+    @apply bg-white text-center text-color-[#c2c2c2] content-center
     display: block;
     position: absolute;
     /* top: v-bind(maskTop);
@@ -442,6 +449,6 @@ async function reset() {
     width:v-bind(maskWidth);
     height:v-bind(maskHeight);
     z-index: 99;
-    content: "aaa";
+    content: "Add or select a chart to edit";
 }
 </style>

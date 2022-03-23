@@ -105,7 +105,7 @@ import { TaskStore } from "../store/TaskStore";
 import { POIStore } from "../store/POIStore";
 import _ from "lodash";
 // import {computed} from "vue";
-
+import axios from "axios";
 
 const datasetStore = DatasetStore();
 const controlStore = ControlStore();
