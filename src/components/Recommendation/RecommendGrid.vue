@@ -232,7 +232,7 @@ function refreshRecommend() {
     const columns = calAvg(poiStore.column);
     let poiWeights = columns.map(c => ({
         name: c.col.toLowerCase(),
-        weight: c.cnt * -100,
+        weight: _.round(c.cnt * -100),
         asp: `soft(${c.col.toLowerCase()}):-field(_,"${c.col}").`,
         description: "test", type: "soft"
     }))
