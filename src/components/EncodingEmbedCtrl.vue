@@ -157,7 +157,7 @@ const columnPlacehold = computed(() => {
         return "Empty";
     }
     else if (!props.aggregate) {
-        return props.encoding;
+        return _.truncate(props.encoding, { length: 16 });
     }
     else {
         const shortColumn = _.truncate(props.encoding, { length: 12 });

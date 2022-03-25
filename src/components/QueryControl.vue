@@ -82,8 +82,9 @@
                         class="transition-colors duration-200"
                         @click="showTask = true"
                     >TASK</div>
+                    <div class="mx-2"></div>
                     <div
-                        class="ml-2 transition-colors duration-200"
+                        class=" transition-colors duration-200"
                         :class="{ 'text-gray-400': showTask }"
                         @click="showTask = false"
                     >COLUMNS</div>
