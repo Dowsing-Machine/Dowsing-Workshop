@@ -26,6 +26,7 @@
                     }
                 }"
                 class="h-1/1 w-1/1"
+                :replaceColor="false"
             ></chart-raw-vue>
             <template #header-extra>
                 <n-button text class="header_button" @click="addCollection(vl)">
@@ -106,17 +107,20 @@ const hard_programs = [
     ":- not {encoding(_)}>=2.",
     // ":- channel(E,x;y), not {field(_,_)}>=2.",
 
-    "encoding(e2).",
-    ":- field(e2,_).",
+    // "encoding(e2).",
+    // ":- field(e2,_).",
     // `data("${datasetStore.name}").`,
     ":- {aggregate(_, _)}>=2.",
     ":- utask(trend), not channel(_,y).",
-    ":- utask(trend), bin(_,_)."
+    ":- utask(trend), bin(_,_).",
     // ":- utask(trend), not channel(_,y).",
     // ":- utask(trend), channel(E,y), not aggregate(E, mean).",
     // ":- utask(trend), channel(E,x), aggregate(E, _).",
     // ":- aggregate(_,count).",
     // ":- utask(trend), x_y_cardinality().",
+    ":- utask(transform), not aggregate(_, mean); not aggregate(_, count).",
+    // ":- not utask(transform), aggregate(E, mean).",
+
 ]
 
 const task_asps = [
@@ -136,6 +140,8 @@ const task_asps = [
     // "soft(encoding_num):- {encoding(_)}>2.",
     "soft(compare_encoding_num):- utask(compare), {encoding(_)}>2.",
     // "soft(allTask_count):- aggregate(_,count).",
+    // "soft(transform_aggregate_count):- utask(transform), encoding(E), aggregate(E,count).",
+    "soft(transform_aggregate_mean):- utask(transform), aggregate(_,mean).",
 ]
 
 const task_weights = {
@@ -154,12 +160,15 @@ const task_weights = {
     'trend_mark2': -300,
 
     'transform_aggregate_y': 0,
-    // 'transform_aggregate_color': 512,
+    // 'transform_aggregate_count': 100,
+    'transform_aggregate_mean': -1,
+// 'transform_aggregate_color': 512,
     'trend_aggregate_x': -98,
     'trend_x_temporal': -265,
     'correlation_x_quantitative': -331,
     "trend_aggregrate": -100,
     "compare_encoding_num": -100,
+
     // "allTask_count": 80000,
 }
 const task_map = {
@@ -233,7 +242,7 @@ function refreshRecommend() {
     const columns = calAvg(poiStore.column);
     let poiWeights = columns.map(c => ({
         name: c.col.toLowerCase(),
-        weight: c.cnt * -100,
+        weight: _.round(c.cnt * -100),
         asp: `soft(${c.col.toLowerCase()}):-field(_,"${c.col}").`,
         description: "test", type: "soft"
     }))
@@ -245,7 +254,18 @@ function refreshRecommend() {
         //     ...i,
         //     weight: weights_learned[i.name]
         // })),
-        ...soft,
+        ...soft.map(i=>{
+            if(i.name=="aggregate_count"||i.name=="aggregate_mean"){
+                return {
+                    ...i,
+                    weight: 0
+                }
+            }
+            else{
+                return i
+            }
+        }),
+        // ...soft,
         ...task_weights_available,
         ...poiWeights
     ];

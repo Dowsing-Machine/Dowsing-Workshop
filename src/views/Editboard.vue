@@ -76,7 +76,7 @@
                             <!-- <multi-view></multi-view> -->
                             <collection-charts-vue
                             @click="onClick"
-                                class="bg-$embeded-bg-color h-1/1 flex-1 overflow-auto"
+                                class="bg-$embeded-bg-color h-1/1 flex-1 overflow-auto px-4 py-2"
                             ></collection-charts-vue>
                             <div class="p-1 border-t shadow-up">
                                 <n-button
