@@ -1,6 +1,6 @@
 <template>
     <div v-if="CollectionItem.isValid(vegalite)" ref="chartDiv" style="overflow:auto;"></div>
-    <n-empty v-else size="large" description="You can edit encoding on data controler panel" class="h-1/1 justify-center">
+    <n-empty v-else size="large" description="You can edit encoding on data controller panel" class="h-1/1 justify-center text-center">
         <template #icon>
             <BarChartRound />
         </template>
@@ -43,6 +43,8 @@ async function refreshChart() {
         view.value.finalize();
     }
 
+    const encoding = _.cloneDeep(props.vegalite.encoding);
+
     let v = {
         ...props.vegalite,
         ...props.renderOption,
@@ -50,7 +52,8 @@ async function refreshChart() {
             // name:"data"
             values: datasetStore.dataset
         },
-        "params": [{ "name": "brush", "select": "interval" }]
+        encoding,
+        // "params": [{ "name": "brush", "select": "interval" }]
         // transform:queryStore.filter.filter(f=>f!=null).map(f=>({
         //     filter:{
         //         field:f.column,
@@ -60,10 +63,11 @@ async function refreshChart() {
     }
     
     if (props.replaceColor && v.encoding) {
+        v.params=[{ "name": "brush", "select": "interval" }];
         v.encoding.color = {
             "condition": {
                 "param": "brush",
-                "aggregate": v.encoding?.color?.aggregate,
+                "aggregate": v.encoding?.color?.aggregate||v.encoding?.color?.condition?.aggregate,
                 "field": v.encoding?.color?.field||v.encoding?.color?.condition?.field,
                 "type": v.encoding?.color?.type||v.encoding?.color?.condition?.type,
             },

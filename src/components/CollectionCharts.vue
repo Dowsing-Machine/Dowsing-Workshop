@@ -181,11 +181,16 @@ function addviews(v, i) {
     views.value[i] = v;
     // views.value.push(v)
     console.log(views.value);
-    v.addSignalListener("brush",
-        _.debounce(() => {
-            onBrush(i);
-        }, 500)
-    )
+    try {
+        v.addSignalListener("brush",
+            _.debounce(() => {
+                onBrush(i);
+            }, 500)
+        )
+    }
+    catch(err){
+        ;
+    }
     // v.addEventListener("mouseup", () => {
     //   // if(checkfirst()==0)
     //   clear(viewscnt.value);

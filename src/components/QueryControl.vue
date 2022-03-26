@@ -79,12 +79,12 @@
                 <div class="panel-subtitle flex">
                     <div
                         :class="{ 'text-gray-400': !showTask }"
-                        class="transition-colors duration-200"
+                        class="transition-colors duration-200 cursor-pointer"
                         @click="showTask = true"
                     >TASK</div>
                     <div class="mx-2"></div>
                     <div
-                        class=" transition-colors duration-200"
+                        class=" transition-colors duration-200 cursor-pointer"
                         :class="{ 'text-gray-400': showTask }"
                         @click="showTask = false"
                     >COLUMNS</div>
