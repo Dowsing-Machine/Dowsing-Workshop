@@ -63,7 +63,7 @@ async function refreshChart() {
         v.encoding.color = {
             "condition": {
                 "param": "brush",
-                "aggregate": v.encoding?.color?.aggregate,
+                "aggregate": v.encoding?.color?.aggregate||v.encoding?.color?.condition?.aggregate,
                 "field": v.encoding?.color?.field||v.encoding?.color?.condition?.field,
                 "type": v.encoding?.color?.type||v.encoding?.color?.condition?.type,
             },
