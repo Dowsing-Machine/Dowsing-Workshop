@@ -1,13 +1,18 @@
 <template>
     <div v-if="CollectionItem.isValid(vegalite)" ref="chartDiv" style="overflow:auto;"></div>
-    <n-empty v-else size="large" description="You can edit encoding on data controller panel" class="h-1/1 justify-center text-center">
+    <n-empty
+        v-else
+        size="large"
+        description="You can edit encoding on data controller panel"
+        class="h-1/1 justify-center text-center"
+    >
         <template #icon>
             <BarChartRound />
         </template>
     </n-empty>
 </template>
 <script setup>
-import { defineProps, onMounted, watch, ref, defineExpose,nextTick } from 'vue-demi';
+import { defineProps, onMounted, watch, ref, defineExpose, nextTick } from 'vue-demi';
 import { NEmpty } from 'naive-ui';
 import embed from 'vega-embed';
 
@@ -61,15 +66,15 @@ async function refreshChart() {
         //     }
         // })),
     }
-    
+
     if (props.replaceColor && v.encoding) {
-        v.params=[{ "name": "brush", "select": "interval" }];
+        v.params = [{ "name": "brush", "select": "interval" }];
         v.encoding.color = {
             "condition": {
                 "param": "brush",
-                "aggregate": v.encoding?.color?.aggregate||v.encoding?.color?.condition?.aggregate,
-                "field": v.encoding?.color?.field||v.encoding?.color?.condition?.field,
-                "type": v.encoding?.color?.type||v.encoding?.color?.condition?.type,
+                "aggregate": v.encoding?.color?.aggregate || v.encoding?.color?.condition?.aggregate,
+                "field": v.encoding?.color?.field || v.encoding?.color?.condition?.field,
+                "type": v.encoding?.color?.type || v.encoding?.color?.condition?.type,
             },
             "value": "grey"
         };
@@ -77,11 +82,17 @@ async function refreshChart() {
 
     v.$schema = "https://vega.github.io/schema/vega-lite/v5.json";
     await nextTick();
+
+    if (chartDiv.value == null) {
+        emit("addview", null);
+        return;
+    }
     let res = await embed(chartDiv.value, v, { actions: false });
+    console.log("refresh", v);
+    emit("addview", res.view);
 
     // res.view.insert("data", datasetStore.dataset).run();
-    console.log("refresh",v);
-    emit("addview", res.view);
+
 
 }
 

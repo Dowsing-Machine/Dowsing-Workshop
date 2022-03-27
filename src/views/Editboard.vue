@@ -23,16 +23,16 @@
         </n-layout-header>
         <n-layout-content class="flex-1 overflow-hidden">
             <n-layout has-sider class="h-1/1">
-                <n-layout-sider 
-                    bordered 
-                    width="300" 
+                <n-layout-sider
+                    bordered
+                    width="300"
                     :class="{ 'shadow-left': recommendClosed }"
                     :native-scrollbar="false"
                 >
                     <!-- <single-chart-edit></single-chart-edit> -->
                     <query-control-vue></query-control-vue>
                 </n-layout-sider>
-                <n-layout-content  class="h-1/1">
+                <n-layout-content class="h-1/1">
                     <n-layout has-sider class="h-1/1">
                         <!-- <n-layout-header bordered>
                             <multi-view-ctrl></multi-view-ctrl>
@@ -54,7 +54,7 @@
                                 <div class="font-bold text-lg pb-4 text-$title-color">SUGGESTIONS</div>
                                 <!-- <hr class="border-0 w-1/1 mb-2 flex-1 shadow-lg transition-all duration-500" :class="{'shadow !border !border-1':!suggestHeadVisable}"/> -->
                                 <n-scrollbar v-if="controlStore.suggestionOn">
-                                    <recommend-grid-vue @update:head-visable="onHeadVisableChange"/>
+                                    <recommend-grid-vue @update:head-visable="onHeadVisableChange" />
                                 </n-scrollbar>
                                 <n-empty v-else description="Suggestion disabled"></n-empty>
                             </div>
@@ -62,9 +62,7 @@
                         <n-layout-content
                             :content-style="{ display: 'flex', flexDirection: 'column' }"
                         >
-                            <n-layout-header 
-                             @click="onClick"
-                             class="bg-$light-primary-color">
+                            <n-layout-header @click="onClick" class="bg-$light-primary-color">
                                 <div class="flex items-center w-1/1 h-48px">
                                     <!-- <div class="flex-1 text-lg px-24px font-bold text-$title-color">CANVAS</div> -->
                                     <multi-view-ctrl></multi-view-ctrl>
@@ -74,10 +72,15 @@
                             <!-- <explore-panel-vue class="flex-1 h-1/1 overflow-auto"></explore-panel-vue> -->
 
                             <!-- <multi-view></multi-view> -->
-                            <collection-charts-vue
-                            @click="onClick"
-                                class="bg-$embeded-bg-color h-1/1 flex-1 overflow-auto px-4 py-2"
-                            ></collection-charts-vue>
+                            <n-scrollbar
+                                class="h-1/1 flex-1 bg-$embeded-bg-color "
+                            >
+                                <collection-charts-vue
+                                    @click="onClick"
+                                    class="h-1/1 flex-1 px-4 py-2"
+                                ></collection-charts-vue>
+                            </n-scrollbar>
+
                             <div class="p-1 border-t shadow-up">
                                 <n-button
                                     secondary
@@ -90,7 +93,6 @@
                                     :vegalites="chartHistories"
                                     :show="pastPanelOpen"
                                     :selectId="controlStore.currentViewId"
-                                    
                                 />
                                 <!-- <transition name="fade">
                                     <div class="h-50" v-show="pastPanelOpen">
@@ -124,7 +126,7 @@
 </template>
 
 <script setup>
-import { NLayout, NLayoutHeader, NScrollbar, NLayoutSider, NLayoutContent, NSpace, NSwitch, NCollapseTransition, NButton, useThemeVars, NEmpty } from 'naive-ui';
+import { NLayout, NLayoutHeader, NScrollbar, NLayoutSider, NLayoutContent, NSpace, NButton, NEmpty } from 'naive-ui';
 // import DebugViewVue from '../components/DebugView.vue';
 // import DataControl from "@/components/DataControl.vue";
 // import SingleChartEdit from "@/components/SingleChartEdit.vue";
@@ -156,10 +158,10 @@ import { CollectionStore, CollectionItem } from '../store/CollectionStore';
 
 // import { useFps, useMemory } from "@vueuse/core";
 
-const suggestHeadVisable=ref(true);
-function onHeadVisableChange(val){
-    console.log("visable",val)
-    suggestHeadVisable.value=val;
+const suggestHeadVisable = ref(true);
+function onHeadVisableChange(val) {
+    console.log("visable", val)
+    suggestHeadVisable.value = val;
 }
 
 const showPast = ref(true);

@@ -20,8 +20,8 @@
                             symbolLimit: 5
                         },
                         axis: {
-                            ticks:true,
-                            labelOverlap:true
+                            ticks: true,
+                            labelOverlap: true
                         }
                     }
                 }"
@@ -119,6 +119,9 @@ const hard_programs = [
     // ":- utask(trend), x_y_cardinality().",
     ":- utask(transform), not aggregate(_, mean); not aggregate(_, count).",
     // ":- not utask(transform), aggregate(E, mean).",
+    ":-  aggregate(_,_), not aggregate(_,count); not aggregate(_,mean).",
+    ':- field(_,"date").',
+    ":- utask(trend), channel(E,x), zero(E)."
 
 ]
 
@@ -133,7 +136,7 @@ const task_asps = [
 
     'soft(trend_aggregate_x):- utask(trend), encoding(E), channel(E,x),not aggregate(E,_).',
     'soft(trend_x_temporal):- utask(trend), encoding(E), field(E,F), fieldtype(F,datetime), channel(E,x).',
-    'soft(correlation_x_quantitative):- utask(correlation), encoding(E), field(E,F), type(E,quantitative), channel(E,x).',
+    'soft(correlation_x_quantitative):- utask(correlation), encoding(E), field(E,F), field_type(F,number), channel(E,x).',
     "soft(transform_aggregate_y):- utask(transform), encoding(E), channel(E,y), aggregate(E,_).",
     "soft(trend_aggregrate):- utask(trend), encoding(E), channel(E,y), aggregate(E,_).",
     // "soft(encoding_num):- {encoding(_)}>2.",
@@ -141,6 +144,10 @@ const task_asps = [
     // "soft(allTask_count):- aggregate(_,count).",
     // "soft(transform_aggregate_count):- utask(transform), encoding(E), aggregate(E,count).",
     "soft(transform_aggregate_mean):- utask(transform), aggregate(_,mean).",
+    "soft(compare_field_num):- utask(compare), {field(_,_)}>2.",
+    "soft(transform_field_num):- utask(transform), {field(_,_)}>=2.",
+    "soft(compare_mark):- utask(compare), mark(point).",
+    "soft(allTask_bar):- mark(bar), aggregate(_,_).",
 ]
 
 const task_weights = {
@@ -161,7 +168,7 @@ const task_weights = {
     'transform_aggregate_y': 0,
     // 'transform_aggregate_count': 100,
     'transform_aggregate_mean': -1,
-// 'transform_aggregate_color': 512,
+    // 'transform_aggregate_color': 512,
     'trend_aggregate_x': -98,
     'trend_x_temporal': -265,
     'correlation_x_quantitative': -331,
@@ -169,6 +176,10 @@ const task_weights = {
     "compare_encoding_num": -100,
 
     // "allTask_count": 80000,
+    'transform_field_num': -20,
+    "compare_mark": 10,
+    "compare_field_num": -10,
+    "allTask_bar": -10,
 }
 const task_map = {
     "数据转换": "transform",
@@ -253,14 +264,14 @@ function refreshRecommend() {
         //     ...i,
         //     weight: weights_learned[i.name]
         // })),
-        ...soft.map(i=>{
-            if(i.name=="aggregate_count"||i.name=="aggregate_mean"){
+        ...soft.map(i => {
+            if (i.name == "aggregate_count" || i.name == "aggregate_mean") {
                 return {
                     ...i,
                     weight: 0
                 }
             }
-            else{
+            else {
                 return i
             }
         }),

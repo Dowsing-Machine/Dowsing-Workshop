@@ -195,6 +195,7 @@ function addviews(v, i) {
     //   // if(checkfirst()==0)
     //   clear(viewscnt.value);
     // })
+    console.log("addview",charts.value[i]);
 }
 
 
