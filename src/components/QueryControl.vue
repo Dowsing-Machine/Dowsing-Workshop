@@ -84,7 +84,7 @@
                     >TASK</div>
                     <div class="mx-2"></div>
                     <div
-                        class=" transition-colors duration-200 cursor-pointer"
+                        class="transition-colors duration-200 cursor-pointer"
                         :class="{ 'text-gray-400': showTask }"
                         @click="showTask = false"
                     >COLUMNS</div>
@@ -146,7 +146,10 @@
                         >Open Anyway</n-button>
                     </div>
                 </n-empty>
-                <n-empty v-show="controlStore.poiOn == false" description="Column Interest Disabled"></n-empty>
+                <n-empty
+                    v-show="controlStore.poiOn == false"
+                    description="Column Interest Disabled"
+                ></n-empty>
             </div>
             <!-- <div v-else>
                 <p-o-i></p-o-i>
@@ -278,8 +281,8 @@ function updateEncoding(channel, encoding) {
         channel,
         encoding: encoding?.encoding
     });
-    if(t=="time"){
-        t="ordinal";
+    if (t == "time") {
+        t = "ordinal";
     }
     const old = queryStore[channel];
 
@@ -394,9 +397,47 @@ function updateChartType(chart_type) {
     const i = controlStore.currentViewId;
     const chartIns = collectionStore.collections.find(c => c.id == i);
     if (chartIns == null) return;
-    chartIns.mergeSpec({
-        mark: chart_type
-    })
+    // if (chart_type == "bar") {
+    //     chartIns.mergeSpec({
+    //         mark: chart_type,
+    //     })
+    // }
+    // else {
+    //     chartIns.mergeSpec({
+    //         mark: chart_type,
+    //         encoding: {
+    //             x: {
+    //                 stack: null,
+    //             },
+    //             y: {
+    //                 stack: null,
+    //             },
+    //             color: {
+    //                 stack: null,
+    //             },
+    //         }
+    //     })
+    // }
+    // chartIns.mergeSpec({
+    //     mark: chart_type,
+    //     encoding: {
+    //         x: {
+    //             stack: null,
+    //             scale: {},
+    //         },
+    //         y: {
+    //             scale: {},
+    //             stack: null,
+    //         },
+    //         color: {
+    //             scale: {},
+    //             stack: null,
+    //         },
+    //     }
+    // })
+        chartIns.mergeSpec({
+            mark: chart_type,
+        })
 
 }
 
