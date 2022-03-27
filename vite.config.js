@@ -4,6 +4,11 @@ import { resolve } from 'path';
 
 import WindiCSS from 'vite-plugin-windicss'
 
+const commitHash = require('child_process')
+  .execSync('git rev-parse --short HEAD')
+  .toString()
+  .trim();
+
 function pathResolve(dir) {
   return resolve(process.cwd(), '.', dir);
 }
@@ -15,6 +20,9 @@ export default defineConfig({
     WindiCSS(),
 
   ],
+  define: {
+    __COMMIT_HASH__: JSON.stringify(commitHash),
+  },
   resolve:{
     alias:[
       {

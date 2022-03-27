@@ -5,7 +5,8 @@ import * as cql from "compassql";
 
 // import CarJSON from '@/assets/carjson.json'
 import _ from 'lodash'
-import axios from 'axios'
+// import axios from 'axios'
+import http from "@/utils/http";
 import META from "./meta.json";
 
 export const DatasetStore=defineStore({
@@ -86,7 +87,7 @@ export const DatasetStore=defineStore({
             this.userDefinedColType={};
         },
         async loadDataset(url){
-            const response=await axios.get(url);
+            const response=await http.get(url);
             // console.log(response.data);
             this.dataset=response.data;
             const dataset_name=url.split("/").pop();

@@ -117,23 +117,26 @@
                 </n-popover>
             </div>
             <hr class="border-0 w-1/1 mt-2 mb-2" />
-            <div v-show="showTask">
-                <div v-if="controlStore.taskOn">
-                    <div class="font-semibold mb-1">Task Types</div>
-                    <task-legend-vue class="mb-1" />
-                    <task-predict-vue></task-predict-vue>
-                    <!-- <div class="flex mb-1">
+            <transition name="slide-right">
+                <div v-show="showTask">
+                    <div v-if="controlStore.taskOn">
+                        <div class="font-semibold mb-1">Task Types</div>
+                        <task-legend-vue class="mb-1" />
+                        <task-predict-vue></task-predict-vue>
+                        <!-- <div class="flex mb-1">
                     <div class="font-semibold flex-1">Active Tasks</div>
                     <n-button size="tiny" color="#c4c4c488" text-color="black">
                         <n-icon>
                             <Add20Filled/>
                         </n-icon>
                     </n-button>
-                    </div>-->
-                    <task-tag-vue></task-tag-vue>
+                        </div>-->
+                        <task-tag-vue></task-tag-vue>
+                    </div>
+                    <n-empty v-else description="Task Aware disabled"></n-empty>
                 </div>
-                <n-empty v-else description="Task Aware disabled"></n-empty>
-            </div>
+            </transition>
+
             <div v-show="!showTask">
                 <p-o-i v-show="controlStore.poiOn == true" />
                 <n-empty v-show="controlStore.poiOn == null" description="No Significant Interest">
@@ -191,7 +194,8 @@ import { POIStore } from "../store/POIStore";
 import { TaskStore } from "../store/TaskStore";
 
 import { Settings20Filled, ArrowReset20Filled, Settings20Regular, Add20Filled } from "@vicons/fluent"
-import axios from 'axios';
+// import axios from 'axios';
+import http from "@/utils/http";
 import { useElementBounding } from '@vueuse/core'
 
 
@@ -435,9 +439,9 @@ function updateChartType(chart_type) {
     //         },
     //     }
     // })
-        chartIns.mergeSpec({
-            mark: chart_type,
-        })
+    chartIns.mergeSpec({
+        mark: chart_type,
+    })
 
 }
 
@@ -475,7 +479,7 @@ function resetQuery() {
 }
 
 async function reset() {
-    await axios.get("/api/reset");
+    await http.get("/api/reset");
     taskStore.$reset();
     poiStore.$reset();
 }
@@ -503,4 +507,15 @@ async function reset() {
     z-index: 99;
     content: "Add or select a chart to edit";
 }
+
+.slide-right-enter-activate,
+.slide-right-leave-active {
+    @apply transition-all duration-300
+}
+
+.slide-right-enter-from,
+.slide-right-leave-to{
+    @apply 
+}
+
 </style>

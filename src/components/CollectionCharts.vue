@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <n-scrollbar ref="scroll">
         <grid-layout
             :layout="SpecWithChart"
             :col-num="12"
@@ -21,44 +21,12 @@
                 @resized="resizedEvent"
                 @click.stop="onClickItem(layout)"
             >
-                <!-- <n-card 
-                style="height: 100%;width: 100%;" 
-                :class="{'shadow-lg':controlStore.currentViewId==layout.i, 'shadow-blue-500':true}"
-                >-->
                 <n-card
                     style="height: 100%;width: 100%;"
                     :class="{ '!outline-$primary-color !outline-3': controlStore.currentViewId == layout.i }"
                     class="outline-none transition-all duration-300 border-3"
                 >
                     <template #header>Chart#{{ layout.i }}</template>
-                    <!-- <template #header-extra>
-                    <n-space>
-                        <n-popover trigger="click" @update:show="onToggle(layout.spec)">
-                            <template #trigger>
-                                <n-button text class="header_button">
-                                    <n-icon>
-                                        <comment-note24-regular />
-                                    </n-icon>
-                                </n-button>
-                            </template>
-                            <n-input
-                                type="textarea"
-                                :value="layout.note"
-                                @update:value="addNote(layout.spec, $event)"
-                            ></n-input>
-                        </n-popover>
-                        <add-collection-btn-vue
-                            :inCollection="true"
-                            @removeCollection="removeCollection(layout.spec)"
-                        ></add-collection-btn-vue>
-                        <n-button text class="header_button" @click="specify(layout.spec)">
-                            <n-icon>
-                                <arrow-up16-filled />
-                            </n-icon>
-                        </n-button>
-                    </n-space>
-                    </template>-->
-
                     <chart-raw
                         class="dont_move"
                         @addview="addviews($event, layout.i)"
@@ -79,7 +47,7 @@
                 </n-card>
             </grid-item>
         </grid-layout>
-    </div>
+    </n-scrollbar>
 </template>
 
 <script setup>
@@ -99,6 +67,8 @@ import AddCollectionBtnVue from './AddCollectionBtn.vue';
 // import { spec2query } from "@/utils/specify";
 import { QueryStore, spec2query } from '../store/QueryStore';
 
+import { useElementBounding } from '@vueuse/core'
+
 const collectionStore = CollectionStore();
 const queryStore = QueryStore();
 const controlStore = ControlStore();
@@ -107,6 +77,8 @@ const { proxy } = getCurrentInstance();
 const emits = defineEmits(["close"]);
 
 const chart_enabled = ref(true);
+
+const scroll=ref(null);
 
 function onClickItem(layout) {
     controlStore.currentViewId = layout.i;
@@ -176,7 +148,7 @@ function clear(now) {
         }
     }
 }
-function addviews(v, i) {
+async function addviews(v, i) {
 
     views.value[i] = v;
     // views.value.push(v)
@@ -195,7 +167,11 @@ function addviews(v, i) {
     //   // if(checkfirst()==0)
     //   clear(viewscnt.value);
     // })
-    console.log("addview",charts.value[i]);
+    // const b=useElementBounding(charts.value[i])
+    // await nextTick();
+    // console.log("addview",b.height.value,useElementBounding(charts.value[i]));
+    // scroll.value?.scrollTo(0, b.height.value);
+    scroll.value?.scrollTo({top:9999, behavior:"smooth"});
 }
 
 

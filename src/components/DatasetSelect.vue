@@ -105,7 +105,8 @@ import { TaskStore } from "../store/TaskStore";
 import { POIStore } from "../store/POIStore";
 import _ from "lodash";
 // import {computed} from "vue";
-import axios from "axios";
+// import axios from "axios";
+import http from "@/utils/http";
 
 const datasetStore = DatasetStore();
 const controlStore = ControlStore();
@@ -122,7 +123,7 @@ const { proxy } = getCurrentInstance();
 const message = useMessage()
 
 async function reset() {
-    await axios.get("/api/reset");
+    await http.get("/api/reset");
     taskStore.$reset();
     poiStore.$reset();
 }

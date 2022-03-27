@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+// import axios from "axios";
+import http from "@/utils/http";
 import _ from "lodash";
 
 const DEFAULT_TASKS = ["数据转换", "关联", "关联（趋势）", "对比", "确认值", "聚类/异常"];
@@ -156,7 +157,7 @@ export const TaskStore = defineStore({
                 )
                 return;
             }
-            let res = await axios.get("/api/action", {
+            let res = await http.get("/api/action", {
                 params: {
                     topic
                 }

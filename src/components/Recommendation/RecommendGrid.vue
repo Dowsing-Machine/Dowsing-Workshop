@@ -1,48 +1,49 @@
 <template>
-    <n-space vertical>
-        <div ref="head"></div>
-        <n-card v-for="vl, i in vls" class="h-50 w-1/1" :title="`Suggestion#${i}`">
-            <chart-raw-vue
-                :vegalite="vl"
-                :render-option="{
-                    height: 'container',
-                    width: 'container',
-                    autosize: {
-                        type: 'fit',
-                        contains: 'padding'
-                    },
-                    resize: true,
-                    config: {
-                        legend: {
-                
-                            titleLimit: 50,
-                            labelLimit: 30,
-                            symbolLimit: 5
+    <n-scrollbar ref="scroll">
+        <n-space vertical>
+            <n-card v-for="vl, i in vls" class="h-50 w-1/1" :title="`Suggestion#${i}`">
+                <chart-raw-vue
+                    :vegalite="vl"
+                    :render-option="{
+                        height: 'container',
+                        width: 'container',
+                        autosize: {
+                            type: 'fit',
+                            contains: 'padding'
                         },
-                        axis: {
-                            ticks: true,
-                            labelOverlap: true
+                        resize: true,
+                        config: {
+                            legend: {
+                    
+                                titleLimit: 50,
+                                labelLimit: 30,
+                                symbolLimit: 5
+                            },
+                            axis: {
+                                ticks: true,
+                                labelOverlap: true
+                            }
                         }
-                    }
-                }"
-                class="h-1/1 w-1/1"
-                :replaceColor="false"
-            ></chart-raw-vue>
-            <template #header-extra>
-                <n-button text class="header_button" @click="addCollection(vl)">
-                    <n-icon>
-                        <!-- <comment-note24-regular /> -->
-                        <add20-filled></add20-filled>
-                    </n-icon>
-                </n-button>
-            </template>
-        </n-card>
-    </n-space>
+                    }"
+                    class="h-1/1 w-1/1"
+                    :replaceColor="false"
+                ></chart-raw-vue>
+                <template #header-extra>
+                    <n-button text class="header_button" @click="addCollection(vl)">
+                        <n-icon>
+                            <!-- <comment-note24-regular /> -->
+                            <add20-filled></add20-filled>
+                        </n-icon>
+                    </n-button>
+                </template>
+            </n-card>
+        </n-space>
+    </n-scrollbar>
 </template>
 <script setup>
 import ChartVLVue from '../Basic/ChartVL.vue';
 import ChartRawVue from "../ChartRaw.vue"
-import { NCard, NButton, NIcon } from 'naive-ui';
+import { NCard, NButton, NIcon, NScrollbar } from 'naive-ui';
 import _ from "lodash";
 import { onMounted } from "vue";
 import { DebugStore } from '../../store/DebugStore';
@@ -57,7 +58,13 @@ import { Add20Filled } from "@vicons/fluent";
 
 import { ControlStore } from '../../store/ControlStore';
 import { POIStore } from "../../store/POIStore";
-const controlStore = ControlStore();
+
+import { NSpace } from 'naive-ui';
+
+
+import DracoWorker from "../../utils/dracoWorker?worker";
+import weights_learned from "./weights_learned.json";
+
 // import { useIntersectionObserver } from '@vueuse/core'
 
 // const emits = defineEmits(["update:headVisable"]);
@@ -75,13 +82,12 @@ const datasetStore = DatasetStore();
 const taskStore = TaskStore();
 const collectionStore = CollectionStore();
 const poiStore = POIStore();
+const controlStore = ControlStore();
 
+
+const scroll = ref(null);
 const { proxy } = getCurrentInstance();
-import weights_learned from "./weights_learned.json";
-import { NSpace } from 'naive-ui';
 
-
-import DracoWorker from "../../utils/dracoWorker?worker";
 
 const dracoWorker = new DracoWorker();
 dracoWorker.onmessage = function (e) {
@@ -386,12 +392,16 @@ const vls = computed(() => {
     }))
 })
 
+watch(vls,()=>{
+    scroll.value?.scrollTo({top:0, behavior: 'smooth'})
+})
+
 function addCollection(spec) {
-    
-    if(spec.encoding?.x?.field != null)  poiStore.updateColumn(spec.encoding.x.field);
-    if(spec.encoding?.y?.field != null) poiStore.updateColumn(spec.encoding.y.field);
-    if(spec.encoding?.color?.field != null) poiStore.updateColumn(spec.encoding.color.field);
-    
+
+    if (spec.encoding?.x?.field != null) poiStore.updateColumn(spec.encoding.x.field);
+    if (spec.encoding?.y?.field != null) poiStore.updateColumn(spec.encoding.y.field);
+    if (spec.encoding?.color?.field != null) poiStore.updateColumn(spec.encoding.color.field);
+
     proxy.$EventBus.emit(`user:collection:add`, {
         vegalite: spec,
     });

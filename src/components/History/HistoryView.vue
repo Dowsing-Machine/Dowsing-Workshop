@@ -25,6 +25,10 @@
                                         ticks:false,
                                         labels:false,
                                     },
+                                    point:{
+                                        filled:true,
+                                        size:10,
+                                    }
 
                                 }
                             }"

@@ -53,9 +53,11 @@
                             <div class="flex flex-col px-3 pt-3 h-1/1">
                                 <div class="font-bold text-lg pb-4 text-$title-color">SUGGESTIONS</div>
                                 <!-- <hr class="border-0 w-1/1 mb-2 flex-1 shadow-lg transition-all duration-500" :class="{'shadow !border !border-1':!suggestHeadVisable}"/> -->
-                                <n-scrollbar v-if="controlStore.suggestionOn">
-                                    <recommend-grid-vue @update:head-visable="onHeadVisableChange" />
-                                </n-scrollbar>
+
+                                    <recommend-grid-vue 
+                                    v-if="controlStore.suggestionOn"
+                                    @update:head-visable="onHeadVisableChange" />
+
                                 <n-empty v-else description="Suggestion disabled"></n-empty>
                             </div>
                         </n-layout-sider>
@@ -72,14 +74,14 @@
                             <!-- <explore-panel-vue class="flex-1 h-1/1 overflow-auto"></explore-panel-vue> -->
 
                             <!-- <multi-view></multi-view> -->
-                            <n-scrollbar
+                            <!-- <n-scrollbar
                                 class="h-1/1 flex-1 bg-$embeded-bg-color "
-                            >
+                            > -->
                                 <collection-charts-vue
                                     @click="onClick"
-                                    class="h-1/1 flex-1 px-4 py-2"
+                                    class="h-1/1 flex-1 px-4 py-2 bg-$embeded-bg-color"
                                 ></collection-charts-vue>
-                            </n-scrollbar>
+                            <!-- </n-scrollbar> -->
 
                             <div class="p-1 border-t shadow-up">
                                 <n-button
