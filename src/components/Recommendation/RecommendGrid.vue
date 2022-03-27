@@ -49,6 +49,7 @@ import { DebugStore } from '../../store/DebugStore';
 import { DatasetStore } from '../../store/DatasetStore';
 import { CollectionStore } from '../../store/CollectionStore';
 import { TaskStore } from '../../store/TaskStore';
+
 import Draco from "draco-vis";
 import * as DracoCore from "draco-vis";
 import { computed, ref, watch, getCurrentInstance } from 'vue';
@@ -386,6 +387,11 @@ const vls = computed(() => {
 })
 
 function addCollection(spec) {
+    
+    if(spec.encoding?.x?.field != null)  poiStore.updateColumn(spec.encoding.x.field);
+    if(spec.encoding?.y?.field != null) poiStore.updateColumn(spec.encoding.y.field);
+    if(spec.encoding?.color?.field != null) poiStore.updateColumn(spec.encoding.color.field);
+    
     proxy.$EventBus.emit(`user:collection:add`, {
         vegalite: spec,
     });

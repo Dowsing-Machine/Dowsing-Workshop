@@ -54,8 +54,8 @@
                         @update:value="onFilterUpdate"
                     />
                     <n-space vertical>
-                        <n-input-number size="small" v-model:value="filter.filter[0]" />
-                        <n-input-number size="small" v-model:value="filter.filter[1]" />
+                        <n-input-number size="small" v-model:value="filter.filter[0]" @update:value="onFilterUpdate(filter.filter)"/>
+                        <n-input-number size="small" v-model:value="filter.filter[1]" @update:value="onFilterUpdate(filter.filter)"/>
                     </n-space>
                 </div>
                 <div v-else-if="type == 'nominal'">
@@ -218,7 +218,7 @@ const showFilter = ref(false);
 
 async function onFilterOpen() {
     // 当Filter打开的时候，如果没有配置filter就需要配置filter
-    console.log(props.filter)
+    
     if (props.filter == null) {
         if (type.value == "quantitative") {
             emits('update:filter', {
