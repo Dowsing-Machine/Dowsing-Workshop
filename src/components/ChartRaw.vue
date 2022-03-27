@@ -76,7 +76,7 @@ async function refreshChart() {
                 "field": v.encoding?.color?.field || v.encoding?.color?.condition?.field,
                 "type": v.encoding?.color?.type || v.encoding?.color?.condition?.type,
             },
-            "value": "grey"
+            "value": "#e0e0e055"
         };
     }
 

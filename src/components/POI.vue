@@ -63,14 +63,14 @@ const spec = {
 }
 
 onMounted(async function () {
-    vl = await newChart(chart.value, spec, { actions: false });
+    vl = await newChart(chart.value, spec, {renderOption:{ actions: false }});
 
     vl.view.data("table", poiStore.column).run();
 })
 
 watch(() => poiStore.column, async function () {
     console.log(poiStore.column)
-    vl = await newChart(chart.value, spec, { actions: false });
+    vl = await newChart(chart.value, spec, {renderOption:{ actions: false }});
     vl.view.data("table", poiStore.column).run();
 }, { deep: true })
 
