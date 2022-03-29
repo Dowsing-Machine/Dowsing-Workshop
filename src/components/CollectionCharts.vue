@@ -116,6 +116,7 @@ function onBrush(nowi) {
     let data = views.value[nowi].getState().data;
     for (let key in views.value) {
         // for(let key=0;key<views.value.length;key++){
+        if(views.value[key]==null)continue;
         if (key != nowi) {
             views.value[key].setState({
                 data: data,
