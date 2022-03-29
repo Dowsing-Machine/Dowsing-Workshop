@@ -20,9 +20,9 @@ const controlStore = ControlStore();
 const prob=computed(()=>{
     const s = _.sumBy(poiStore.column, i => i.cnt);
     const l = datasetStore.columns.length;
-    // if(s<5*l || s<40){
-    //     return 1;
-    // }
+    if(s<5*l || s<40){
+        return 1;
+    }
     const obs = _(datasetStore.columns).map(i => ({
         col: i.name,
         cnt: 0
